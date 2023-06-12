@@ -73,6 +73,12 @@ export const KNOWN_NAMES = [
     'anger7',
     'anger8',
     'anger9',
+    'back',
+    'badge',
+    'banner',
+    'barb',
+    'base',
+    'bash',
 
     // archive 3 (interfaces)
     'agilityarena_overlay',
@@ -857,8 +863,9 @@ for (let i = 0; i < 512; i++) {
 
 // some loosely named components can be named "a0", "a1", "a2", etc.
 for (let a = 0; a < 26; a++) {
-    for (let b = 0; b < 7; b++) {
-        KNOWN_NAMES.push(`${String.fromCharCode(97 + a)}${b}`);
+    let char = String.fromCharCode(97 + a);
+    for (let b = 0; b < 26; b++) {
+        KNOWN_NAMES.push(`${char}${b}`);
     }
 }
 
