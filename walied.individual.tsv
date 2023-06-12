@@ -1,0 +1,2181 @@
+7th realm
+[clientscript,addtooltip]
+[clientscript,addtooltip_dynamic]
+[clientscript,addtooltip_graphic_swapper]
+[clientscript,advisor_flash_icon]
+[clientscript,agilityarena_colour]
+[clientscript,agilityarena_overlay]
+[clientscript,agilityarena_set_model]
+[clientscript,aif_dropdownbox_selectelement]
+[clientscript,aif_dropdownbox_setup]
+[clientscript,aif_move_highlight]
+[clientscript,aif_progressbar_set]
+[clientscript,aif_scrollbar_build_layer]
+[clientscript,aif_textinputbox]
+[clientscript,aif_tooltip]
+[clientscript,ame_costumes_init]
+[clientscript,ame_reward_init]
+[clientscript,ame_rewards_select]
+[clientscript,assist_clear_button]
+[clientscript,assist_comp_sethide]
+[clientscript,assist_display_icon]
+[clientscript,assist_flash_button]
+[clientscript,assist_flash_icon]
+[clientscript,assist_overlay_flash_icon]
+[clientscript,assist_skill_update]
+[clientscript,assist_tooltip]
+[clientscript,autosetup]
+[clientscript,bank_cert_button]
+[clientscript,bank_sort_button]
+[clientscript,bank_v2_bankitemdrag]
+[clientscript,bank_v2_bankitemdrop]
+[clientscript,bank_v2_bankpinshow]
+[clientscript,bank_v2_build_init]
+[clientscript,bank_v2_cert_click]
+[clientscript,bank_v2_clickaddbutton]
+[clientscript,bank_v2_close]
+[clientscript,bank_v2_help_init]
+[clientscript,bank_v2_help_link]
+[clientscript,bank_v2_help_showpage]
+[clientscript,bank_v2_rebuild]
+[clientscript,bank_v2_rebuild_delayed]
+[clientscript,bank_v2_search]
+[clientscript,bank_v2_search_delayed]
+[clientscript,bank_v2_showequipscreen]
+[clientscript,bank_v2_sideinit]
+[clientscript,bank_v2_sideupdate]
+[clientscript,bank_v2_swap_click]
+[clientscript,bank_v2_tab_highlight_revert]
+[clientscript,bank_v2_tooltipoff]
+[clientscript,bankpin_button]
+[clientscript,bankpin_buttonbox]
+[clientscript,bankpin_cancel]
+[clientscript,bankpin_init]
+[clientscript,bankpin_resynch]
+[clientscript,bankpin_settings_drawbutton]
+[clientscript,bankpin_settings_setup]
+[clientscript,barbassault_name_transmit]
+[clientscript,barbassault_onload]
+[clientscript,barbassault_tutorial_colours]
+[clientscript,barrows_killcount_update]
+[clientscript,barrows_show_head]
+[clientscript,bees]
+[clientscript,bees_init]
+[clientscript,bees_mouseleave]
+[clientscript,bees_mouseover]
+[clientscript,bees_mouserepeat]
+[clientscript,blast_furnace_bar_stock]
+[clientscript,blast_furnace_coal]
+[clientscript,boardgames_names]
+[clientscript,boardgames_options_onload]
+[clientscript,boardgames_options_ranked]
+[clientscript,boardgames_options_time]
+[clientscript,boardgames_rank_update]
+[clientscript,boardgames_sandtimer]
+[clientscript,boardgames_status]
+[clientscript,booth_confirm_mouseleave]
+[clientscript,booth_confirm_mouseover]
+[clientscript,booth_init]
+[clientscript,brew_bark]
+[clientscript,brew_bitternut]
+[clientscript,brew_bluescore]
+[clientscript,brew_boiler1]
+[clientscript,brew_boiler2]
+[clientscript,brew_boiler3]
+[clientscript,brew_buckets]
+[clientscript,brew_colourwater]
+[clientscript,brew_redscore]
+[clientscript,brew_time]
+[clientscript,camera_control]
+[clientscript,castlewars_catapult_radio]
+[clientscript,cc_graphic_swapper]
+[clientscript,cc_setoutline]
+[clientscript,cc_settrans]
+[clientscript,cc_text_colour_swapper]
+[clientscript,champions_onop]
+[clientscript,chat_alert_flash]
+[clientscript,chat_button_deselect]
+[clientscript,chat_button_onop]
+[clientscript,chat_button_select]
+[clientscript,chat_op]
+[clientscript,chatbox_resize_drag]
+[clientscript,chatbox_resize_load]
+[clientscript,chatchannel_tooltip]
+[clientscript,chatdefault_init]
+[clientscript,chatdefault_onkey]
+[clientscript,chatdefault_updatechatbox]
+[clientscript,chatmodal_build]
+[clientscript,clan_build_preview]
+[clientscript,clan_chat_drag]
+[clientscript,clan_chat_kick_button]
+[clientscript,clan_chat_list_op]
+[clientscript,clan_chat_list_refresh]
+[clientscript,clan_chat_minimenu_timer]
+[clientscript,clan_chat_onclansettingstransmit]
+[clientscript,clan_chat_onclantransmit]
+[clientscript,clan_chat_onload]
+[clientscript,clan_chat_onop]
+[clientscript,clan_chat_op]
+[clientscript,clan_click_pm]
+[clientscript,clan_colour_mouseover]
+[clientscript,clan_create_return]
+[clientscript,clan_flag_highlight]
+[clientscript,clan_flag_highlight_update]
+[clientscript,clan_info_load]
+[clientscript,clan_invite_button]
+[clientscript,clan_join_invite_onload]
+[clientscript,clan_keywords_update]
+[clientscript,clan_motif_background_mouseleave]
+[clientscript,clan_motif_background_mouseover]
+[clientscript,clan_motif_set]
+[clientscript,clan_motto_return]
+[clientscript,clan_motto_text_click]
+[clientscript,clan_motto_text_init]
+[clientscript,clan_motto_text_input]
+[clientscript,clan_noticeboard_build]
+[clientscript,clan_noticeboard_event_edit_selection]
+[clientscript,clan_noticeboard_event_mouseleave]
+[clientscript,clan_noticeboard_event_mouseover]
+[clientscript,clan_noticeboard_event_show]
+[clientscript,clan_qfc_return]
+[clientscript,clan_run_time]
+[clientscript,clan_set_colour1]
+[clientscript,clan_set_colour2]
+[clientscript,clan_setup_flags]
+[clientscript,clan_setup_init]
+[clientscript,clan_switch_tab]
+[clientscript,clan_symbol_highlight]
+[clientscript,clan_symbol_highlight_update]
+[clientscript,clan_vote_cast]
+[clientscript,clan_vote_restore]
+[clientscript,clan_vote_update]
+[clientscript,clansettings_interface_refresh]
+[clientscript,clansettings_list_build]
+[clientscript,clansettings_onload]
+[clientscript,clanwars_end_setup]
+[clientscript,clanwars_ffa]
+[clientscript,clanwars_ffa_warning_setup]
+[clientscript,clanwars_orb]
+[clientscript,clanwars_overlay_rules]
+[clientscript,clanwars_overlay_status]
+[clientscript,clanwars_overlay_status_init]
+[clientscript,clanwars_overlay_status_timecounter]
+[clientscript,clanwars_setup_accept_button]
+[clientscript,clanwars_setup_acceptlayer]
+[clientscript,clanwars_setup_createbox]
+[clientscript,clanwars_setup_food]
+[clientscript,clanwars_setup_magic]
+[clientscript,clanwars_setup_magictooltip]
+[clientscript,clanwars_setup_maininit]
+[clientscript,clanwars_setup_melee]
+[clientscript,clanwars_setup_potions]
+[clientscript,clanwars_setup_prayer]
+[clientscript,clanwars_setup_ranged]
+[clientscript,clanwars_setup_summoning]
+[clientscript,clanwars_setup_varcstrtransmit]
+[clientscript,clanwars_setup_varctransmit]
+[clientscript,clanwars_setup_vartransmit]
+[clientscript,closebutton_click]
+[clientscript,closebutton_click_book]
+[clientscript,closebutton_click_paper]
+[clientscript,combat_side_button_highlight]
+[clientscript,combat_side_comlevel]
+[clientscript,combat_side_setup]
+[clientscript,combat_side_special]
+[clientscript,combat_side_special_highlight]
+[clientscript,combat_side_special_level]
+[clientscript,combat_side_title]
+[clientscript,comp_sethide]
+[clientscript,component_flash_start]
+[clientscript,component_flash_stop]
+[clientscript,component_flash_timer]
+[clientscript,component_pulse_start]
+[clientscript,component_pulse_timer]
+[clientscript,conq_action_cam]
+[clientscript,conq_action_cam_reset]
+[clientscript,conq_fade_in]
+[clientscript,conq_flash_slot]
+[clientscript,conq_ranking_overlay_onload]
+[clientscript,conq_ranking_overlay_ontimer]
+[clientscript,conq_scroll_camera]
+[clientscript,conq_skull_swapper]
+[clientscript,construction_materials]
+[clientscript,contact_spell]
+[clientscript,crafting_level]
+[clientscript,crafting_level_hide]
+[clientscript,create_exit]
+[clientscript,create_focus]
+[clientscript,create_go]
+[clientscript,create_go_timer]
+[clientscript,create_resize]
+[clientscript,create_suggestions_highlight]
+[clientscript,cws_graphic_swap]
+[clientscript,cws_graphic_swap_2]
+[clientscript,cws_mouseover]
+[clientscript,cws_setup]
+[clientscript,cws_toggle]
+[clientscript,deathkeep_info_init]
+[clientscript,deathkeep_info_updateitems]
+[clientscript,deathkeep_info_updatesidepanel]
+[clientscript,deathkeep_select_drag]
+[clientscript,deathkeep_select_dropdown]
+[clientscript,deathkeep_select_init]
+[clientscript,deathkeep_select_mouseeffect]
+[clientscript,deathkeep_select_update]
+[clientscript,deathkeep_select_updaterespawn]
+[clientscript,deathkeep_tutorial_examine]
+[clientscript,deathkeep_tutorial_init]
+[clientscript,deltooltip]
+[clientscript,deltooltip_cc_graphic_swapper]
+[clientscript,deltooltip_graphic_swapper]
+[clientscript,dob_confirm_load]
+[clientscript,dob_confirm_load_2]
+[clientscript,draughts_inv_init]
+[clientscript,draughts_inv_update]
+[clientscript,dream_bank_init]
+[clientscript,dream_chest_init]
+[clientscript,dropdownbox]
+[clientscript,dropdownbox_mouseoutarrow]
+[clientscript,dropdownbox_mouseoutelement]
+[clientscript,dropdownbox_mouseoverarrow]
+[clientscript,dropdownbox_mouseoverelement]
+[clientscript,dropdownbox_openclose]
+[clientscript,dropdownbox_quick]
+[clientscript,dropdownbox_selectelement]
+[clientscript,duel_confirm_text]
+[clientscript,duel_stake_init]
+[clientscript,ecosystem_tutorial_cam_8_2]
+[clientscript,ecosystem_tutorial_camera]
+[clientscript,emote_unlock]
+[clientscript,equipscreen_comparison]
+[clientscript,equipscreen_comparison_close]
+[clientscript,equipscreen_init]
+[clientscript,equipscreen_weight]
+[clientscript,evilbob_load]
+[clientscript,evilbob_start]
+[clientscript,fade2_flash_generic]
+[clientscript,fade2_flash_stop]
+[clientscript,fade2_flash_timer]
+[clientscript,fade2_in]
+[clientscript,fade2_in_generic]
+[clientscript,fade2_in_slow]
+[clientscript,fade2_out]
+[clientscript,fade2_out_slow]
+[clientscript,fade2_timer]
+[clientscript,fade_in_darkness]
+[clientscript,fade_out_darkness]
+[clientscript,fadein]
+[clientscript,fadeout]
+[clientscript,fairyrings_anticlockwise]
+[clientscript,fairyrings_clockwise]
+[clientscript,fairyrings_log_init]
+[clientscript,fairyrings_log_shuffle]
+[clientscript,fairyrings_rotate]
+[clientscript,fairyrings_vartransmit]
+[clientscript,farming_tools_main_update]
+[clientscript,farming_tools_side_update]
+[clientscript,fishcomp_overlay_load]
+[clientscript,fishcomp_refresh]
+[clientscript,flashside_timer]
+[clientscript,flashside_vartransmit]
+[clientscript,friend_deltooltip]
+[clientscript,friend_init]
+[clientscript,friend_op]
+[clientscript,friend_tooltip]
+[clientscript,friend_transmit]
+[clientscript,friend_update]
+[clientscript,friends2_switchmode]
+[clientscript,friends_chat_drag]
+[clientscript,friends_chat_list_build]
+[clientscript,friends_chat_minimenu_timer]
+[clientscript,friends_chat_onclantransmit]
+[clientscript,friends_chat_onload]
+[clientscript,friendschat_list_op]
+[clientscript,friendschat_setrank]
+[clientscript,friendschatsetup_onfriendtransmit]
+[clientscript,friendschatsetup_onload]
+[clientscript,gnomeglider_init]
+[clientscript,gnomeglider_update]
+[clientscript,godwars_overlay_init]
+[clientscript,godwars_overlay_vartransmit]
+[clientscript,graphic_swapper2]
+[clientscript,graphic_swapper3]
+[clientscript,graphic_swapper]
+[clientscript,graphics_options_button_highlight]
+[clientscript,graphics_options_canceldropdown]
+[clientscript,graphics_options_choosesetting]
+[clientscript,graphics_options_countdown]
+[clientscript,graphics_options_countdownmouseover]
+[clientscript,graphics_options_createdropdown]
+[clientscript,graphics_options_decision]
+[clientscript,graphics_options_init]
+[clientscript,graphics_options_login_resize]
+[clientscript,graphics_options_mouseoveroption]
+[clientscript,graphics_options_rebuild]
+[clientscript,graphics_options_settoolkit]
+[clientscript,graphics_options_setwindowmode]
+[clientscript,gravestone_plaque_setup]
+[clientscript,gravestone_shop_select]
+[clientscript,gravestone_shop_setup]
+[clientscript,gravestone_update_timer]
+[clientscript,hauntedmine_controls_load]
+[clientscript,hide_component]
+[clientscript,if_close]
+[clientscript,if_settrans]
+[clientscript,if_switchside_previous]
+[clientscript,if_switchside_store]
+[clientscript,ignore_init]
+[clientscript,ignore_op]
+[clientscript,ignore_transmit]
+[clientscript,ii_mouseleave]
+[clientscript,ii_resize_if]
+[clientscript,ii_storage_update]
+[clientscript,ii_storage_update_side]
+[clientscript,ii_timer_display]
+[clientscript,ii_timer_update]
+[clientscript,imp_bank_setup]
+[clientscript,initialise_stat_xp]
+[clientscript,interface_flash_fade]
+[clientscript,interface_flash_slot]
+[clientscript,interface_flash_slot_static]
+[clientscript,interface_inv_drag_slot]
+[clientscript,interface_inv_init]
+[clientscript,interface_inv_init_big]
+[clientscript,interface_inv_update_big]
+[clientscript,interface_invother_init]
+[clientscript,interface_invother_init_big]
+[clientscript,interface_invother_update_big]
+[clientscript,inventory_drag]
+[clientscript,inventory_init]
+[clientscript,inventory_targetmode]
+[clientscript,kr_display_riddle]
+[clientscript,kr_mouseleave_colour]
+[clientscript,kr_tumbler_height]
+[clientscript,large_button]
+[clientscript,large_button_highlight]
+[clientscript,letter_lj_setscrollpos]
+[clientscript,letter_lj_settitle]
+[clientscript,lightning_init]
+[clientscript,lightning_update]
+[clientscript,lobby_draw_button_green]
+[clientscript,lobby_draw_button_grey]
+[clientscript,lobby_friends_join]
+[clientscript,lobby_hop_abort]
+[clientscript,lobby_popup_close]
+[clientscript,lobby_popup_throbber]
+[clientscript,lobby_resize]
+[clientscript,lobby_worldswitcher_load]
+[clientscript,lobby_worldswitcher_timer]
+[clientscript,lobbyscreen_button_highlight]
+[clientscript,lobbyscreen_chat_handler]
+[clientscript,lobbyscreen_chat_notify]
+[clientscript,lobbyscreen_entergame]
+[clientscript,lobbyscreen_entergametimer]
+[clientscript,lobbyscreen_input_close]
+[clientscript,lobbyscreen_input_keyboard]
+[clientscript,lobbyscreen_input_link_highlight]
+[clientscript,lobbyscreen_input_ok]
+[clientscript,lobbyscreen_leavelobby]
+[clientscript,lobbyscreen_link]
+[clientscript,lobbyscreen_load]
+[clientscript,lobbyscreen_pvp_warning]
+[clientscript,lobbyscreen_tabswitch]
+[clientscript,login_back_button]
+[clientscript,login_delay]
+[clientscript,login_dologin]
+[clientscript,login_focus]
+[clientscript,login_hop_abort]
+[clientscript,login_link_highlight]
+[clientscript,login_popup_close]
+[clientscript,login_popup_throbber]
+[clientscript,login_register]
+[clientscript,login_reply]
+[clientscript,login_resize]
+[clientscript,loginscreen_button_highlight]
+[clientscript,loginscreen_camera_timer]
+[clientscript,loginscreen_camerarestart]
+[clientscript,loginscreen_camerastop]
+[clientscript,loginscreen_camfinished]
+[clientscript,loginscreen_disable_camera]
+[clientscript,loginscreen_keypress]
+[clientscript,loginscreen_link]
+[clientscript,loginscreen_link_highlight]
+[clientscript,loginscreen_link_nologin]
+[clientscript,loginscreen_load]
+[clientscript,loginscreen_options_button]
+[clientscript,loginscreen_options_button_timer]
+[clientscript,loginscreen_quit]
+[clientscript,loginscreen_setactivemenu]
+[clientscript,loginscreen_setactivemenu_full]
+[clientscript,loginscreen_slider_click]
+[clientscript,loginscreen_slider_click_icon]
+[clientscript,loginscreen_slider_drag]
+[clientscript,loginscreen_stereo]
+[clientscript,logout_init]
+[clientscript,loot_ontimer]
+[clientscript,loot_toggle_client]
+[clientscript,lore_addtooltip]
+[clientscript,lore_blanktip]
+[clientscript,lore_deltooltip]
+[clientscript,lore_head_update]
+[clientscript,lore_interface_inv_init]
+[clientscript,lore_interface_inv_update]
+[clientscript,lore_magic_entertargetmode]
+[clientscript,lore_magic_leavetargetmode]
+[clientscript,lore_mouseover_text]
+[clientscript,lore_points_update]
+[clientscript,lore_pouch_counter]
+[clientscript,lore_switchside_op]
+[clientscript,love_cutscenes]
+[clientscript,love_puzzle_init]
+[clientscript,love_puzzle_side_init]
+[clientscript,love_puzzle_sourceclick]
+[clientscript,love_puzzle_update]
+[clientscript,macro_combilock_adjust]
+[clientscript,macro_combilock_init]
+[clientscript,macro_combilock_update_1]
+[clientscript,macro_combilock_update_2]
+[clientscript,macro_combilock_update_3]
+[clientscript,macro_pinball_score]
+[clientscript,magic_addtooltip]
+[clientscript,magic_deltooltip]
+[clientscript,magic_entertargetmode]
+[clientscript,magic_init]
+[clientscript,magic_leavetargetmode]
+[clientscript,magic_updateicon]
+[clientscript,magictraining_shop]
+[clientscript,magictraining_shop_points]
+[clientscript,makeover_colour_force]
+[clientscript,makeover_colour_resynch]
+[clientscript,makeover_gender_force]
+[clientscript,makeover_gender_resynch]
+[clientscript,makeover_headsetup]
+[clientscript,meslayer_close]
+[clientscript,meslayer_lastname]
+[clientscript,meslayer_mode12]
+[clientscript,meslayer_mode13]
+[clientscript,meslayer_mode15]
+[clientscript,meslayer_mode16]
+[clientscript,meslayer_mode2]
+[clientscript,meslayer_mode3]
+[clientscript,meslayer_mode4]
+[clientscript,meslayer_mode5]
+[clientscript,meslayer_mode7]
+[clientscript,meslayer_mode8]
+[clientscript,meslayer_mode9]
+[clientscript,meslayer_ondialogabort]
+[clientscript,meslayer_onkey]
+[clientscript,meslayer_varc_update]
+[clientscript,mob_buy_add]
+[clientscript,mob_camera_control]
+[clientscript,mob_camera_reset]
+[clientscript,mob_chat_onkey]
+[clientscript,mob_colour_swapper]
+[clientscript,mob_exception_object]
+[clientscript,mob_formation_click]
+[clientscript,mob_formation_onload]
+[clientscript,mob_highlight_start]
+[clientscript,mob_highlight_stop]
+[clientscript,mob_highlight_timer]
+[clientscript,mob_initialise_buttons]
+[clientscript,mob_initialise_text]
+[clientscript,mob_invest_add]
+[clientscript,mob_invest_tooltips]
+[clientscript,mob_locator_onload]
+[clientscript,mob_locator_resource_setup]
+[clientscript,mob_locator_switch_tab]
+[clientscript,mob_move_text]
+[clientscript,mob_rank_click]
+[clientscript,mob_set_limit]
+[clientscript,mob_shop_init]
+[clientscript,mob_show_hide]
+[clientscript,mob_side_units_onload]
+[clientscript,mob_status_castle]
+[clientscript,mob_status_killcount]
+[clientscript,model_swapper]
+[clientscript,model_wobble]
+[clientscript,model_wobble_magnitude]
+[clientscript,mole_darkness]
+[clientscript,mole_init]
+[clientscript,music_v3_setcolour]
+[clientscript,notes_click]
+[clientscript,notes_colour_abort]
+[clientscript,notes_drag]
+[clientscript,notes_drag_end]
+[clientscript,notes_graphic_swapper]
+[clientscript,notes_init]
+[clientscript,notes_update]
+[clientscript,ntk_text]
+[clientscript,ntk_timer]
+[clientscript,objbox_set_zoom]
+[clientscript,objdialog_close]
+[clientscript,objdialog_delay_timer]
+[clientscript,objdialog_highlight]
+[clientscript,objdialog_ondialogabort]
+[clientscript,objdialog_onkey]
+[clientscript,objdialog_reset]
+[clientscript,objdialog_select]
+[clientscript,openurl_nologin]
+[clientscript,options_aid]
+[clientscript,options_chat]
+[clientscript,options_chat_filter]
+[clientscript,options_mouse]
+[clientscript,options_update_all]
+[clientscript,partyroom_interface_setup]
+[clientscript,pattern_cards_select]
+[clientscript,pattern_spin]
+[clientscript,pest_confirm_mouseover]
+[clientscript,pest_mouseleave]
+[clientscript,pest_mouseover]
+[clientscript,player_kit_body_colourbutton]
+[clientscript,player_kit_body_initialise]
+[clientscript,player_kit_body_varctransmit]
+[clientscript,player_kit_body_vartransmit]
+[clientscript,player_kit_feet_colourbutton]
+[clientscript,player_kit_feet_initialise]
+[clientscript,player_kit_feet_varctransmit]
+[clientscript,player_kit_hair_colourbutton]
+[clientscript,player_kit_hair_initialise]
+[clientscript,player_kit_hair_redraw]
+[clientscript,player_kit_hair_vartransmit]
+[clientscript,player_kit_player_rotate]
+[clientscript,player_kit_scroll]
+[clientscript,player_prefix_current]
+[clientscript,player_prefix_highlight]
+[clientscript,player_prefix_load]
+[clientscript,playerdesign4_box_mouserepeat]
+[clientscript,playerdesign4_button_highlight]
+[clientscript,playerdesign4_colourbutton]
+[clientscript,playerdesign4_colourhighlight]
+[clientscript,playerdesign4_coloursetbutton]
+[clientscript,playerdesign4_genderbutton]
+[clientscript,playerdesign4_init]
+[clientscript,playerdesign4_mouseover]
+[clientscript,playerdesign4_outfitbutton]
+[clientscript,playerdesign4_sidetooltip]
+[clientscript,playerdesign4_slotbutton]
+[clientscript,playerdesign4_switchpage]
+[clientscript,playerdesign4_tooltip]
+[clientscript,playerdesign4_tooltip_clear]
+[clientscript,playerdesign4_varctransmit]
+[clientscript,playerdesign4_vartransmit]
+[clientscript,pmsetup_clanbackground]
+[clientscript,pmsetup_init]
+[clientscript,pmsetup_updateinterface]
+[clientscript,pmsetup_updatesetting]
+[clientscript,poh_bookcase_build]
+[clientscript,poh_tablets_setup]
+[clientscript,prayer_client_op]
+[clientscript,prayer_custom_op]
+[clientscript,prayer_custom_varupdate]
+[clientscript,prayer_level]
+[clientscript,prayer_load_buttons]
+[clientscript,prayer_load_glow]
+[clientscript,prayer_refresh_scrollbar]
+[clientscript,prayer_statupdate]
+[clientscript,prayer_varupdate]
+[clientscript,private_op]
+[clientscript,quickchat_close]
+[clientscript,quickchat_closebutton_mouseleave]
+[clientscript,quickchat_closebutton_mouseover]
+[clientscript,quickchat_enter_search]
+[clientscript,quickchat_locked_link]
+[clientscript,quickchat_menu_scroll]
+[clientscript,quickchat_menu_select]
+[clientscript,quickchat_objdialog_highlight]
+[clientscript,quickchat_onkey]
+[clientscript,quickchat_open_onop]
+[clientscript,quickchat_phrase]
+[clientscript,quickchat_phrase_countdialog_onkey]
+[clientscript,quickchat_phrase_int]
+[clientscript,quickchat_phrase_obj]
+[clientscript,quickchat_phrase_objdialog_onkey]
+[clientscript,quickchat_return]
+[clientscript,quickchat_tutorial_button_mouseleave]
+[clientscript,quickchat_tutorial_button_mouseover]
+[clientscript,quickchat_tutorial_init]
+[clientscript,quickchat_tutorial_loadcontent]
+[clientscript,quickchat_tutorial_showpage]
+[clientscript,rabbit_shop_init]
+[clientscript,rabbit_shop_pointsupdate]
+[clientscript,rand_complete_interface]
+[clientscript,rand_complete_interface_timer]
+[clientscript,rand_construction_onexit]
+[clientscript,rand_construction_onhover]
+[clientscript,rand_herbburner_onexit]
+[clientscript,rand_herbburner_onhover]
+[clientscript,rand_inspect_examine]
+[clientscript,rand_interface_click]
+[clientscript,rand_load_shop]
+[clientscript,rand_map_add_player]
+[clientscript,rand_map_add_room]
+[clientscript,rand_map_boss_room]
+[clientscript,rand_map_reset]
+[clientscript,rand_map_start_room]
+[clientscript,rand_map_tooltip]
+[clientscript,rand_model_wobble]
+[clientscript,rand_model_wobble_magnitude]
+[clientscript,rand_rewards_clickinformation]
+[clientscript,rand_rewards_onexit]
+[clientscript,rand_rewards_onhover]
+[clientscript,rand_rewards_populate]
+[clientscript,rand_ring_bar_tooltip]
+[clientscript,rand_ring_button_click]
+[clientscript,rand_ring_interface_init]
+[clientscript,rand_ring_interface_timer]
+[clientscript,rand_ring_onexit]
+[clientscript,rand_ring_onexitspin]
+[clientscript,rand_ring_onhover]
+[clientscript,rand_ring_onhoverspin]
+[clientscript,rand_skill_multi_num]
+[clientscript,rcguild_overlay_load]
+[clientscript,rebootwatch]
+[clientscript,rebuildpmbox_timer]
+[clientscript,redraw_chat_buttons]
+[clientscript,sc_processing_init]
+[clientscript,sc_remaining_clay_help]
+[clientscript,sc_reward_shop_init]
+[clientscript,scrollbar_vertical]
+[clientscript,scrollbar_vertical_2]
+[clientscript,scrollbar_vertical_down]
+[clientscript,scrollbar_vertical_down_2]
+[clientscript,scrollbar_vertical_drag]
+[clientscript,scrollbar_vertical_drag_2]
+[clientscript,scrollbar_vertical_graphics]
+[clientscript,scrollbar_vertical_graphics_2]
+[clientscript,scrollbar_vertical_jump]
+[clientscript,scrollbar_vertical_jump_2]
+[clientscript,scrollbar_vertical_text]
+[clientscript,scrollbar_vertical_up]
+[clientscript,scrollbar_vertical_up_2]
+[clientscript,scrollbar_vertical_wheel]
+[clientscript,scrollbar_vertical_wheel_2]
+[clientscript,set_spinner]
+[clientscript,setscrollheight]
+[clientscript,settrans]
+[clientscript,show_component]
+[clientscript,sidebook_build]
+[clientscript,skill_multi_rand_model]
+[clientscript,skill_multi_rand_mouse]
+[clientscript,skill_multi_rand_text]
+[clientscript,skill_multi_rand_title]
+[clientscript,skillcape_build_preview]
+[clientscript,skillcape_colour_original]
+[clientscript,skillcape_get_colour]
+[clientscript,skillmulti2010_build]
+[clientscript,skillmulti2010_expand]
+[clientscript,skillmulti2010_menubutton_off]
+[clientscript,skillmulti2010_menubutton_on]
+[clientscript,snapshot_confirm_name]
+[clientscript,snapshot_help_close]
+[clientscript,snapshot_highlight_off]
+[clientscript,snapshot_highlight_on]
+[clientscript,snapshot_ignore_no]
+[clientscript,snapshot_ignore_yes]
+[clientscript,snapshot_main_exit_v1]
+[clientscript,snapshot_main_load]
+[clientscript,snapshot_main_load_v1]
+[clientscript,snapshot_mutetoggle]
+[clientscript,snapshot_name_update]
+[clientscript,snapshot_onkey_v1]
+[clientscript,snapshot_open]
+[clientscript,snapshot_open_bugreport]
+[clientscript,snapshot_report]
+[clientscript,snapshot_report_v1]
+[clientscript,snapshot_selected_highlight]
+[clientscript,snapshot_update_display]
+[clientscript,sound_mono]
+[clientscript,sound_stereo]
+[clientscript,spinner]
+[clientscript,spirittree_start]
+[clientscript,stats_mouseover]
+[clientscript,stats_scrollbar_setup]
+[clientscript,stats_skilltotal]
+[clientscript,stats_stat]
+[clientscript,stats_statbase]
+[clientscript,stats_update]
+[clientscript,statue_bag_init]
+[clientscript,statusicons_addtooltip]
+[clientscript,statusicons_deltooltip]
+[clientscript,stock_offercount_minus]
+[clientscript,stock_offercount_plus]
+[clientscript,stock_offerprice_minus]
+[clientscript,stock_offerprice_plus]
+[clientscript,stock_tutorial_update]
+[clientscript,stock_v2_stone_button_filled]
+[clientscript,stockcollect_onload]
+[clientscript,stockcollect_refresh]
+[clientscript,stockmarket_choosebuy]
+[clientscript,stockmarket_choosecancel]
+[clientscript,stockmarket_offerbutton]
+[clientscript,stockmarket_oninvtransmit]
+[clientscript,stockmarket_onload]
+[clientscript,stockmarket_onstocktransmit]
+[clientscript,stockmarket_onvartransmit]
+[clientscript,subchanged]
+[clientscript,subchanged_init]
+[clientscript,switchside]
+[clientscript,switchside_init]
+[clientscript,switchside_op]
+[clientscript,switchside_varc]
+[clientscript,tab_1_click]
+[clientscript,tab_2_click]
+[clientscript,tab_3_click]
+[clientscript,tab_4_click]
+[clientscript,tab_5_click]
+[clientscript,tab_6_click]
+[clientscript,tab_7_click]
+[clientscript,tab_8_click]
+[clientscript,tab_9_click]
+[clientscript,task_main_close_hover]
+[clientscript,task_main_closesummary]
+[clientscript,task_main_list_filter_done]
+[clientscript,task_main_list_filter_set]
+[clientscript,task_main_list_graphicswapper]
+[clientscript,task_main_list_populate]
+[clientscript,task_main_list_tooltip]
+[clientscript,task_main_pin_hover]
+[clientscript,task_main_tab_hover]
+[clientscript,text_colour_swapper]
+[clientscript,text_swapper]
+[clientscript,tog_update_interface]
+[clientscript,toplevel_fovchange]
+[clientscript,toplevel_getwidth]
+[clientscript,toplevel_init]
+[clientscript,topstat_hitpoints_button_mouseleave]
+[clientscript,topstat_hitpoints_button_mouseover]
+[clientscript,topstat_hitpoints_updatehealth]
+[clientscript,topstat_prayer_button_mouseleave]
+[clientscript,topstat_prayer_button_mouseover]
+[clientscript,topstat_prayer_button_op]
+[clientscript,topstat_prayer_button_update]
+[clientscript,topstat_prayer_custom]
+[clientscript,topstat_run_button_init]
+[clientscript,topstat_run_button_mouseleave]
+[clientscript,topstat_run_button_mouseover]
+[clientscript,topstat_run_button_op]
+[clientscript,topstat_run_button_update]
+[clientscript,topstat_run_button_vartransmit]
+[clientscript,topstat_run_text_init]
+[clientscript,topstat_run_text_update]
+[clientscript,trade_confirm_init]
+[clientscript,trade_pricechecker_init]
+[clientscript,trade_pricechecker_setup]
+[clientscript,trail_compass_timer]
+[clientscript,trail_compasspoint]
+[clientscript,trail_puzzle_click]
+[clientscript,trail_puzzle_generation]
+[clientscript,trail_reward_generation]
+[clientscript,trawler_reward_setup]
+[clientscript,trawler_time_left]
+[clientscript,trawler_water_level]
+[clientscript,tutorial_progress_bar]
+[clientscript,tzhaar_fightcave_init]
+[clientscript,tzhaar_fightcave_op]
+[clientscript,tzhaar_fightcave_slide]
+[clientscript,tzhaar_fightpit_foesremaining]
+[clientscript,v2_small_button_filled]
+[clientscript,v2_stone_button]
+[clientscript,v2_stone_button_deltooltip]
+[clientscript,v2_stone_button_filled]
+[clientscript,v2_stone_button_filled_deltooltip]
+[clientscript,v2_stone_button_in]
+[clientscript,v2_stone_button_in_filled]
+[clientscript,v2_stone_button_out]
+[clientscript,v2_stone_button_out_filled]
+[clientscript,valentine_setup]
+[clientscript,vm_kudos_set]
+[clientscript,warguild_overlay_arrow]
+[clientscript,warguild_select_multi]
+[clientscript,warguild_select_single]
+[clientscript,warguild_tag_setup]
+[clientscript,warguild_tag_tick]
+[clientscript,warguild_trans]
+[clientscript,wilderness_level_update]
+[clientscript,window_resize]
+[clientscript,worldmap_button]
+[clientscript,worldmap_choosemap]
+[clientscript,worldmap_flashelementcategory]
+[clientscript,worldmap_init]
+[clientscript,worldmap_key_toggle]
+[clientscript,worldmap_keysort_button]
+[clientscript,worldmap_onkey]
+[clientscript,worldmap_op]
+[clientscript,worldmap_overlay]
+[clientscript,worldmap_showmenu]
+[clientscript,worldmap_toggleoverview]
+[clientscript,worldmap_tooltip_key]
+[clientscript,worldmap_vartransmit]
+[clientscript,wornitems_slot]
+[clientscript,xbows_bolts]
+[clientscript,xbows_bolts_update]
+[clientscript,xbows_init]
+[clientscript,xbows_level]
+[clientscript,xbows_pouch_num]
+[clientscript,xbows_rune_update]
+[clientscript,xbows_setfont]
+[clientscript,zep_mouse_leave]
+[clientscript,zep_mouse_over]
+[proc,add_to_inputstring]
+[proc,addtooltip_action]
+[proc,addtooltip_action_dynamic]
+[proc,aif_checkbox_build_layer]
+[proc,aif_dropdownbox_setup]
+[proc,aif_progressbar_set]
+[proc,aif_scrollbar_build_layer]
+[proc,aif_textinputbox]
+[proc,aif_tooltip]
+[proc,aif_tooltip_draw]
+[proc,ame_reward_createbutton]
+[proc,arrow_set]
+[proc,assist_set_icon]
+[proc,assist_switch_var]
+[proc,autosetup]
+[proc,bank_cert_button]
+[proc,bank_sort_button]
+[proc,bank_v2_build_scrollbar]
+[proc,bank_v2_build_slots]
+[proc,bank_v2_build_tabs]
+[proc,bank_v2_confirmsearch]
+[proc,bank_v2_get_size]
+[proc,bank_v2_get_tab]
+[proc,bank_v2_get_tab_range]
+[proc,bank_v2_get_tab_scrollpos]
+[proc,bank_v2_get_tab_size]
+[proc,bank_v2_help_showpage]
+[proc,bank_v2_hide_all]
+[proc,bank_v2_rebuild]
+[proc,bank_v2_rebuild_delayed]
+[proc,bank_v2_search_update]
+[proc,bank_v2_set_tab_scrollpos]
+[proc,bank_v2_show_all]
+[proc,bank_v2_show_range]
+[proc,bank_v2_show_search]
+[proc,bank_v2_showequipscreen]
+[proc,bank_v2_sideupdate]
+[proc,bank_v2_tab_click]
+[proc,bank_v2_tab_highlight]
+[proc,bankpin_settings_drawbutton]
+[proc,bankpin_shuffle]
+[proc,battlestaff_number]
+[proc,boardgames_options_ranked]
+[proc,boardgames_options_time]
+[proc,boardgames_status_output]
+[proc,bool_to_int]
+[proc,buyprice]
+[proc,cc_add]
+[proc,cc_add_graphic]
+[proc,cc_add_model]
+[proc,cc_add_rect]
+[proc,cc_add_text]
+[proc,chat_alert_enable]
+[proc,chat_alert_get]
+[proc,chat_alert_reset]
+[proc,chat_alert_set]
+[proc,chat_get_filter]
+[proc,chat_set_filter]
+[proc,chatalerts]
+[proc,chatbox_resize]
+[proc,chatbox_resize_reset]
+[proc,chatbox_resize_window]
+[proc,chatdefault_openmeslayer]
+[proc,chatdefault_updatechatbox]
+[proc,chatout_add]
+[proc,chatout_get]
+[proc,chatout_scrolldown]
+[proc,chatout_scrollup]
+[proc,chatout_set]
+[proc,clan_build_motif_layer]
+[proc,clan_chat_clearlist]
+[proc,clan_chat_kick]
+[proc,clan_chat_kick_find]
+[proc,clan_chat_onclansettingstransmit]
+[proc,clan_create_return]
+[proc,clan_flag_highlight]
+[proc,clan_keyword_construct]
+[proc,clan_keyword_get]
+[proc,clan_motif_decode]
+[proc,clan_motto_return]
+[proc,clan_noticeboard_build]
+[proc,clan_noticeboard_event_edit_selection]
+[proc,clan_noticeboard_event_mouseleave]
+[proc,clan_offset_tostring]
+[proc,clan_qfc_return]
+[proc,clan_switch_tab]
+[proc,clan_symbol_highlight]
+[proc,clan_time_tostring]
+[proc,clan_vote_disable]
+[proc,clan_vote_enable]
+[proc,clansettings_interface_refresh]
+[proc,clansettings_list_build]
+[proc,clanwars_end_defeat]
+[proc,clanwars_end_draw]
+[proc,clanwars_end_victory]
+[proc,clanwars_ffa]
+[proc,clanwars_focuslayer]
+[proc,clanwars_resynch_accept]
+[proc,clanwars_resynch_food]
+[proc,clanwars_resynch_magic]
+[proc,clanwars_resynch_melee]
+[proc,clanwars_resynch_potions]
+[proc,clanwars_resynch_prayer]
+[proc,clanwars_resynch_ranged]
+[proc,clanwars_resynch_summoning]
+[proc,clanwars_setup_clicktest]
+[proc,clanwars_setup_createbox]
+[proc,clanwars_setup_side_gfx_icon]
+[proc,clanwars_updateside]
+[proc,clanwars_updateside_textbox]
+[proc,combat_side_button]
+[proc,combat_side_comlevel]
+[proc,combat_side_title]
+[proc,comlevel]
+[proc,component_flash_start]
+[proc,component_flash_stop]
+[proc,component_pulse_start]
+[proc,create_check_email]
+[proc,create_check_username]
+[proc,create_complete]
+[proc,create_error]
+[proc,create_exit]
+[proc,create_focus]
+[proc,create_go]
+[proc,create_graphic]
+[proc,create_resize]
+[proc,create_setup]
+[proc,create_suggestions]
+[proc,create_suggestions_highlight]
+[proc,current_side_if]
+[proc,curse_get_stat]
+[proc,cursors_login]
+[proc,cutscene_overlay_clamp]
+[proc,cutscene_overlay_resize]
+[proc,cws_cc_getvar]
+[proc,date_tostring]
+[proc,deathkeep_info_setupitem]
+[proc,deathkeep_info_updateitems]
+[proc,deathkeep_info_updatesidepanel]
+[proc,deathkeep_select_dropdown]
+[proc,deathkeep_select_mouseeffect]
+[proc,deathkeep_select_update]
+[proc,deathkeep_tutorial_setobject]
+[proc,deltooltip_action]
+[proc,displayname_simplify]
+[proc,draughts_inv_update]
+[proc,dream_instance]
+[proc,dropdown_sort]
+[proc,dropdownbox]
+[proc,dropdownbox_close]
+[proc,dropdownbox_getselected]
+[proc,dropdownbox_init]
+[proc,dropdownbox_open]
+[proc,dropdownbox_refuse]
+[proc,duel_addtostring]
+[proc,durationmes]
+[proc,ecosystem_tutorial_cam_1]
+[proc,ecosystem_tutorial_cam_2]
+[proc,ecosystem_tutorial_cam_3]
+[proc,ecosystem_tutorial_cam_4]
+[proc,ecosystem_tutorial_cam_5]
+[proc,ecosystem_tutorial_cam_6]
+[proc,ecosystem_tutorial_cam_7]
+[proc,ecosystem_tutorial_cam_8]
+[proc,enum_var]
+[proc,equipscreen_comparison_close]
+[proc,fade2_flash_generic]
+[proc,fade2_generic]
+[proc,fade2_in]
+[proc,fade2_in_slow]
+[proc,fade2_out]
+[proc,fade2_out_slow]
+[proc,fadein]
+[proc,fadeout]
+[proc,fairyrings_log_sort]
+[proc,fairyrings_rotate_component]
+[proc,filtertest]
+[proc,firstrun]
+[proc,fishcomp_overlay_load]
+[proc,fishcomp_refresh]
+[proc,flashside_arrow]
+[proc,friend_deltooltip]
+[proc,friend_init]
+[proc,friend_tooltip]
+[proc,friend_update]
+[proc,friends_chat_list_build]
+[proc,friendschat_kick]
+[proc,friendschat_kick_mes]
+[proc,getsideicon]
+[proc,getsidelayer]
+[proc,getstonelayer]
+[proc,gnomeglider_update]
+[proc,graphics_options_button_highlight]
+[proc,graphics_options_decision]
+[proc,graphics_options_detailget]
+[proc,graphics_options_detailset]
+[proc,graphics_options_init]
+[proc,graphics_options_login_resize]
+[proc,graphics_options_message]
+[proc,graphics_options_opencountdown]
+[proc,graphics_options_rebuild]
+[proc,graphics_options_resolutions]
+[proc,graphics_options_reviewoptions]
+[proc,graphics_options_startcountdown]
+[proc,graphics_options_titlebox]
+[proc,graphics_options_toolkitbutton]
+[proc,graphics_options_windowmodebutton]
+[proc,gravestone_shop_createbutton]
+[proc,gravestone_shop_model]
+[proc,gravestone_stop_timer]
+[proc,guesscolour]
+[proc,hex_to_rgb]
+[proc,if_switchside]
+[proc,if_switchside_op]
+[proc,ignore_init]
+[proc,ignore_update]
+[proc,int_to_bool]
+[proc,interface_inv_update]
+[proc,interface_inv_update_big]
+[proc,interface_invother_update_big]
+[proc,inv_total_available]
+[proc,inventory_setcursor]
+[proc,inzone]
+[proc,large_button]
+[proc,large_button_highlight]
+[proc,lightcombine]
+[proc,lightning_update]
+[proc,lobby_draw_button]
+[proc,lobby_draw_button_green]
+[proc,lobby_draw_button_grey]
+[proc,lobby_friends_join]
+[proc,lobby_hop_abort]
+[proc,lobby_popup]
+[proc,lobby_popup_close]
+[proc,lobby_popup_size]
+[proc,lobby_popup_small_button]
+[proc,lobby_resize]
+[proc,lobby_worldswitcher_drawlist]
+[proc,lobby_worldswitcher_load]
+[proc,lobbyscreen_button_highlight]
+[proc,lobbyscreen_chat_count]
+[proc,lobbyscreen_countdown]
+[proc,lobbyscreen_entergame]
+[proc,lobbyscreen_input]
+[proc,lobbyscreen_input_clear]
+[proc,lobbyscreen_input_close]
+[proc,lobbyscreen_input_full]
+[proc,lobbyscreen_input_link_highlight]
+[proc,lobbyscreen_input_ok]
+[proc,lobbyscreen_leavelobby]
+[proc,lobbyscreen_load]
+[proc,lobbyscreen_loadpanels]
+[proc,lobbyscreen_options_load]
+[proc,lobbyscreen_pvp_warning]
+[proc,lobbyscreen_tabswitch]
+[proc,login_close]
+[proc,login_dologin]
+[proc,login_getreply]
+[proc,login_hop_abort]
+[proc,login_link_highlight]
+[proc,login_load]
+[proc,login_open]
+[proc,login_popup]
+[proc,login_popup_close]
+[proc,login_popup_full]
+[proc,login_popup_small_button]
+[proc,login_popup_swap]
+[proc,login_resize]
+[proc,loginscreen_bgsoundvol]
+[proc,loginscreen_brightness]
+[proc,loginscreen_button_highlight]
+[proc,loginscreen_initialisecamera]
+[proc,loginscreen_link]
+[proc,loginscreen_link_highlight]
+[proc,loginscreen_link_nologin]
+[proc,loginscreen_load]
+[proc,loginscreen_loginvol]
+[proc,loginscreen_musicvol]
+[proc,loginscreen_options_button]
+[proc,loginscreen_setactivemenu]
+[proc,loginscreen_setactivemenu_full]
+[proc,loginscreen_slider_click]
+[proc,loginscreen_soundvol]
+[proc,loginscreen_stereo]
+[proc,lore_interface_inv_update]
+[proc,lore_itemcount]
+[proc,lore_magic_pouch_checker]
+[proc,lore_obj_checker]
+[proc,lore_pouch_checker]
+[proc,lore_tostring]
+[proc,lore_tostring_pouch]
+[proc,lore_updateicon]
+[proc,lore_updateicon_v2]
+[proc,love_instance]
+[proc,love_puzzle_node]
+[proc,love_puzzle_read_1]
+[proc,love_puzzle_read_2]
+[proc,love_puzzle_update]
+[proc,love_puzzle_used_1]
+[proc,love_puzzle_used_2]
+[proc,macro_combilock_update]
+[proc,magic_runecount]
+[proc,magic_tostring]
+[proc,magic_updateicon]
+[proc,makeover_colour]
+[proc,makeover_gender]
+[proc,mescoord]
+[proc,meslayer_close]
+[proc,meslayer_mode10]
+[proc,meslayer_mode11]
+[proc,meslayer_mode14]
+[proc,meslayer_mode1]
+[proc,meslayer_mode6]
+[proc,meslayer_setupdynamicbutton]
+[proc,meslayer_setupinput]
+[proc,mob_formation_click]
+[proc,mob_highlight_start]
+[proc,mob_highlight_stop]
+[proc,mob_locator_resource_setup]
+[proc,mob_show_hide]
+[proc,model_wobble_magnitude_proc]
+[proc,model_wobble_proc]
+[proc,mole_darkness]
+[proc,music_getvar]
+[proc,music_search_close]
+[proc,music_v3_refresh]
+[proc,notes_build]
+[proc,notes_click]
+[proc,notes_convert_colour]
+[proc,notes_get_colour]
+[proc,notes_get_note]
+[proc,notes_update]
+[proc,obj_warning]
+[proc,objdialog_close]
+[proc,objdialog_doscrollbar]
+[proc,objdialog_dosearch]
+[proc,objdialog_refreshsearch]
+[proc,options_aid]
+[proc,options_chat]
+[proc,options_chat_filter]
+[proc,options_mouse]
+[proc,options_poh]
+[proc,panetest]
+[proc,partnercheck]
+[proc,player_kit_body_redraw]
+[proc,player_kit_feet_redraw]
+[proc,player_kit_hair_redraw]
+[proc,player_kit_player_create]
+[proc,player_kit_select]
+[proc,player_prefix_check]
+[proc,playerdesign4_backdrop]
+[proc,playerdesign4_box]
+[proc,playerdesign4_box_outline]
+[proc,playerdesign4_button]
+[proc,playerdesign4_button_highlight]
+[proc,playerdesign4_colourhighlight]
+[proc,playerdesign4_container]
+[proc,playerdesign4_getcolours]
+[proc,playerdesign4_getoutfit]
+[proc,playerdesign4_message]
+[proc,playerdesign4_rebuildmenu]
+[proc,playerdesign4_setoutfit]
+[proc,playerdesign4_setplayeranim]
+[proc,playerdesign4_switchpage]
+[proc,playerdesign4_tooltip]
+[proc,playerdesign4_tooltip_clear]
+[proc,pm_filtertest]
+[proc,pmsetup_clanbackground]
+[proc,pmsetup_updateinterface]
+[proc,pool_say_focus]
+[proc,prayer_client_getvar]
+[proc,prayer_init_buttons]
+[proc,prayer_load_buttons]
+[proc,prayer_load_customise]
+[proc,prayer_load_glow]
+[proc,prayer_members_check]
+[proc,prayer_refresh_scrollbar]
+[proc,prayer_temp_glow]
+[proc,quickchat_close]
+[proc,quickchat_enter_search]
+[proc,quickchat_friend_status]
+[proc,quickchat_menu_add]
+[proc,quickchat_menu_scroll]
+[proc,quickchat_menu_select]
+[proc,quickchat_objdialog_doscrollbar]
+[proc,quickchat_objdialog_dosearch]
+[proc,quickchat_objdialog_refreshsearch]
+[proc,quickchat_open]
+[proc,quickchat_open_context]
+[proc,quickchat_path_scroll]
+[proc,quickchat_phrase]
+[proc,quickchat_phrase_countdialog]
+[proc,quickchat_phrase_int]
+[proc,quickchat_phrase_obj]
+[proc,quickchat_phrase_objdialog]
+[proc,quickchat_phrase_resend]
+[proc,quickchat_phrase_send]
+[proc,quickchat_phrase_setint]
+[proc,quickchat_phrase_setobj]
+[proc,quickchat_phrase_setup]
+[proc,quickchat_respond]
+[proc,quickchat_response_add]
+[proc,quickchat_return]
+[proc,quickchat_tutorial_addtext]
+[proc,quickchat_tutorial_displaydata]
+[proc,quickchat_tutorial_showpage]
+[proc,quicksort]
+[proc,quicksort_enum]
+[proc,rabbit_shop_pointsupdate]
+[proc,rand_buyprice]
+[proc,rebuildchatbox]
+[proc,rebuildpmbox]
+[proc,redraw_chat_buttons]
+[proc,rgb_to_hex]
+[proc,rgb_to_hsl]
+[proc,rough_angle]
+[proc,scale_round]
+[proc,scrollbar_ondrag_doscroll]
+[proc,scrollbar_ondrag_doscroll_2]
+[proc,scrollbar_resize]
+[proc,scrollbar_resize_2]
+[proc,scrollbar_vertical]
+[proc,scrollbar_vertical_2]
+[proc,scrollbar_vertical_doscroll]
+[proc,scrollbar_vertical_doscroll_2]
+[proc,side_if_closeall]
+[proc,side_if_closeall_fullscreen]
+[proc,side_if_closeall_windowed]
+[proc,side_if_open]
+[proc,sidebook_build]
+[proc,skillmulti2010_menubutton]
+[proc,skillmulti2010_menubutton_off]
+[proc,skilltotal]
+[proc,small_button_blue]
+[proc,small_button_pressed]
+[proc,snapshot_hide_help]
+[proc,snapshot_highlight_button]
+[proc,snapshot_selected_highlight]
+[proc,spirittree_data]
+[proc,spirittree_entry]
+[proc,stats_mouseover_create]
+[proc,stats_scrollbar_setup]
+[proc,statusicons_deltooltip]
+[proc,stockcollect_refresh]
+[proc,subchanged]
+[proc,task_get_progress]
+[proc,task_main_list_graphicswapper]
+[proc,task_main_list_populate]
+[proc,task_main_listitemloop]
+[proc,task_main_tab_hover]
+[proc,task_requirement]
+[proc,task_requirements]
+[proc,task_requirements_fulfilled]
+[proc,task_requirements_quick]
+[proc,text_plural]
+[proc,toplevel_minimenu_setup]
+[proc,topstat_button_mouseleave]
+[proc,topstat_button_mouseover]
+[proc,topstat_hitpoints_update]
+[proc,topstat_prayer_button_update]
+[proc,topstat_run_button_update]
+[proc,topstat_run_text_update]
+[proc,tostring_spacer]
+[proc,trade_pricechecker_setup]
+[proc,trail_failure]
+[proc,trail_success]
+[proc,updatemodel]
+[proc,userflowflags]
+[proc,v2_stone_button]
+[proc,v2_stone_button_filled]
+[proc,v2_stone_button_in_filled_proc]
+[proc,v2_stone_button_in_proc]
+[proc,v2_stone_button_out_filled]
+[proc,v2_stone_button_out_proc]
+[proc,verticalgradient]
+[proc,warguild_overlay_arrow]
+[proc,warguild_show_multi]
+[proc,warguild_show_single]
+[proc,window_resize]
+[proc,wolf_magic_pouch_checker]
+[proc,wolf_pouch_checker]
+[proc,world_x_pvp]
+[proc,worldmap_arrow_update]
+[proc,worldmap_arrowkey]
+[proc,worldmap_createline]
+[proc,worldmap_createtitle]
+[proc,worldmap_elements_chooseposition]
+[proc,worldmap_elements_textbox]
+[proc,worldmap_elements_update]
+[proc,worldmap_hidegraphic]
+[proc,worldmap_key_build]
+[proc,worldmap_overlay_clear]
+[proc,worldmap_quicksort_alphabetical]
+[proc,worldmap_quicksort_category]
+[proc,worldmap_quicksort_menu]
+[proc,worldmap_setupgraphic]
+[proc,worldmap_setuptext]
+[proc,worldmap_setzoom]
+[proc,worldmap_showmenu]
+[proc,worldmap_showoverview]
+[proc,worldmap_tooltip]
+[proc,worldmap_tooltip_element]
+[proc,xbows_bolts_update]
+[proc,xbows_rune_update]
+a familiar feeling
+a new menace
+adventure
+al kharid
+all for the pest
+alls fairy in love n war
+alone
+altar ego
+alternative root
+ambience2
+ambience3
+ambience4
+ambient jungle
+ancestral wisdom
+ancient_cavern
+animal apogee
+anywhere
+arabian
+arabian2
+arabian3
+arabique
+ardougne ago
+ardougne_underground
+area
+arma gonna get you
+armadyl alliance
+armageddon
+army of darkness
+arrival
+artistry
+asgarnia_ice_dungeon
+assault and battery
+assist_overlay
+athletes foot
+attack1
+attack2
+attack3
+attack4
+attack5
+attack6
+attention
+autumn in bridgelum
+autumn voyage
+aye car rum ba
+aztec
+b12_full
+back to life
+background
+backleft1
+ballad of enchantment
+bamboo
+bandit camp
+bandos battalion
+bane of summer
+bank_bag
+bank_counter
+barb wire
+barbarian assault tutorial
+barbarianism
+barbassault_font
+bark
+barking mad
+baroque
+battle of souls
+beetle juice
+beyond
+big chords
+bish bash bosh
+bittersweet bunny
+black of knight
+black zabeth
+blackmark
+blistering barnacles
+blood bath
+bobs on holiday
+body parts
+body talk
+bolrie's diary
+bone dance
+bone dry
+book of spells
+books
+borderland
+bounty hunter level 1
+bounty hunter level 2
+bounty hunter level 3
+brain_barrelchest_battle
+braindeath_island
+breeze
+brew hoo hoo
+brimstail's scales
+bubble and squeak
+but we can fight
+button_body
+button_brown
+button_brown_big
+button_end
+button_red
+button_start
+cabin fever
+cage against the machine
+camelot
+cargonet
+castlewars
+castlewars2
+catacombs and tombs
+catch me if you can
+cave background
+cave of beasts
+cave of the goblins
+cavern
+cavernous mythology
+cellar song
+chain of command
+chain reaction
+chainmail
+chamber
+charmin' farmin'
+chat_background
+chat_window
+chatbox_resize_arrow
+chef surprize
+chest
+chickened out
+chompy hunt
+christmas caverns
+church music 1
+church music 2
+circus
+city of the dead
+clanwars
+claustrophobia
+close quarters
+coins
+coins_icon
+colonel grimsson
+combat_shield
+combatboxes_special_attack
+command centre
+compass
+compass_ring
+compassmask
+competition
+complication
+contest
+cool for ali cats
+copris lunaris
+corporal punishment
+corporate callousness
+corridors of power
+courage
+crag
+creature cruelty
+creepy
+cross
+crystal castle
+crystal cave
+crystal sword
+cursed
+dagannoth dawn
+damage
+dance of death
+dance of the undead
+dangerous
+dangerous logic
+dangerous road
+dangerous way
+dark
+darkwood
+davy jones locker
+dead can dance
+dead quiet
+deadlands
+deep down
+deep wildy
+delrith summoning
+desert heat
+desert island bear
+desert smoke
+desert voyage
+destiny
+details
+diango's little helpers
+dillo-gence is key
+dimension x
+distant land
+distillery hilarity
+dogs of war
+door
+doorways
+dorgeshkaan
+dorgeshun city
+dorgeshun deep
+down and out
+down below
+down to earth
+dragontooth island
+dream
+dream theatre
+dream_monster_icon
+dreamstate
+drunken dwarf
+duel arena
+dunjun
+dusk in yu'biusk
+dwarf theme
+dwarven_mines
+dynasty
+eagle peak
+easter 2010
+easter jig
+egypt
+elfbrick
+elfdoor
+elfpainting
+elfroof
+elfroof2
+elfwall
+elven mist
+elven seed
+emotion
+emperor
+equip_screen_button
+eruption
+escape
+espionage
+etcetera
+etcetera theme
+everlasting
+everlasting fire
+everywhere
+evil bobs island
+exam conditions
+exclamation_mark
+expanse
+expecting
+expedition
+exposed
+face off
+fade test
+faerie
+fairy dragon cutscene
+faithless
+fanfare
+fanfare2
+fanfare3
+fangs for the memory
+far away
+fe fi fo fum
+fear and loathing
+fenkenstrain's refrain
+fight of the dwarves
+fight or flight
+final destination
+find my way
+fire and brimstone
+fishing
+floating free
+floorshadows
+flute salad
+food for thought
+forbidden
+forest
+forever
+forgettable melody
+forgotten
+fountain
+freshwater
+friends_changed_name
+friendslist_font
+fris_jingle_1
+frogland
+frost fight
+frostbite
+fruits de mer
+funny bunnies
+game intro 1
+gaol
+garden
+garden of autumn
+garden of spring
+garden of summer
+garden of winter
+giant dwarf meeting
+glyphs
+gnome king
+gnome village
+gnome village2
+gnomeball
+go with the flow
+goblin game
+goblin village
+godslayer
+godwars
+golden touch
+gravestone_background
+greatness
+grimly fiendish
+grip of the talon
+grotto
+ground scape
+grumpy
+gunnarsgrunn
+ham and seek
+ham attack
+ham fisted
+harmony
+harmony2
+haunted mine
+have a blast
+have an ice day
+head to head
+headicons_pk
+headicons_prayer
+healin' feelin'
+heart and mind
+hells bells
+hermit
+high seas
+high spirits
+hint_headicons
+hint_mapedge
+hitmarks
+hitsplat
+hloading2
+home sweet home
+homescape
+horizon
+huffman
+hypnotized
+i'm counting on you
+iban
+ice day for penguins
+ice melody
+icy a worried gnome
+icy trouble ahead
+illusive
+impetuous
+impetuous_clue
+in between
+in the brine
+in the clink
+in the manor
+in the pits
+inadequacy
+incantation
+incarceration
+insect queen
+inspiration
+into the abyss
+intrepid
+island life
+island of the trolls
+isle of everywhere
+jester minute
+jollyr
+joy of the hunt
+judge and jury
+jungle bells
+jungle community
+jungle hunt
+jungle island
+jungle island xmas
+jungle troubles
+jungly1
+jungly2
+jungly3
+kalphite
+karamja jam
+karamja_underground
+keldagrim
+key
+keys
+keyword_text
+kharidian_nights
+kingdom
+knightly
+knightmare
+kr_betray_jingle
+la mort
+labyrinth
+lair
+lair of kang admi
+lament
+lament of meiyerditch
+lament of the snow queen
+land down under
+land of snow
+land of the dwarves
+landlubber
+large_button
+large_button_highlight
+last stand
+lasting
+lava
+lava_animated
+leafytree
+leafytree_diseased
+leftarrow
+leftarrow_small
+legend
+legion
+letter
+letter_icon
+life's a beach!
+lighthouse
+lightness
+lightwalk
+little cave of horrors
+living rock
+logical progression
+login_tick
+logo
+lonesome
+long ago
+long way home
+looking back
+loot_login
+lore and order
+lost soul
+lost tribe cutscene
+lotr_jingle_3
+love and hate
+love bites
+love lost
+love story
+lullaby
+lunar_alphabet
+lunar_alphabet_lrg
+mad eadgar
+mage arena
+magic and mystery
+magic dance
+magic magic magic
+magical journey
+main
+main_stones_bottom
+main_top
+major miner
+making waves
+malady
+map_image
+map_ring
+mapback
+mapdots
+mapfunction
+mapletree
+marble
+marble_poh
+march
+marooned
+marzipan
+masquerade
+mastermindless
+mausoleum
+meddling kids
+medieval
+mellow
+melodrama
+melzars maze
+menu_font_small
+meridian
+metalwork
+method of madness
+miles away
+mind over matter
+mined out
+mini_left
+mini_right
+minimap_bottom
+miracle dance
+mirage
+mirror
+miscellania
+miscellania_underground
+misthalin_underground
+mole
+monarch waltz
+monkey madness
+monster melee
+moody
+morytania
+mosleharmless_cave
+mossybricks
+mouse trap
+mudskipper melody
+mummy
+mutant medley
+my arms journey
+name_icons
+narnode's theme
+natural
+neverland
+newbie melody
+night of the vampiyre
+nightfall
+no way out
+nomad
+norse code
+null
+null and void
+number_button
+observatory telescope cutscene
+ogre the top
+old_tiles
+old_tiles_green
+old_tiles_lighter
+on the up
+on the wing
+only a king
+options_poh_icon
+oriental
+otherlevel
+ourania
+out of control
+out of the deep
+over to nardah
+overlay_duel
+overlay_multiway
+overlay_multiway_big
+overpass
+overture
+overview
+p11_full
+p12_full
+painting1
+painting2
+parade
+path of peril
+pathways
+pebblefloor
+pen
+peng_bards_jingle
+peng_plans_jingle
+penguin possible
+pest control
+pharoah's tomb
+phasmatys
+pheasant peasant
+pinball wizard
+pirates of penance
+pirates of peril
+planks
+poles apart
+popup_frame
+prayerglow
+prifddinas
+prime time
+principality
+pvp_login
+q8_full
+quest
+quill_caps_large
+quill_oblique_large
+railings
+rand_button_glow
+rand_map_background
+rat a tat tat
+rat hunt
+ready for battle
+regal
+reggae
+reggae2
+rellekka
+reunion
+right on track
+rightarrow
+rightarrow_small
+righteousness
+rising damp
+riverside
+roc and roll
+rocky rescue
+roll the bones
+romancing the crone
+romper chomper
+roof
+roof2
+root canal
+roots and flutes
+royale
+rune essence
+runescape_logo
+sad meadow
+safety in numbers
+saga
+sailing journey2
+saltwater
+sarcophagus
+sarim's vermin
+scales
+scape cave
+scape hunter
+scape main
+scape main default
+scape original
+scape sad
+scape santa
+scape scared
+scape soft
+scape summon
+scape theme
+scape wild
+scarab
+scarabaeoidea
+schools out
+scrollbar
+sea shanty
+sea shanty xmas
+sea shanty2
+seaslug sailing journey
+seasonal sports
+second vision
+serenade
+serene
+settlement
+shadowland
+shaping up
+shine
+shining
+shining spirit
+shipwrecked
+showdown
+side_background
+side_background_bottom
+side_background_left1
+side_background_left2
+side_background_right
+side_background_top
+sigmunds showdown
+silence
+slain to waste
+slayer_cave
+slice of grand opening
+slice of silent movie
+slice of station
+slither and thither
+slug a bug ball
+small_button
+small_button_blue
+small_button_highlight
+small_button_pressed
+small_button_pressed_highlight
+snack attack
+sojourn
+something fishy
+sos
+soul wars
+soundscape
+spa bizarre
+sphinx
+spirit
+spirits of elid
+splendour
+spooky
+spooky2
+spookyjungle
+spring song
+spy games
+stagnant
+starlight
+stars
+start
+startgame
+stealing creation
+still night
+stillness
+stillwater
+stone_tiles
+storeroom shuffle
+storm brew
+stranded
+strange place
+stratosphere
+strength of saradomin
+subterranea
+sunburn
+superstition
+surok_font
+surok_king_battle_music
+suspicious
+tale of keldagrim
+talking forest
+tears of guthix
+technology
+temple
+temple of light
+temple of tribes
+terrorbird tussle
+tex_brown
+tex_red
+the adventurer
+the art of hocus-pocus
+the cellar dwellers
+the chosen
+the chosen commander
+the columbarium
+the dance of the snow queen
+the depths
+the desert
+the desolate isle
+the enchanter
+the evil within
+the factory floor
+the fallen hero
+the far side
+the galleon
+the genie
+the golem
+the heist
+the last shanty
+the longramble scramble
+the lost melody
+the lost tribe
+the lunar isle
+the mad mole
+the mentor
+the mollusc menace
+the monsters below
+the navigator
+the noble rodent
+the other side
+the pengmersible
+the phoenix
+the plundered tomb
+the power of tears
+the quizmaster
+the records chamber
+the rogues den
+the route of all evil
+the route of the problem
+the ruins of camdozaal
+the shadow
+the slayer
+the sound of guthix
+the terrible caverns
+the terrible tower
+the terrible tunnels
+the throne of bandos
+the tower
+the trade parade
+the vacant abyss
+the waiting game
+the wrong path
+the_duke
+theme
+throne of the demon
+time out
+time to mine
+tiptoe
+title fight
+titlescroll
+toktz-ket-ek-mack
+tolna
+tomb raider
+tomorrow
+too many cooks
+tradebacking
+tradebacking_dark
+tradebacking_light
+trawler
+trawler minor
+tree spirits
+trees aren't your friends
+treestump
+tremble
+tribal
+tribal background
+tribal2
+trinity
+troll_stronghold
+trouble brewing
+troubled
+troubled spirit
+tune from the dune
+tutorial_font
+tutorial_font_big
+tutorial_minimap
+twilight
+tzhaar
+tzhaar_area
+tzhaar_numbers
+undead army
+undead dungeon
+undead_dungeon
+under the sand
+undercurrent
+underground
+understanding
+unknown land
+untouchable
+upass
+upcoming
+venomous
+venture
+venture2
+verdana_11pt_regular
+verdana_13pt_regular
+verdana_15pt_regular
+victory is mine
+village
+vision
+volcanic vikings
+voodoo cult
+voyage
+waiting for battle
+waiting for the hunt
+waking dream
+wall
+wall_white
+wally cutscene
+wander
+warrior
+warriors guild
+waste defaced
+water
+water_animated
+waterbirth
+waterfall
+waterlogged
+way of the enchanter
+wayward
+we are the fairies
+web
+welcome_font_large
+welcome_font_small
+welcome_font_tiny
+well of voyage
+where eagles lair
+wild isle
+wild side
+wilderness
+wilderness2
+wilderness3
+wilderness_dungeons
+wildwood
+willowtex3
+winter funfare
+witching
+woe of the wyvern
+wonder
+wonderous
+wood2
+woodenfloor_new
+woodland
+work work work
+workshop
+wrath and ruin
+xenophobe
+xmas_snowflake
+yesteryear
+zamorak zoo
+zanaris
+zanik's theme
+zaros zeitgeist
+zealot
+zogre dance
+zombie invasion
+zombiism

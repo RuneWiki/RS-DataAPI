@@ -162,6 +162,16 @@ fs.readFileSync('walied.tsv', 'ascii').replaceAll('\r\n', '\n').split('\n').forE
         KNOWN_NAMES.push(parts[4]);
     }
 });
+fs.readFileSync('walied.individual.tsv', 'ascii').replaceAll('\r\n', '\n').split('\n').forEach(x => {
+    if (KNOWN_NAMES.indexOf(x) === -1) {
+        KNOWN_NAMES.push(x);
+    }
+});
+fs.readFileSync('walied.individual.components.tsv', 'ascii').replaceAll('\r\n', '\n').split('\n').forEach(x => {
+    if (KNOWN_NAMES.indexOf(x) === -1) {
+        KNOWN_NAMES.push(x);
+    }
+});
 console.timeEnd('Imported extra names');
 
 console.time('Imported 2004 names');
