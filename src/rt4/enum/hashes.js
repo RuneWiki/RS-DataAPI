@@ -94,7 +94,6 @@ export const KNOWN_NAMES = [
     'axe3',
     'axe101',
     'award',
-    'aries',
     'boil',
     'amik',
     'chap1',
@@ -205,6 +204,60 @@ export const KNOWN_NAMES = [
     'pound',
     'price',
     'ruby',
+    'head0',
+    'head1',
+    'head2',
+    'head3',
+    'lumb',
+    'row 1',
+    'row 2',
+    'row 3',
+    'row 4',
+    'row 5',
+    'row 6',
+    'row 7',
+    'row 8',
+    'ruins',
+    'rules',
+    'rule1',
+    'rule2',
+    'rule3',
+    'rule4',
+    'rule5',
+    'rule6',
+    'rule7',
+    'rule8',
+    'rule9',
+    'shoe1',
+    'shoe2',
+    'shoe3',
+    'shoe4',
+    'shoe5',
+    'shoe6',
+    'sky',
+    'snow',
+    'sword',
+    'thumb',
+    'vline',
+    'whip0',
+    'whip1',
+    'whip2',
+    'whip3',
+    'wear',
+    'yew',
+
+    'aries',
+    'taurus',
+    'gemini',
+    'cancer',
+    'leo',
+    'virgo',
+    'libra',
+    'scorpio',
+    'sagittarius',
+    'capricorn',
+    'aquarius',
+    'pisces',
 
     // stats
     'agility',
@@ -599,6 +652,11 @@ for (let a = 0; a < 26; a++) {
 // some components are just an arbitrary number
 for (let i = 0; i < 256; i++) {
     KNOWN_NAMES.push(`${i}`);
+}
+
+// quest journal lines
+for (let i = 0; i < 320; i++) {
+    KNOWN_NAMES.push(`qj${i}`);
 }
 
 // map files
