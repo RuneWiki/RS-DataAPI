@@ -61,6 +61,18 @@ export const KNOWN_NAMES = [
     'achey',
     'accept',
     'acorn',
+    'ahrims',
+    'advice',
+    'ambush',
+    'anger1',
+    'anger2',
+    'anger3',
+    'anger4',
+    'anger5',
+    'anger6',
+    'anger7',
+    'anger8',
+    'anger9',
 
     // archive 3 (interfaces)
     'agilityarena_overlay',

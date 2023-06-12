@@ -19,7 +19,7 @@ for (let a = 0; a < cache.archives.length; a++) {
         if (index.fileNameHashes[g]) {
             for (let f = 0; f < index.fileIds.length; f++) {
                 let fhash = index.fileNameHashes[g][f];
-                if (typeof fhash !== 'undefined' && fhash > 0) {
+                if (typeof fhash !== 'undefined' && fhash !== -1 && fhash !== 0) {
                     fs.appendFileSync('names.tsv', `${index.id}\t${g}\t${f}\t${fhash}\t${KNOWN_HASHES[fhash] ?? ''}\n`);
                 }
             }

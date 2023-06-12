@@ -11,7 +11,7 @@ cache.archives.filter(a => a.index.groupNameHashes.length).forEach(a => {
     // }
 
     fs.writeFileSync(`data/fhashes-${a.index.id}.json`, JSON.stringify({
-        hashes: a.index.fileNameHashes.filter(f => f.filter(h => h > 0).length),
+        hashes: a.index.fileNameHashes.filter(f => f.filter(h => h != -1 && h !== 0).length),
         names: a.index.fileNames.filter(f => f.filter(h => h).length)
     }, null, 2));
 
