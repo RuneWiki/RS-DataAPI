@@ -504,6 +504,8 @@ export const KNOWN_NAMES = [
 export const KNOWN_HASHES = {};
 
 export function hashCode(str) {
+    str = str.toString();
+
     let hash = 0;
     str = str.toLowerCase();
     for (let i = 0; i < str.length; i++) {

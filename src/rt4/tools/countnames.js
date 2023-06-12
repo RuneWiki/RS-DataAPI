@@ -10,3 +10,6 @@ let archivesWithNames = cache.archives.filter(a => a.index.groupNameHashes.lengt
     groupHashCount: a.index.groupNameHashes.filter(g => g != -1).length
 }));
 console.log(archivesWithNames);
+
+// fs.writeFileSync('data/hashes.json', JSON.stringify(interfaces.groupNames.filter(a => a).sort((a, b) => a.localeCompare(b)), null, 2));
+// console.log(interfaces.groupNames.filter(n => n).length, interfaces.groupNames.filter(n => !n).length);

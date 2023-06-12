@@ -8,6 +8,7 @@ import Packet from '#jagex3/io/Packet.js';
 import BZip2 from '#jagex3/io/BZip2.js';
 
 const OPENRS2_SCOPE = 'runescape';
+// const OPENRS2_ID = '1372'; // use whatever
 const OPENRS2_ID = '254'; // links to rev 530, dated 2009-02-01
 // const OPENRS2_ID = '259'; // links to rev 578, dated 2009-12-22
 // const OPENRS2_ID = '671'; // links to rev 578, dated 2010-01-18
@@ -75,9 +76,9 @@ export async function readGroup(archive, group) {
         let uncompressedLength = data.g4();
 
         if (compression === 1) {
-            return Packet.wrap(BZip2.decompress(new Uint8Array(data.gdata(length))));
+            return Packet.wrap(BZip2.decompress(data.gdata(length)));
         } else if (compression === 2) {
-            return Packet.wrap(zlib.gunzipSync(new Uint8Array(data.gdata(length))));
+            return Packet.wrap(zlib.gunzipSync(data.gdata(length)));
         }
     }
 }

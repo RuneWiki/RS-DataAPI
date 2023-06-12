@@ -122,16 +122,17 @@ export default class Js5MasterIndex {
         let data = await readGroup(255, 255);
 
         for (let archive = 0; data.available > 0; archive++) {
-            let crc = data.g4();
-            let version = data.g4();
+            try {
+                let crc = data.g4();
+                let version = data.g4();
 
-            let index = null;
-            // if (archive === 16) {
-                index = new Js5Index(archive);
+                let index = new Js5Index(archive);
                 await index.load();
-            // }
 
-            this.archives[archive] = { crc, version, index };
+                this.archives[archive] = { crc, version, index };
+            } catch (err) {
+                console.error('Failed to load archive', archive);
+            }
         }
     }
 

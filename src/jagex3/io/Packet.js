@@ -6,7 +6,7 @@ export default class Packet {
             src = src.data;
         }
 
-        this.data = new Int8Array(src);
+        this.data = new Uint8Array(src);
         this.pos = 0;
     }
 
@@ -31,35 +31,43 @@ export default class Packet {
     // ----
 
     g1() {
-        return this.data[this.pos++] & 0xFF;
-    }
-
-    g1b() {
         return this.data[this.pos++];
     }
 
+    g1b() {
+        let value = this.data[this.pos++];
+        if (value > 0x7F) {
+            value -= 0x100;
+        }
+        return value;
+    }
+
     g2() {
-        return (((this.data[this.pos++] & 0xFF) << 8) | (this.data[this.pos++] & 0xFF)) >>> 0;
+        return (this.data[this.pos++] << 8) | this.data[this.pos++];
     }
 
     g2s() {
-        let value = (((this.data[this.pos++] & 0xFF) << 8) | (this.data[this.pos++] & 0xFF)) >>> 0;
-        if (value > 32767) {
-            value -= 65536;
+        let value = (this.data[this.pos++] << 8) | this.data[this.pos++];
+        if (value > 0x7FFF) {
+            value -= 0x10000;
         }
         return value;
     }
 
     g3() {
-        return (((this.data[this.pos++] & 0xFF) << 16) | ((this.data[this.pos++] & 0xFF) << 8) | (this.data[this.pos++] & 0xFF)) >>> 0;
+        return (this.data[this.pos++] << 16) | (this.data[this.pos++] << 8) | this.data[this.pos++];
     }
 
     g4() {
-        return (((this.data[this.pos++] & 0xFF) << 24) | ((this.data[this.pos++] & 0xFF) << 16) | ((this.data[this.pos++] & 0xFF) << 8) | (this.data[this.pos++] & 0xFF)) >>> 0;
+        return (this.data[this.pos++] << 24) | (this.data[this.pos++] << 16) | (this.data[this.pos++] << 8) | this.data[this.pos++];
     }
 
     g4s() {
-        return ((this.data[this.pos++] & 0xFF) << 24) | ((this.data[this.pos++] & 0xFF) << 16) | ((this.data[this.pos++] & 0xFF) << 8) | (this.data[this.pos++] & 0xFF);
+        let value = (this.data[this.pos++] << 24) | (this.data[this.pos++] << 16) | (this.data[this.pos++] << 8) | this.data[this.pos++];
+        if (value > 0x7FFFFFFF) {
+            value -= 0x100000000;
+        }
+        return value;
     }
 
     gjstr() {
