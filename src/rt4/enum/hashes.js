@@ -576,19 +576,48 @@ export const KNOWN_NAMES = [
     'huffman',
 ];
 
+console.time('Imported extra names');
+// seed with known names from OSRS
+import fs from 'fs';
+fs.readFileSync('osrs.tsv', 'ascii').split('\n').forEach(x => {
+    let parts = x.split('\t');
+    if (parts.length > 3 && parts[4].length && KNOWN_NAMES.indexOf(parts[4]) === -1) {
+        KNOWN_NAMES.push(parts[4]);
+    }
+});
+console.timeEnd('Imported extra names');
+
+// append ,num to all names to find sprite groups
+console.time('Generated sprite group names');
+let len = KNOWN_NAMES.length;
+for (let i = 0; i < len; i++) {
+    let name = KNOWN_NAMES[i];
+    if (name.indexOf(',') === -1) {
+        continue;
+    }
+
+    name = name.split(',')[0];
+    for (let j = 0; j < 100; j++) {
+        KNOWN_NAMES.push(`${name},${j}`);
+    }
+}
+console.timeEnd('Generated sprite group names');
+
+console.time('Generated hash list');
 // unnamed components inherit their name from their index
 for (let i = 0; i < 512; i++) {
     KNOWN_NAMES.push(`com_${i}`);
+    KNOWN_NAMES.push(`com${i}`);
 }
 
-// some loosely named components inherit a format like "a0", "a1", "a2", etc.
+// some loosely named components can be named "a0", "a1", "a2", etc.
 for (let a = 0; a < 26; a++) {
     for (let b = 0; b < 7; b++) {
         KNOWN_NAMES.push(`${String.fromCharCode(97 + a)}${b}`);
     }
 }
 
-// some loosely named components are just named "a", "b", "c", etc.
+// some loosely named components can be named "a", "b", "c", etc.
 for (let a = 0; a < 26; a++) {
     KNOWN_NAMES.push(`${String.fromCharCode(97 + a)}`);
 }
@@ -609,15 +638,7 @@ for (let x = 0; x < 200; x++) {
         KNOWN_NAMES.push(`ul${x}_${z}`);
     }
 }
-
-// seed with known names from OSRS
-import fs from 'fs';
-fs.readFileSync('osrs.tsv', 'ascii').split('\n').forEach(x => {
-    let parts = x.split('\t');
-    if (parts[4] && KNOWN_NAMES.indexOf(parts[4]) === -1) {
-        KNOWN_NAMES.push(parts[4]);
-    }
-});
+console.timeEnd('Generated hash list');
 
 export const KNOWN_HASHES = {};
 
@@ -632,8 +653,10 @@ export function hashCode(str) {
     return hash;
 }
 
+console.time('Generated name hashes');
 for (let i = 0; i < KNOWN_NAMES.length; i++) {
     let name = KNOWN_NAMES[i];
     let hash = hashCode(name);
     KNOWN_HASHES[hash] = name;
 }
+console.timeEnd('Generated name hashes');
