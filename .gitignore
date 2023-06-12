@@ -1,0 +1,6 @@
+data/cache/
+data/*-flat-file.tar.gz
+data/xteas.json
+
+node_modules/
+package-lock.json

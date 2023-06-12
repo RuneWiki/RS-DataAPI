@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "#jagex3/*": [
+                "src/jagex3/*"
+            ],
+            "#rt4/*": [
+                "src/rt4/*"
+            ]
+        }
+    },
+    "include": [
+        "./src"
+    ]
+}
