@@ -20,6 +20,7 @@ export const KNOWN_NAMES = [
     'labels',
     'details',
     'compositemap',
+    'offercount_500',
 
     'alone',
     'aztec',
@@ -93,6 +94,117 @@ export const KNOWN_NAMES = [
     'axe3',
     'axe101',
     'award',
+    'aries',
+    'boil',
+    'amik',
+    'chap1',
+    'chap2',
+    'chap3',
+    'chap4',
+    'chap5',
+    'chap6',
+    'crack',
+    'dave',
+    'div0',
+    'div1',
+    'div2',
+    'div3',
+    'div4',
+    'div5',
+    'div6',
+    'div7',
+    'draw',
+    'drink',
+    'dwarf',
+    'edge',
+    'fence',
+    'flax',
+    'focus',
+    'food',
+    'fuse',
+    'claw0',
+    'claw1',
+    'claw2',
+    'claw3',
+    'drip',
+    'first',
+    'gear1',
+    'gear2',
+    'gear3',
+    'gear4',
+    'gear5',
+    'gear6',
+    'gear7',
+    'gear8',
+    'gear9',
+    'geara',
+    'gearb',
+    'gearc',
+    'geard',
+    'geare',
+    'gearf',
+    'goad',
+    'grand',
+    'guam',
+    'guide',
+    'guild',
+    'hack0',
+    'hack1',
+    'hack2',
+    'hack3',
+    'hand',
+    'hatch',
+    'haze1',
+    'haze2',
+    'haze3',
+    'haze4',
+    'heal',
+    'herb',
+    'hole',
+    'irit',
+    'item',
+    'jail',
+    'layer',
+    'last',
+    'mage',
+    'maple',
+    'misc',
+    'melee',
+    'music',
+    'more',
+    'ms1',
+    'ms2',
+    'ms3',
+    'ms4',
+    'ms5',
+    'ms6',
+    'ms7',
+    'ms8',
+    'ms9',
+    'ms10',
+    'ms11',
+    'ms12',
+    'mymax',
+    'oak',
+    'ogre',
+    'onyx',
+    'park',
+    'pl1',
+    'pl2',
+    'pl3',
+    'pl4',
+    'pl5',
+    'pl6',
+    'pl7',
+    'pl8',
+    'pl9',
+    'pole0',
+    'pole1',
+    'pole2',
+    'pole3',
+    'pound',
+    'price',
+    'ruby',
 
     // stats
     'agility',
@@ -431,6 +543,9 @@ for (let i = 0; i < len; i++) {
         name = name.split('_')[0];
     }
 
+    // unsuffixed name
+    KNOWN_NAMES.push(name);
+
     // append _num
     for (let j = 0; j < 100; j++) {
         KNOWN_NAMES.push(`${name}_${j}`);
@@ -457,7 +572,14 @@ console.time('Generated hash list');
 // unnamed components inherit their name from their index
 for (let i = 0; i < 512; i++) {
     KNOWN_NAMES.push(`com_${i}`);
-    // KNOWN_NAMES.push(`com${i}`);
+    KNOWN_NAMES.push(`button_${i}`);
+    KNOWN_NAMES.push(`layer_${i}`);
+
+    // for (let a = 0; a < 26; a++) {
+    //     KNOWN_NAMES.push(`com_${String.fromCharCode(97 + a)}`);
+    //     KNOWN_NAMES.push(`button_${String.fromCharCode(97 + a)}`);
+    //     KNOWN_NAMES.push(`layer_${String.fromCharCode(97 + a)}`);
+    // }
 }
 
 // some loosely named components can be named "a0", "a1", "a2", etc.
@@ -566,6 +688,7 @@ let override = [
     'eq',
     'en',
     'bu',
+    'ap',
 ];
 for (let i = 0; i < override.length; i++) {
     let index = 0;
