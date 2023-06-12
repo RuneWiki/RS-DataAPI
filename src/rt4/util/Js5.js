@@ -18,6 +18,7 @@ class Js5Index {
     groupVersions = [];
     fileIds = [];
     fileNameHashes = [];
+    fileNames = [];
 
     constructor(id) {
         this.id = id;
@@ -92,6 +93,7 @@ class Js5Index {
                 let groupSize = this.groupSizes[groupId];
 
                 this.fileNameHashes[groupId] = [];
+                this.fileNames[groupId] = [];
                 for (let j = 0; j < this.groupCapacities[groupId]; j++) {
                     this.fileNameHashes[groupId][j] = -1;
                 }
@@ -105,6 +107,7 @@ class Js5Index {
                     }
 
                     this.fileNameHashes[groupId][fileId] = data.g4s();
+                    this.fileNames[groupId][fileId] = KNOWN_HASHES[this.fileNameHashes[groupId][fileId]] || null;
                 }
             }
         }
@@ -132,6 +135,7 @@ export default class Js5MasterIndex {
                 this.archives[archive] = { crc, version, index };
             } catch (err) {
                 console.error('Failed to load archive', archive);
+                console.error(err);
             }
         }
     }

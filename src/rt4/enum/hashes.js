@@ -1,4 +1,67 @@
 export const KNOWN_NAMES = [
+    ' ',
+    '  ',
+    'xxx',
+
+    'bg',
+    'vs',
+    'xp',
+    'all',
+    'air',
+    'bow',
+    'box',
+    'buy',
+    'env',
+    'fog',
+    'inv',
+    'law',
+    'map',
+    'combat',
+    'labels',
+    'details',
+    'compositemap',
+
+    'alone',
+    'aztec',
+    'bark',
+    'books',
+    'chest',
+    'coins',
+    'crag',
+    'cross',
+    'dark',
+    'door',
+    'dream',
+    'egypt',
+    'gaol',
+    'iban',
+    'key',
+    'keys',
+    'lair',
+    'lava',
+    'logo',
+    'main',
+    'march',
+    'mesh',
+    'moody',
+    'mummy',
+    'nomad',
+    'null',
+    'pen',
+    'quest',
+    'regal',
+    'roof',
+    'roof2',
+    'runes',
+    'saga',
+    'shine',
+    'stars',
+    'start',
+    'theme',
+    'achey',
+    'accept',
+    'acorn',
+
     // archive 3 (interfaces)
     'agilityarena_overlay',
     'agilityarena_trade',
@@ -498,8 +561,51 @@ export const KNOWN_NAMES = [
     'zep_interface_side',
 
     // archive 8 (binary)
-    'huffman', // group 0
+    'huffman',
 ];
+
+// unnamed components inherit their name from their index
+for (let i = 0; i < 512; i++) {
+    KNOWN_NAMES.push(`com_${i}`);
+}
+
+// some loosely named components inherit a format like "a0", "a1", "a2", etc.
+for (let a = 0; a < 26; a++) {
+    for (let b = 0; b < 7; b++) {
+        KNOWN_NAMES.push(`${String.fromCharCode(97 + a)}${b}`);
+    }
+}
+
+// some loosely named components are just named "a", "b", "c", etc.
+for (let a = 0; a < 26; a++) {
+    KNOWN_NAMES.push(`${String.fromCharCode(97 + a)}`);
+}
+
+// some components are just an arbitrary number
+for (let i = 0; i < 256; i++) {
+    KNOWN_NAMES.push(`${i}`);
+}
+
+// map files
+for (let x = 0; x < 200; x++) {
+    for (let z = 0; z < 200; z++) {
+        KNOWN_NAMES.push(`m${x}_${z}`);
+        KNOWN_NAMES.push(`l${x}_${z}`);
+        KNOWN_NAMES.push(`n${x}_${z}`);
+        KNOWN_NAMES.push(`e${x}_${z}`);
+        KNOWN_NAMES.push(`um${x}_${z}`);
+        KNOWN_NAMES.push(`ul${x}_${z}`);
+    }
+}
+
+// seed with known names from OSRS
+import fs from 'fs';
+fs.readFileSync('osrs.tsv', 'ascii').split('\n').forEach(x => {
+    let parts = x.split('\t');
+    if (parts[4] && KNOWN_NAMES.indexOf(parts[4]) === -1) {
+        KNOWN_NAMES.push(parts[4]);
+    }
+});
 
 export const KNOWN_HASHES = {};
 

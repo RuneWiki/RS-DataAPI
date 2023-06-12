@@ -10,9 +10,13 @@ cache.archives.filter(a => a.index.groupNameHashes.length).forEach(a => {
     //     return;
     // }
 
-    fs.writeFileSync(`data/hashes-${a.index.id}.json`, JSON.stringify(a.index.groupNameHashes.filter(g => g !== -1), null, 2));
+    fs.writeFileSync(`data/ghashes-${a.index.id}.json`, JSON.stringify({
+        hashes: a.index.groupNameHashes.filter(g => g !== -1),
+        names: a.index.groupNames.filter(f => f)
+    }, null, 2));
+
     for (let i = 0; i < a.index.groupNames.length; i++) {
-        if (a.index.groupNameHashes[i] !== -1) {
+        if (a.index.groupNameHashes[i] !== -1 && !a.index.groupNames[i]) {
             missing.push(a.index.groupNameHashes[i]);
         }
     }
@@ -28,7 +32,7 @@ function hashCode(str) {
 
 let CHARSET = 'abcdefghijklmnopqrstuvwxyz0123456789_ -,';
 
-function bruteForce(dest, len = 3, prefix = '', suffix = '') {
+function bruteForce(dest, len = 3, prefix = '', suffix = '', minLen = 1) {
     for (let i = 0; i < CHARSET.length; i++) {
         let name = prefix + CHARSET[i] + suffix;
         let hash = hashCode(name);
@@ -41,15 +45,15 @@ function bruteForce(dest, len = 3, prefix = '', suffix = '') {
             dest[hash].push(name);
         }
 
-        if (len > 1) {
+        if (len > minLen) {
             bruteForce(dest, len - 1, name, '');
         }
     }
 }
 
 let hashes = {};
-bruteForce(hashes, 8);
+bruteForce(hashes, 5);
 
 if (Object.keys(hashes).length) {
-    fs.writeFileSync(`data/found-${new Date().getTime()}.json`, JSON.stringify(hashes, null, 2));
+    fs.writeFileSync(`data/gfound-${new Date().getTime()}.json`, JSON.stringify(hashes, null, 2));
 }
