@@ -155,6 +155,15 @@ fs.readFileSync('leanbow.tsv', 'ascii').replaceAll('\r\n', '\n').split('\n').for
 });
 console.timeEnd('Imported 530 names');
 
+console.time('Imported extra names');
+fs.readFileSync('walied.tsv', 'ascii').replaceAll('\r\n', '\n').split('\n').forEach(x => {
+    let parts = x.split('\t');
+    if (parts.length > 3 && parts[4].length && KNOWN_NAMES.indexOf(parts[4]) === -1) {
+        KNOWN_NAMES.push(parts[4]);
+    }
+});
+console.timeEnd('Imported extra names');
+
 console.time('Imported 2004 names');
 let oldList = [// title
     'index.dat',
