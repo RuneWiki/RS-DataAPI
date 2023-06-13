@@ -6,14 +6,9 @@ await cache.load();
 
 let missing = [];
 cache.archives.filter(a => a.index.groupNameHashes.length).forEach(a => {
-    if (a.index.id !== 3) {
+    if (a.index.id !== 8) {
         return;
     }
-
-    fs.writeFileSync(`data/ghashes-${a.index.id}.json`, JSON.stringify({
-        hashes: a.index.groupNameHashes.filter(g => g !== -1),
-        names: a.index.groupNames.filter(f => f)
-    }, null, 2));
 
     for (let i = 0; i < a.index.groupNames.length; i++) {
         if (a.index.groupNameHashes[i] !== -1 && !a.index.groupNames[i]) {
@@ -31,6 +26,7 @@ function hashCode(str) {
 }
 
 let CHARSET = 'abcdefghijklmnopqrstuvwxyz0123456789_ -,';
+
 
 function bruteForce(dest, len = 3, prefix = '', suffix = '', minLen = 1) {
     for (let i = 0; i < CHARSET.length; i++) {
@@ -53,8 +49,8 @@ function bruteForce(dest, len = 3, prefix = '', suffix = '', minLen = 1) {
 }
 
 let hashes = {};
-bruteForce(hashes, 10, '', '', 5);
+bruteForce(hashes, 10, '', ',0', 5);
 
 if (Object.keys(hashes).length) {
-    fs.writeFileSync(`data/gfound-${new Date().getTime()}.json`, JSON.stringify(hashes, null, 2));
+    fs.writeFileSync(`data/sfound-${new Date().getTime()}.json`, JSON.stringify(hashes, null, 2));
 }

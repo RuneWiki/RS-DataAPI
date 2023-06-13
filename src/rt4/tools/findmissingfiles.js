@@ -6,9 +6,9 @@ await cache.load();
 
 let missing = [];
 cache.archives.filter(a => a.index.groupNameHashes.length).forEach(a => {
-    // if (a.index.id !== 3) {
-    //     return;
-    // }
+    if (a.index.id !== 3) {
+        return;
+    }
 
     fs.writeFileSync(`data/fhashes-${a.index.id}.json`, JSON.stringify({
         hashes: a.index.fileNameHashes.filter(f => f.filter(h => h != -1 && h !== 0).length),
@@ -40,19 +40,20 @@ let CHARSET = 'abcdefghijklmnopqrstuvwxyz0123456789_ -,';
 
 function bruteForce(dest, len = 3, prefix = '', suffix = '', minLen = 1) {
     for (let i = 0; i < CHARSET.length; i++) {
-        let name = prefix + CHARSET[i] + suffix;
-        let hash = hashCode(name);
+        let name = prefix + CHARSET[i];
+        let full = name + suffix;
+        let hash = hashCode(full);
 
         if (missing.includes(hash)) {
-            console.log(name, hash);
+            console.log(full, hash);
             if (!dest[hash]) {
                 dest[hash] = [];
             }
-            dest[hash].push(name);
+            dest[hash].push(full);
         }
 
         if (len > minLen) {
-            bruteForce(dest, len - 1, name, '');
+            bruteForce(dest, len - 1, name, suffix);
         }
     }
 }
