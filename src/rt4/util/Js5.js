@@ -52,8 +52,9 @@ class Js5Index {
             }
 
             for (let i = 0; i < this.size; i++) {
-                this.groupNameHashes[i] = data.g4s();
-                this.groupNames[i] = KNOWN_HASHES[this.groupNameHashes[i]] || null;
+                let id = this.groupIds[i];
+                this.groupNameHashes[id] = data.g4s();
+                this.groupNames[id] = KNOWN_HASHES[this.groupNameHashes[id]] || null;
             }
         }
 
