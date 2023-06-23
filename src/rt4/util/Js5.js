@@ -1,7 +1,9 @@
+import Packet from '#jagex3/io/Packet.js';
 import { KNOWN_HASHES, KNOWN_NAMES, hashCode } from '#rt4/enum/hashes.js';
 import { readGroup } from '#rt4/util/OpenRS2.js';
 
 class Js5Index {
+    openrs2 = -1;
     id = -1;
     version = 0;
     size = 0;
@@ -20,12 +22,13 @@ class Js5Index {
     fileNameHashes = [];
     fileNames = [];
 
-    constructor(id) {
+    constructor(id, openrs2) {
         this.id = id;
+        this.openrs2 = openrs2;
     }
 
     async load() {
-        let data = await readGroup(255, this.id);
+        let data = await readGroup(this.openrs2, 255, this.id);
         if (!data) {
             return;
         }
@@ -143,55 +146,56 @@ class Js5Index {
         let groupSize = this.groupSizes[group];
 
         if (groupSize > 1) {
-            // TODO: save this output
-            let data = await readGroup(2, 5);
+            if (!this.unpacked) {
+                this.unpacked = [];
+            }
+
+            if (!this.unpacked[group]) {
+                this.unpacked[group] = [];
+            }
+
+            if (this.unpacked[group][file]) {
+                return Packet.wrap(this.unpacked[group][file]);
+            }
+
+            let data = await readGroup(this.openrs2, 2, 5);
 
             data.pos = data.length - 1;
-            let lens = [];
-            for (let i = 0; i < groupSize; i++) {
-                lens[i] = 0;
-            }
-
             let stripes = data.g1();
             data.pos -= (groupSize * stripes * 4) + 1;
-            let start = data.pos;
 
-            for (let i = 0; i < stripes; i++) {
-                let len = 0;
-
-                for (let j = 0; j < groupSize; j++) {
-                    len += data.g4();
-                    lens[j] += len;
-                }
-            }
-
-            data.pos = start;
             let off = 0;
             for (let i = 0; i < stripes; i++) {
                 let len = 0;
 
                 for (let j = 0; j < groupSize; j++) {
-                    len += data.g4();
-                    if (fileIds[j] === file) {
-                        return data.gPacket(len, off, false);
-                    }
+                    len += data.g4s();
+
+                    let fileId = fileIds[j];
+                    this.unpacked[group][fileId] = data.gdata(len, off, false);
 
                     off += len;
-                    lens[j] += len;
                 }
             }
+
+            return this.unpacked[group][file];
         } else {
-            return readGroup(2, 5);
+            return readGroup(this.openrs2, 2, 5);
         }
     }
 }
 
 export default class Js5MasterIndex {
+    openrs2 = -1;
     archives = [];
+
+    constructor(openrs2) {
+        this.openrs2 = openrs2;
+    }
 
     async load(max = 37) {
         for (let archive = 0; archive < max; archive++) {
-            let index = new Js5Index(archive);
+            let index = new Js5Index(archive, this.openrs2);
             await index.load();
 
             this.archives[archive] = index;
