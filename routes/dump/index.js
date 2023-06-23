@@ -113,7 +113,7 @@ export default function (f, opts, next) {
 
                 if (code === 1) {
                     if (rev >= 700) {
-                        config.model = data.gsmart4();
+                        config.model = data.gsmart4_2();
                     } else {
                         config.model = data.g2();
                     }
@@ -145,25 +145,25 @@ export default function (f, opts, next) {
                     config.stacksize = data.g2();
                 } else if (code === 23) {
                     if (rev >= 700) {
-                        config.manwear = data.gsmart4();
+                        config.manwear = data.gsmart4_2();
                     } else {
                         config.manwear = data.g2();
                     }
                 } else if (code === 24) {
                     if (rev >= 700) {
-                        config.manwear2 = data.gsmart4();
+                        config.manwear2 = data.gsmart4_2();
                     } else {
                         config.manwear2 = data.g2();
                     }
                 } else if (code === 25) {
                     if (rev >= 700) {
-                        config.womanwear = data.gsmart4();
+                        config.womanwear = data.gsmart4_2();
                     } else {
                         config.womanwear = data.g2();
                     }
                 } else if (code === 26) {
                     if (rev >= 700) {
-                        config.womanwear2 = data.gsmart4();
+                        config.womanwear2 = data.gsmart4_2();
                     } else {
                         config.womanwear2 = data.g2();
                     }
@@ -213,37 +213,37 @@ export default function (f, opts, next) {
                     config.stockmarket = true;
                 } else if (code === 78) {
                     if (rev >= 700) {
-                        config.manwear3 = data.gsmart4();
+                        config.manwear3 = data.gsmart4_2();
                     } else {
                         config.manwear3 = data.g2();
                     }
                 } else if (code === 79) {
                     if (rev >= 700) {
-                        config.womanwear3 = data.gsmart4();
+                        config.womanwear3 = data.gsmart4_2();
                     } else {
                         config.womanwear3 = data.g2();
                     }
                 } else if (code === 90) {
                     if (rev >= 700) {
-                        config.manhead = data.gsmart4();
+                        config.manhead = data.gsmart4_2();
                     } else {
                         config.manhead = data.g2();
                     }
                 } else if (code === 91) {
                     if (rev >= 700) {
-                        config.womanhead = data.gsmart4();
+                        config.womanhead = data.gsmart4_2();
                     } else {
                         config.womanhead = data.g2();
                     }
                 } else if (code === 92) {
                     if (rev >= 700) {
-                        config.manhead2 = data.gsmart4();
+                        config.manhead2 = data.gsmart4_2();
                     } else {
                         config.manhead2 = data.g2();
                     }
                 } else if (code === 93) {
                     if (rev >= 700) {
-                        config.womanhead2 = data.gsmart4();
+                        config.womanhead2 = data.gsmart4_2();
                     } else {
                         config.womanhead2 = data.g2();
                     }

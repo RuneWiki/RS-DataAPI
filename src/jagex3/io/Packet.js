@@ -114,4 +114,14 @@ export default class Packet {
             return this.g4s();
         }
     }
+
+    // TODO: Java vs JS differences
+    gsmart4_2() {
+        let value = this.data[this.pos] & 0xFF;
+        if ((value & 0x80) == 0) {
+            return this.g2();
+        } else {
+            return this.g4s() & 0x7FFFFFFF;
+        }
+    }
 }
