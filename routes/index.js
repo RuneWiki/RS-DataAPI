@@ -70,7 +70,8 @@ export default function (f, opts, next) {
 
         let inv = [];
         for (let i = 0; i < js5.archives[2].fileIds[5].length; i++) {
-            let data = await js5.archives[2].getFile(5, i);
+            let id = js5.archives[2].fileIds[5][i];
+            let data = await js5.archives[2].getFile(5, id);
             if (!data) {
                 continue;
             }
