@@ -2,6 +2,7 @@ import axios from 'axios';
 import fs from 'fs';
 import fsp from 'fs/promises';
 import zlib from 'zlib';
+import { dirname } from 'path';
 
 import Packet from '#jagex3/io/Packet.js';
 import BZip2 from '#jagex3/io/BZip2.js';
@@ -9,7 +10,9 @@ import BZip2 from '#jagex3/io/BZip2.js';
 export async function downloadFile(url, path) {
     try {
         let request = await axios.get(url, { responseType: 'arraybuffer' });
-        await fsp.writeFile(path, request.data);
+        // await fsp.writeFile(path, request.data);
+        fs.mkdirSync(dirname(path), { recursive: true });
+        fs.writeFileSync(path, request.data);
         return new Uint8Array(request.data);
     } catch (err) {
         console.error(`Failed to download ${url}`);
@@ -23,8 +26,8 @@ const OPENRS2_DOMAIN = 'https://archive.openrs2.org';
 const OPENRS2_API = 'https://archive.openrs2.org/caches/$scope/$id';
 
 export async function getGroup(id, archive, group) {
-    if (!fs.existsSync(`data/${id}/${archive}`)) {
-        fs.mkdirSync(`data/${id}/${archive}`, { recursive: true });
+    if (fs.existsSync(`data/${id}/${archive}/${group}.dat`)) {
+        return fs.readFileSync(`data/${id}/${archive}/${group}.dat`);
     }
 
     let url = OPENRS2_API.replace('$scope', 'runescape').replace('$id', id);
