@@ -134,7 +134,7 @@ export default function (f, opts, next) {
                 } else if (code === 11) {
                     config.stackable = true;
                 } else if (code === 12) {
-                    config.cost = data.g4();
+                    config.cost = data.g4s();
                 } else if (code === 13) {
                     config.wearpos = data.g1();
                 } else if (code === 14) {
@@ -322,7 +322,7 @@ export default function (f, opts, next) {
                     for (let i = 0; i < count; i++) {
                         let isString = data.gbool();
                         let key = data.g3();
-                        let value = isString ? data.gjstr() : data.g4();
+                        let value = isString ? data.gjstr() : data.g4s();
 
                         config.param[key] = value;
                     }
