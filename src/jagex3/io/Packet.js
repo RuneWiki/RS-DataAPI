@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { dirname } from 'path';
 
 export default class Packet {
     constructor(src) {
@@ -28,30 +29,39 @@ export default class Packet {
         return new Packet(src);
     }
 
+    save(path, length = this.pos, start = 0) {
+        let dir = dirname(path);
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, { recursive: true });
+        }
+
+        fs.writeFileSync(path, this.data.subarray(start, start + length));
+    }
+
     // ----
 
     g1() {
         return this.data[this.pos++];
     }
 
+    gbool() {
+        return this.g1() == 1;
+    }
+
     g1s() {
-        let value = this.data[this.pos++];
+        let value = this.g1();
         if (value > 0x7F) {
             value -= 0x100;
         }
         return value;
     }
 
-    gbool() {
-        return this.g1() === 1;
-    }
-
     g2() {
-        return (this.data[this.pos++] << 8) | this.data[this.pos++];
+        return (this.data[this.pos++] << 8) | this.data[this.pos++] >>> 0;
     }
 
     g2s() {
-        let value = (this.data[this.pos++] << 8) | this.data[this.pos++];
+        let value = this.g2();
         if (value > 0x7FFF) {
             value -= 0x10000;
         }
@@ -59,36 +69,28 @@ export default class Packet {
     }
 
     g3() {
-        return (this.data[this.pos++] << 16) | (this.data[this.pos++] << 8) | this.data[this.pos++];
+        return ((this.data[this.pos++] << 16) | (this.data[this.pos++] << 8) | this.data[this.pos++]) >>> 0;
     }
 
     g4() {
-        return (this.data[this.pos++] << 24) | (this.data[this.pos++] << 16) | (this.data[this.pos++] << 8) | this.data[this.pos++];
+        return ((this.data[this.pos++] << 24) | (this.data[this.pos++] << 16) | (this.data[this.pos++] << 8) | this.data[this.pos++]) >>> 0;
     }
 
     g4s() {
-        let value = (this.data[this.pos++] << 24) | (this.data[this.pos++] << 16) | (this.data[this.pos++] << 8) | this.data[this.pos++];
+        let value = this.g4();
         if (value > 0x7FFFFFFF) {
             value -= 0x100000000;
         }
         return value;
     }
 
-    gsmart4() {
-        let value = this.data[this.pos];
-        if ((value & 0x80) == 0) {
-            return this.g2();
-        } else {
-            return this.g4();
-        }
-    }
-
     gjstr() {
-        let str = '';
-        while (this.data[this.pos] !== 0) {
-            str += String.fromCharCode(this.data[this.pos++]);
+        let len = 0;
+        while (this.data[this.pos + len] != 0) {
+            len++;
         }
-        this.pos++;
+        let str = String.fromCharCode.apply(null, this.data.subarray(this.pos, this.pos + len));
+        this.pos += len + 1;
         return str;
     }
 
@@ -102,5 +104,14 @@ export default class Packet {
 
     gPacket(length = this.available, offset = this.pos, advance = true) {
         return Packet.wrap(this.gdata(length, offset, advance));
+    }
+
+    gsmart4() {
+        let value = this.data[this.pos] & 0xFF;
+        if ((value & 0x80) == 0) {
+            return this.g2();
+        } else {
+            return this.g4s();
+        }
     }
 }

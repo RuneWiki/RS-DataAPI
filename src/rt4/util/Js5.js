@@ -159,6 +159,9 @@ class Js5Index {
             }
 
             let data = await readGroup(this.openrs2, this.id, group);
+            if (!data) {
+                return null;
+            }
 
             data.pos = data.length - 1;
             let stripes = data.g1();

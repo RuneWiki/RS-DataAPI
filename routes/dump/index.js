@@ -89,15 +89,14 @@ export default function (f, opts, next) {
         let js5 = new Js5MasterIndex(cache.id);
         await js5.load();
 
-        let max = js5.archives[19].capacity - 1;
-        let total = js5.archives[19].groupCapacities[max] + (max << 8);
+        let maxGroup = js5.archives[19].capacity - 1;
+        let total = (maxGroup << 8) + js5.archives[19].groupCapacities[maxGroup]; // total + remainder
 
-        // decode
-
+        // ----
         let obj = [];
-        for (let i = 0; i < total; i++) {
-            let group = i >>> 8;
-            let file = i & 0xFF;
+        for (let id = 0; id < total; id++) {
+            let group = id >>> 8;
+            let file = id & 0xFF;
 
             let data = await js5.archives[19].getFile(group, file);
             if (!data) {
@@ -113,7 +112,11 @@ export default function (f, opts, next) {
                 }
 
                 if (code === 1) {
-                    config.model = data.g2();
+                    if (rev >= 700) {
+                        config.model = data.gsmart4();
+                    } else {
+                        config.model = data.g2();
+                    }
                 } else if (code === 2) {
                     config.name = data.gjstr();
                 } else if (code === 3) {
@@ -132,16 +135,40 @@ export default function (f, opts, next) {
                     config.stackable = true;
                 } else if (code === 12) {
                     config.cost = data.g4();
+                } else if (code === 13) {
+                    config.wearpos = data.g1();
+                } else if (code === 14) {
+                    config.wearpos2 = data.g1();
                 } else if (code === 16) {
                     config.members = true;
+                } else if (code === 18) {
+                    config.stacksize = data.g2();
                 } else if (code === 23) {
-                    config.manwear = data.g2();
+                    if (rev >= 700) {
+                        config.manwear = data.gsmart4();
+                    } else {
+                        config.manwear = data.g2();
+                    }
                 } else if (code === 24) {
-                    config.manwear2 = data.g2();
+                    if (rev >= 700) {
+                        config.manwear2 = data.gsmart4();
+                    } else {
+                        config.manwear2 = data.g2();
+                    }
                 } else if (code === 25) {
-                    config.womanwear = data.g2();
+                    if (rev >= 700) {
+                        config.womanwear = data.gsmart4();
+                    } else {
+                        config.womanwear = data.g2();
+                    }
                 } else if (code === 26) {
-                    config.womanwear2 = data.g2();
+                    if (rev >= 700) {
+                        config.womanwear2 = data.gsmart4();
+                    } else {
+                        config.womanwear2 = data.g2();
+                    }
+                } else if (code === 27) {
+                    config.wearpos3 = data.g1();
                 } else if (code >= 30 && code < 35) {
                     if (!config.op) {
                         config.op = [];
@@ -155,44 +182,71 @@ export default function (f, opts, next) {
 
                     config.iop[code - 35] = data.gjstr();
                 } else if (code === 40) {
+                    let count = data.g1();
+
                     config.recols = [];
                     config.recold = [];
-
-                    let count = data.g1();
                     for (let i = 0; i < count; i++) {
                         config.recols[i] = data.g2();
                         config.recold[i] = data.g2();
                     }
                 } else if (code === 41) {
+                    let count = data.g1();
+
                     config.retexs = [];
                     config.retexd = [];
-
-                    let count = data.g1();
                     for (let i = 0; i < count; i++) {
                         config.retexs[i] = data.g2();
                         config.retexd[i] = data.g2();
                     }
                 } else if (code === 42) {
-                    config.recolp = [];
-
+                    // sprite recolor
                     let count = data.g1();
+
+                    config.recolp = [];
                     for (let i = 0; i < count; i++) {
                         config.recolp[i] = data.g1s();
                     }
+                } else if (code === 43) {
+                    config.tooltip = data.g4();
                 } else if (code === 65) {
                     config.stockmarket = true;
                 } else if (code === 78) {
-                    config.manwear3 = data.g2();
+                    if (rev >= 700) {
+                        config.manwear3 = data.gsmart4();
+                    } else {
+                        config.manwear3 = data.g2();
+                    }
                 } else if (code === 79) {
-                    config.womanwear3 = data.g2();
+                    if (rev >= 700) {
+                        config.womanwear3 = data.gsmart4();
+                    } else {
+                        config.womanwear3 = data.g2();
+                    }
                 } else if (code === 90) {
-                    config.manhead = data.g2();
+                    if (rev >= 700) {
+                        config.manhead = data.gsmart4();
+                    } else {
+                        config.manhead = data.g2();
+                    }
                 } else if (code === 91) {
-                    config.womanhead = data.g2();
+                    if (rev >= 700) {
+                        config.womanhead = data.gsmart4();
+                    } else {
+                        config.womanhead = data.g2();
+                    }
                 } else if (code === 92) {
-                    config.manhead2 = data.g2();
+                    if (rev >= 700) {
+                        config.manhead2 = data.gsmart4();
+                    } else {
+                        config.manhead2 = data.g2();
+                    }
                 } else if (code === 93) {
-                    config.womanhead2 = data.g2();
+                    if (rev >= 700) {
+                        config.womanhead2 = data.gsmart4();
+                    } else {
+                        config.womanhead2 = data.g2();
+                    }
                 } else if (code === 95) {
                     config.zan2d = data.g2();
                 } else if (code === 96) {
@@ -247,12 +301,24 @@ export default function (f, opts, next) {
                     // guessing
                     config.cursor4op = data.g1();
                     config.cursor4 = data.g2();
-                } else if (code === 249) {
-                    if (!config.param) {
-                        config.param = [];
-                    }
-
+                } else if (code === 132) {
                     let count = data.g1();
+
+                    config.quests = [];
+                    for (let i = 0; i < count; i++) {
+                        config.quests[i] = data.g2();
+                    }
+                } else if (code === 134) {
+                    // guessing
+                    config.picksize = data.g1();
+                } else if (code === 139) {
+                    config.bindlink = data.g2();
+                } else if (code === 140) {
+                    config.bindtemplate = data.g2();
+                } else if (code === 249) {
+                    let count = data.g1();
+
+                    config.param = [];
                     for (let i = 0; i < count; i++) {
                         let isString = data.gbool();
                         let key = data.g3();
@@ -265,11 +331,10 @@ export default function (f, opts, next) {
                 }
             }
 
-            obj[i] = config;
+            obj[id] = config;
         }
 
-        // convert
-
+        // ----
         let output = '';
         for (let i = 0; i < obj.length; i++) {
             let config = obj[i];
@@ -282,6 +347,8 @@ export default function (f, opts, next) {
             }
 
             output += `[obj_${i}]\n`;
+
+            // ----
 
             if (config.name) {
                 output += `name=${config.name}\n`;
@@ -305,6 +372,10 @@ export default function (f, opts, next) {
 
             if (config.stockmarket) {
                 output += `stockmarket=yes\n`;
+            }
+
+            if (config.stacksize) {
+                output += `stacksize=${config.stacksize}\n`;
             }
 
             if (config.op) {
@@ -351,6 +422,14 @@ export default function (f, opts, next) {
                 output += `lenttemplate=obj_${config.lenttemplate}\n`;
             }
 
+            if (config.bindlink) {
+                output += `bindlink=obj_${config.bindlink}\n`;
+            }
+
+            if (config.bindtemplate) {
+                output += `bindtemplate=obj_${config.bindtemplate}\n`;
+            }
+
             if (config.team) {
                 output += `team=${config.team}\n`;
             }
@@ -370,6 +449,34 @@ export default function (f, opts, next) {
             if (typeof config.cursor4 !== 'undefined') {
                 output += `cursor4=${config.cursor4},${config.cursor4op}\n`;
             }
+
+            if (config.tooltip) {
+                output += `tooltip=0x${config.tooltip.toString(16)}\n`;
+            }
+
+            if (config.quests) {
+                for (let j = 0; j < config.quests.length; j++) {
+                    output += `quest${j + 1}=${config.quests[j]}\n`;
+                }
+            }
+
+            if (config.wearpos) {
+                output += `wearpos=${config.wearpos}\n`;
+            }
+
+            if (config.wearpos2) {
+                output += `wearpos2=${config.wearpos2}\n`;
+            }
+
+            if (config.wearpos3) {
+                output += `wearpos3=${config.wearpos3}\n`;
+            }
+
+            if (config.picksize) {
+                output += `picksize=${config.picksize}\n`;
+            }
+
+            // ----
 
             if (config.model) {
                 output += `model=model_${config.model}\n`;
@@ -418,6 +525,8 @@ export default function (f, opts, next) {
             if (config.contrast) {
                 output += `contrast=${config.contrast}\n`;
             }
+
+            // ----
 
             if (config.manwear) {
                 output += `manwear=model_${config.manwear}\n`;
@@ -503,6 +612,8 @@ export default function (f, opts, next) {
                 }
             }
 
+            // ----
+
             if (config.param) {
                 for (let j = 0; j < config.param.length; j++) {
                     if (config.param[j]) {
@@ -512,6 +623,7 @@ export default function (f, opts, next) {
             }
         }
 
+        reply.type('text/plain');
         return output;
     });
 

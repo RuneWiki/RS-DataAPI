@@ -13,7 +13,6 @@ export async function downloadFile(url, path) {
         return new Uint8Array(request.data);
     } catch (err) {
         console.error(`Failed to download ${url}`);
-        console.error(err);
         return null;
     }
 }
