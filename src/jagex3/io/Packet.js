@@ -34,12 +34,16 @@ export default class Packet {
         return this.data[this.pos++];
     }
 
-    g1b() {
+    g1s() {
         let value = this.data[this.pos++];
         if (value > 0x7F) {
             value -= 0x100;
         }
         return value;
+    }
+
+    gbool() {
+        return this.g1() === 1;
     }
 
     g2() {
@@ -81,7 +85,7 @@ export default class Packet {
 
     gjstr() {
         let str = '';
-        while (this.data[this.pos !== 0]) {
+        while (this.data[this.pos] !== 0) {
             str += String.fromCharCode(this.data[this.pos++]);
         }
         this.pos++;

@@ -77,5 +77,443 @@ export default function (f, opts, next) {
         return output;
     });
 
+    f.get('/obj', async (req, reply) => {
+        const { rev = -1, openrs2 = -1, match = 0 } = req.query;
+
+        let cache = findCache(rev, openrs2, match);
+        if (!cache) {
+            reply.code(404);
+            return `Could not find cache for ${rev} ${openrs2} ${match}`;
+        }
+
+        let js5 = new Js5MasterIndex(cache.id);
+        await js5.load();
+
+        let max = js5.archives[19].capacity - 1;
+        let total = js5.archives[19].groupCapacities[max] + (max << 8);
+
+        // decode
+
+        let obj = [];
+        for (let i = 0; i < total; i++) {
+            let group = i >>> 8;
+            let file = i & 0xFF;
+
+            let data = await js5.archives[19].getFile(group, file);
+            if (!data) {
+                continue;
+            }
+
+            let config = {};
+
+            while (data.available > 0) {
+                let code = data.g1();
+                if (code === 0) {
+                    break;
+                }
+
+                if (code === 1) {
+                    config.model = data.g2();
+                } else if (code === 2) {
+                    config.name = data.gjstr();
+                } else if (code === 3) {
+                    config.desc = data.gjstr();
+                } else if (code === 4) {
+                    config.zoom2d = data.g2();
+                } else if (code === 5) {
+                    config.xan2d = data.g2();
+                } else if (code === 6) {
+                    config.yan2d = data.g2();
+                } else if (code === 7) {
+                    config.xof2d = data.g2s();
+                } else if (code === 8) {
+                    config.yof2d = data.g2s();
+                } else if (code === 11) {
+                    config.stackable = true;
+                } else if (code === 12) {
+                    config.cost = data.g4();
+                } else if (code === 16) {
+                    config.members = true;
+                } else if (code === 23) {
+                    config.manwear = data.g2();
+                } else if (code === 24) {
+                    config.manwear2 = data.g2();
+                } else if (code === 25) {
+                    config.womanwear = data.g2();
+                } else if (code === 26) {
+                    config.womanwear2 = data.g2();
+                } else if (code >= 30 && code < 35) {
+                    if (!config.op) {
+                        config.op = [];
+                    }
+
+                    config.op[code - 30] = data.gjstr();
+                } else if (code >= 35 && code < 40) {
+                    if (!config.iop) {
+                        config.iop = [];
+                    }
+
+                    config.iop[code - 35] = data.gjstr();
+                } else if (code === 40) {
+                    config.recols = [];
+                    config.recold = [];
+
+                    let count = data.g1();
+                    for (let i = 0; i < count; i++) {
+                        config.recols[i] = data.g2();
+                        config.recold[i] = data.g2();
+                    }
+                } else if (code === 41) {
+                    config.retexs = [];
+                    config.retexd = [];
+
+                    let count = data.g1();
+                    for (let i = 0; i < count; i++) {
+                        config.retexs[i] = data.g2();
+                        config.retexd[i] = data.g2();
+                    }
+                } else if (code === 42) {
+                    config.recolp = [];
+
+                    let count = data.g1();
+                    for (let i = 0; i < count; i++) {
+                        config.recolp[i] = data.g1s();
+                    }
+                } else if (code === 65) {
+                    config.stockmarket = true;
+                } else if (code === 78) {
+                    config.manwear3 = data.g2();
+                } else if (code === 79) {
+                    config.womanwear3 = data.g2();
+                } else if (code === 90) {
+                    config.manhead = data.g2();
+                } else if (code === 91) {
+                    config.womanhead = data.g2();
+                } else if (code === 92) {
+                    config.manhead2 = data.g2();
+                } else if (code === 93) {
+                    config.womanhead2 = data.g2();
+                } else if (code === 95) {
+                    config.zan2d = data.g2();
+                } else if (code === 96) {
+                    config.code96 = data.g1();
+                } else if (code === 97) {
+                    config.certlink = data.g2();
+                } else if (code === 98) {
+                    config.certtemplate = data.g2();
+                } else if (code >= 100 && code < 110) {
+                    if (!config.countobj || !config.countco) {
+                        config.countobj = [];
+                        config.countco = [];
+                    }
+
+                    config.countobj[code - 100] = data.g2();
+                    config.countco[code - 100] = data.g2();
+                } else if (code === 110) {
+                    config.resizex = data.g2();
+                } else if (code === 111) {
+                    config.resizey = data.g2();
+                } else if (code === 112) {
+                    config.resizez = data.g2();
+                } else if (code === 113) {
+                    config.ambient = data.g1s();
+                } else if (code === 114) {
+                    config.contrast = data.g1s();
+                } else if (code === 115) {
+                    config.team = data.g1();
+                } else if (code === 121) {
+                    config.lentlink = data.g2();
+                } else if (code === 122) {
+                    config.lenttemplate = data.g2();
+                } else if (code === 125) {
+                    config.manwearxoff = data.g1s();
+                    config.manwearyoff = data.g1s();
+                    config.manwearzoff = data.g1s();
+                } else if (code === 126) {
+                    config.womanwearxoff = data.g1s();
+                    config.womanwearyoff = data.g1s();
+                    config.womanwearzoff = data.g1s();
+                } else if (code === 127) {
+                    config.cursor1op = data.g1();
+                    config.cursor1 = data.g2();
+                } else if (code === 128) {
+                    config.cursor2op = data.g1();
+                    config.cursor2 = data.g2();
+                } else if (code === 129) {
+                    // guessing
+                    config.cursor3op = data.g1();
+                    config.cursor3 = data.g2();
+                } else if (code === 130) {
+                    // guessing
+                    config.cursor4op = data.g1();
+                    config.cursor4 = data.g2();
+                } else if (code === 249) {
+                    if (!config.param) {
+                        config.param = [];
+                    }
+
+                    let count = data.g1();
+                    for (let i = 0; i < count; i++) {
+                        let isString = data.gbool();
+                        let key = data.g3();
+                        let value = isString ? data.gjstr() : data.g4();
+
+                        config.param[key] = value;
+                    }
+                } else {
+                    // console.log(`Unrecognized config code ${code}`, data);
+                }
+            }
+
+            obj[i] = config;
+        }
+
+        // convert
+
+        let output = '';
+        for (let i = 0; i < obj.length; i++) {
+            let config = obj[i];
+            if (typeof obj[i] === 'undefined') {
+                continue;
+            }
+
+            if (i > 0) {
+                output += '\n';
+            }
+
+            output += `[obj_${i}]\n`;
+
+            if (config.name) {
+                output += `name=${config.name}\n`;
+            }
+
+            if (config.desc) {
+                output += `desc=${config.desc}\n`;
+            }
+
+            if (config.cost) {
+                output += `cost=${config.cost}\n`;
+            }
+
+            if (config.stackable) {
+                output += `stackable=yes\n`;
+            }
+
+            if (config.members) {
+                output += `members=yes\n`;
+            }
+
+            if (config.stockmarket) {
+                output += `stockmarket=yes\n`;
+            }
+
+            if (config.op) {
+                for (let j = 0; j < config.op.length; j++) {
+                    if (config.op[j]) {
+                        output += `op${j + 1}=${config.op[j]}\n`;
+                    }
+                }
+            }
+
+            if (config.iop) {
+                for (let j = 0; j < config.iop.length; j++) {
+                    if (config.iop[j]) {
+                        output += `iop${j + 1}=${config.iop[j]}\n`;
+                    }
+                }
+            }
+
+            if (config.countobj) {
+                for (let j = 0; j < config.countobj.length; j++) {
+                    if (config.countco[j]) {
+                        output += `count${j + 1}=obj_${config.countobj[j]},${config.countco[j]}\n`;
+                    }
+                }
+            }
+
+            if (config.code96) {
+                output += `code96=${config.code96}\n`;
+            }
+
+            if (config.certlink) {
+                output += `certlink=obj_${config.certlink}\n`;
+            }
+
+            if (config.certtemplate) {
+                output += `certtemplate=obj_${config.certtemplate}\n`;
+            }
+
+            if (config.lentlink) {
+                output += `lentlink=obj_${config.lentlink}\n`;
+            }
+
+            if (config.lenttemplate) {
+                output += `lenttemplate=obj_${config.lenttemplate}\n`;
+            }
+
+            if (config.team) {
+                output += `team=${config.team}\n`;
+            }
+
+            if (typeof config.cursor1 !== 'undefined') {
+                output += `cursor1=${config.cursor1},${config.cursor1op}\n`;
+            }
+
+            if (typeof config.cursor2 !== 'undefined') {
+                output += `cursor2=${config.cursor2},${config.cursor2op}\n`;
+            }
+
+            if (typeof config.cursor3 !== 'undefined') {
+                output += `cursor3=${config.cursor3},${config.cursor3op}\n`;
+            }
+
+            if (typeof config.cursor4 !== 'undefined') {
+                output += `cursor4=${config.cursor4},${config.cursor4op}\n`;
+            }
+
+            if (config.model) {
+                output += `model=model_${config.model}\n`;
+            }
+
+            if (config.zoom2d) {
+                output += `2dzoom=${config.zoom2d}\n`;
+            }
+
+            if (config.xan2d) {
+                output += `2dxan=${config.xan2d}\n`;
+            }
+
+            if (config.yan2d) {
+                output += `2dyan=${config.yan2d}\n`;
+            }
+
+            if (config.zan2d) {
+                output += `2dzan=${config.zan2d}\n`;
+            }
+
+            if (config.xof2d) {
+                output += `2dxof=${config.xof2d}\n`;
+            }
+
+            if (config.yof2d) {
+                output += `2dyof=${config.yof2d}\n`;
+            }
+
+            if (config.resizex) {
+                output += `resizex=${config.resizex}\n`;
+            }
+
+            if (config.resizey) {
+                output += `resizey=${config.resizey}\n`;
+            }
+
+            if (config.resizez) {
+                output += `resizez=${config.resizez}\n`;
+            }
+
+            if (config.ambient) {
+                output += `ambient=${config.ambient}\n`;
+            }
+
+            if (config.contrast) {
+                output += `contrast=${config.contrast}\n`;
+            }
+
+            if (config.manwear) {
+                output += `manwear=model_${config.manwear}\n`;
+            }
+
+            if (config.manwear2) {
+                output += `manwear2=model_${config.manwear2}\n`;
+            }
+
+            if (config.manwear3) {
+                output += `manwear3=model_${config.manwear3}\n`;
+            }
+
+            if (config.manwearxoff) {
+                output += `manwearxoff=${config.manwearxoff}\n`;
+            }
+
+            if (config.manwearyoff) {
+                output += `manwearyoff=${config.manwearyoff}\n`;
+            }
+
+            if (config.manwearzoff) {
+                output += `manwearzoff=${config.manwearzoff}\n`;
+            }
+
+            if (config.womanwear) {
+                output += `womanwear=model_${config.womanwear}\n`;
+            }
+
+            if (config.womanwear2) {
+                output += `womanwear2=model_${config.womanwear2}\n`;
+            }
+
+            if (config.womanwear3) {
+                output += `womanwear3=model_${config.womanwear3}\n`;
+            }
+
+            if (config.womanwearxoff) {
+                output += `womanwearxoff=${config.womanwearxoff}\n`;
+            }
+
+            if (config.womanwearyoff) {
+                output += `womanwearyoff=${config.womanwearyoff}\n`;
+            }
+
+            if (config.womanwearzoff) {
+                output += `womanwearzoff=${config.womanwearzoff}\n`;
+            }
+
+            if (config.manhead) {
+                output += `manhead=model_${config.manhead}\n`;
+            }
+
+            if (config.manhead2) {
+                output += `manhead2=model_${config.manhead2}\n`;
+            }
+
+            if (config.womanhead) {
+                output += `womanhead=model_${config.womanhead}\n`;
+            }
+
+            if (config.womanhead2) {
+                output += `womanhead2=model_${config.womanhead2}\n`;
+            }
+
+            if (config.recols) {
+                for (let j = 0; j < config.recols.length; j++) {
+                    output += `recol${j + 1}s=${config.recols[j]}\n`;
+                    output += `recol${j + 1}d=${config.recold[j]}\n`;
+                }
+            }
+
+            if (config.retexs) {
+                for (let j = 0; j < config.retexs.length; j++) {
+                    output += `retex${j + 1}s=${config.retexs[j]}\n`;
+                    output += `retex${j + 1}d=${config.retexd[j]}\n`;
+                }
+            }
+
+            if (config.recolp) {
+                for (let j = 0; j < config.recolp.length; j++) {
+                    output += `recolp${j + 1}=${config.recolp[j]}\n`;
+                }
+            }
+
+            if (config.param) {
+                for (let j = 0; j < config.param.length; j++) {
+                    if (config.param[j]) {
+                        output += `param=${j + 1}=${config.param[j]}\n`;
+                    }
+                }
+            }
+        }
+
+        return output;
+    });
+
     next();
 }

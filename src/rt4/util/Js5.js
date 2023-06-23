@@ -1,6 +1,6 @@
 import Packet from '#jagex3/io/Packet.js';
 import { KNOWN_HASHES, KNOWN_NAMES, hashCode } from '#rt4/enum/hashes.js';
-import { readGroup } from '#rt4/util/OpenRS2.js';
+import { findCache, readGroup } from '#rt4/util/OpenRS2.js';
 
 class Js5Index {
     openrs2 = -1;
@@ -158,7 +158,7 @@ class Js5Index {
                 return Packet.wrap(this.unpacked[group][file]);
             }
 
-            let data = await readGroup(this.openrs2, 2, 5);
+            let data = await readGroup(this.openrs2, this.id, group);
 
             data.pos = data.length - 1;
             let stripes = data.g1();
@@ -178,9 +178,9 @@ class Js5Index {
                 }
             }
 
-            return this.unpacked[group][file];
+            return Packet.wrap(this.unpacked[group][file]);
         } else {
-            return readGroup(this.openrs2, 2, 5);
+            return readGroup(this.openrs2, this.id, group);
         }
     }
 }
@@ -193,31 +193,20 @@ export default class Js5MasterIndex {
         this.openrs2 = openrs2;
     }
 
-    async load(max = 37) {
-        for (let archive = 0; archive < max; archive++) {
-            let index = new Js5Index(archive, this.openrs2);
-            await index.load();
+    async load() {
+        let cache = findCache(-1, this.openrs2);
 
-            this.archives[archive] = index;
+        for (let archive = 0; archive < cache.indexes; archive++) {
+            try {
+                let index = new Js5Index(archive, this.openrs2);
+                await index.load();
+
+                this.archives[archive] = index;
+            } catch (err) {
+                console.error('Failed to load archive', archive);
+                console.error(err);
+            }
         }
-
-        // smarter way to do it (but idk how to get it working with rev 718 etc)
-        // let data = await readGroup(255, 255);
-
-        // for (let archive = 0; archive < data.length / 8; archive++) {
-        //     try {
-        //         let crc = data.g4();
-        //         let version = data.g4();
-
-        //         let index = new Js5Index(archive);
-        //         await index.load();
-
-        //         this.archives[archive] = { crc, version, index };
-        //     } catch (err) {
-        //         console.error('Failed to load archive', archive);
-        //         console.error(err);
-        //     }
-        // }
     }
 
     async getArchive(id) {
