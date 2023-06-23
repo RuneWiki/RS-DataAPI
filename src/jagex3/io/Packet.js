@@ -70,6 +70,15 @@ export default class Packet {
         return value;
     }
 
+    gsmart4() {
+        let value = this.data[this.pos];
+        if ((value & 0x80) == 0) {
+            return this.g2();
+        } else {
+            return this.g4();
+        }
+    }
+
     gjstr() {
         let str = '';
         while (this.data[this.pos !== 0]) {

@@ -26,19 +26,35 @@ class Js5Index {
 
     async load() {
         let data = await readGroup(255, this.id);
+        if (!data) {
+            return;
+        }
 
+        // ORIGINAL, VERSIONED, SMART
         let protocol = data.g1();
         if (protocol >= 6) {
             this.version = data.g4();
+        } else {
+            this.version = 0;
         }
 
         let flags = data.g1();
-        this.size = data.g2();
+
+        this.size = 0;
+        if (protocol >= 7) {
+            this.size = data.gsmart4();
+        } else {
+            this.size = data.g2();
+        }
 
         let prevGroupId = 0;
         let maxGroupId = -1;
         for (let i = 0; i < this.size; i++) {
-            this.groupIds[i] = prevGroupId += data.g2();
+            if (protocol >= 7) {
+                this.groupIds[i] = prevGroupId += data.gsmart4();
+            } else {
+                this.groupIds[i] = prevGroupId += data.g2();
+            }
 
             if (this.groupIds[i] > maxGroupId) {
                 maxGroupId = this.groupIds[i];
@@ -78,7 +94,11 @@ class Js5Index {
 
             this.fileIds[groupId] = [];
             for (let j = 0; j < groupSize; j++) {
-                this.fileIds[groupId][j] = prevFileId += data.g2();
+                if (protocol >= 7) {
+                    this.fileIds[groupId][j] = prevFileId += data.gsmart4();
+                } else {
+                    this.fileIds[groupId][j] = prevFileId += data.g2();
+                }
 
                 if (this.fileIds[groupId][j] > maxFileId) {
                     maxFileId = this.fileIds[groupId][j];
@@ -117,28 +137,83 @@ class Js5Index {
     async getGroup(group) {
         return readGroup(this.id, group);
     }
+
+    async getFile(group, file) {
+        let fileIds = this.fileIds[group];
+        let groupSize = this.groupSizes[group];
+
+        if (groupSize > 1) {
+            // TODO: save this output
+            let data = await readGroup(2, 5);
+
+            data.pos = data.length - 1;
+            let lens = [];
+            for (let i = 0; i < groupSize; i++) {
+                lens[i] = 0;
+            }
+
+            let stripes = data.g1();
+            data.pos -= (groupSize * stripes * 4) + 1;
+            let start = data.pos;
+
+            for (let i = 0; i < stripes; i++) {
+                let len = 0;
+
+                for (let j = 0; j < groupSize; j++) {
+                    len += data.g4();
+                    lens[j] += len;
+                }
+            }
+
+            data.pos = start;
+            let off = 0;
+            for (let i = 0; i < stripes; i++) {
+                let len = 0;
+
+                for (let j = 0; j < groupSize; j++) {
+                    len += data.g4();
+                    if (fileIds[j] === file) {
+                        return data.gPacket(len, off, false);
+                    }
+
+                    off += len;
+                    lens[j] += len;
+                }
+            }
+        } else {
+            return readGroup(2, 5);
+        }
+    }
 }
 
 export default class Js5MasterIndex {
     archives = [];
 
-    async load() {
-        let data = await readGroup(255, 255);
+    async load(max = 37) {
+        for (let archive = 0; archive < max; archive++) {
+            let index = new Js5Index(archive);
+            await index.load();
 
-        for (let archive = 0; data.available > 0; archive++) {
-            try {
-                let crc = data.g4();
-                let version = data.g4();
-
-                let index = new Js5Index(archive);
-                await index.load();
-
-                this.archives[archive] = { crc, version, index };
-            } catch (err) {
-                console.error('Failed to load archive', archive);
-                console.error(err);
-            }
+            this.archives[archive] = index;
         }
+
+        // smarter way to do it (but idk how to get it working with rev 718 etc)
+        // let data = await readGroup(255, 255);
+
+        // for (let archive = 0; archive < data.length / 8; archive++) {
+        //     try {
+        //         let crc = data.g4();
+        //         let version = data.g4();
+
+        //         let index = new Js5Index(archive);
+        //         await index.load();
+
+        //         this.archives[archive] = { crc, version, index };
+        //     } catch (err) {
+        //         console.error('Failed to load archive', archive);
+        //         console.error(err);
+        //     }
+        // }
     }
 
     async getArchive(id) {
