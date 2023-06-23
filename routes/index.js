@@ -120,16 +120,6 @@ export default function (f, opts, next) {
                 output += `size=${config.size}\n`;
             }
 
-            // output += `scope=${config.scope}\n`;
-
-            // if (config.code7) {
-            //     output += 'code7=yes\n';
-            // }
-
-            // if (config.code40) {
-            //     output += 'code40=yes\n';
-            // }
-
             if (config.stock) {
                 for (let j = 0; j < config.stock.length; j++) {
                     output += `stock${j + 1}=obj_${config.stock[j].id},${config.stock[j].count}\n`;
