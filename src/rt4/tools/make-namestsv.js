@@ -13,7 +13,7 @@ let missingFiles = 0;
 
 let output = '';
 for (let a = 0; a < cache.archives.length; a++) {
-    let index = cache.archives[a].index;
+    let index = cache.archives[a];
 
     for (let g = 0; g < index.capacity; g++) {
         let ghash = index.groupNameHashes[g];

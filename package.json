@@ -8,7 +8,7 @@
     "#rt4/*": "./src/rt4/*"
   },
   "scripts": {
-    "start": "nodemon src/rt4/web/app.js",
+    "start": "nodemon --ignore data src/rt4/web/app.js",
     "make:names.tsv": "nodemon src/rt4/tools/make-namestsv.js"
   },
   "dependencies": {

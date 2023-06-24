@@ -62,7 +62,7 @@ export default function (f, opts, next) {
 
         let output = '';
         for (let a = 0; a < js5.archives.length; a++) {
-            let index = js5.archives[a].index;
+            let index = js5.archives[a];
 
             for (let g = 0; g < index.capacity; g++) {
                 let ghash = index.groupNameHashes[g];
