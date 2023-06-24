@@ -3,6 +3,7 @@ import fs from 'fs';
 import fsp from 'fs/promises';
 import zlib from 'zlib';
 import { dirname } from 'path';
+import tar from 'tar';
 
 import Packet from '#jagex3/io/Packet.js';
 import BZip2 from '#jagex3/io/BZip2.js';
@@ -10,7 +11,6 @@ import BZip2 from '#jagex3/io/BZip2.js';
 export async function downloadFile(url, path) {
     try {
         let request = await axios.get(url, { responseType: 'arraybuffer' });
-        // await fsp.writeFile(path, request.data);
         fs.mkdirSync(dirname(path), { recursive: true });
         fs.writeFileSync(path, request.data);
         return new Uint8Array(request.data);
@@ -18,6 +18,16 @@ export async function downloadFile(url, path) {
         console.error(`Failed to download ${url}`);
         return null;
     }
+}
+
+export async function downloadFileStream(url, path) {
+    fs.mkdirSync(dirname(path), { recursive: true });
+
+    const writer = createWriteStream(path);
+    return axios.get(url, { responseType: 'stream' }).then(response => {
+        response.data.pipe(writer);
+        return finished(writer);
+    });
 }
 
 // ----
@@ -61,6 +71,25 @@ export async function readGroup(id, archive, group) {
             return Packet.wrap(zlib.gunzipSync(data.gdata(length)));
         }
     }
+}
+
+// disk.zip: dat/idx format
+// tar.gz: flat format
+export async function extractFlatFiles(openrs2) {
+    if (!fs.existsSync(`data/${openrs2}-flat-file.tar.gz`)) {
+        let url = OPENRS2_API.replace('$scope', 'runescape').replace('$id', openrs2);
+        console.log(url);
+        await downloadFileStream(`${url}/flat-file.tar.gz`, `data/${openrs2}-flat-file.tar.gz`);
+    }
+
+    let stream = fs.createReadStream(`data/${openrs2}-flat-file.tar.gz`);
+
+    fs.mkdirSync(`data/${openrs2}`, { recursive: true });
+    stream.pipe(tar.x({
+        C: `data/${openrs2}/`,
+        strip: 1,
+        keep: true
+    }));
 }
 
 // ----
