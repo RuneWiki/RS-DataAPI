@@ -159,8 +159,15 @@ export default function (f, opts, next) {
 
             reply.type('image/png');
             return sheet.getBufferAsync(Jimp.MIME_PNG);
-        } else {
+        } else if (await js5.archives[8].getGroupByName(name)) {
             let data = await js5.archives[8].getGroupByName(name);
+
+            // this is a self-contained spritesheet/single sprite
+            let img = await decodeImage(data);
+            reply.type('image/png');
+            return img.getBufferAsync(Jimp.MIME_PNG);
+        } else {
+            let data = await js5.archives[8].getGroup(Number(name));
             if (!data) {
                 reply.code(404);
                 return `Could not find group ${name}`;
