@@ -17,6 +17,8 @@ class Js5Index {
     groupNameHashes = [];
     groupNames = [];
     groupChecksums = [];
+    groupUncompressedChecksums = [];
+    groupDigests = [];
     groupVersions = [];
     fileIds = [];
     fileNameHashes = [];
@@ -42,6 +44,10 @@ class Js5Index {
         }
 
         let flags = data.g1();
+        let hasNames = flags & 0x1;
+        let hasDigests = flags & 0x2;
+        let hasLengths = flags & 0x4;
+        let hasUncompressedChecksums = flags & 0x8;
 
         this.size = 0;
         if (protocol >= 7) {
@@ -65,7 +71,7 @@ class Js5Index {
         }
         this.capacity = maxGroupId + 1;
 
-        if (flags != 0) {
+        if (hasNames) {
             for (let i = 0; i < this.capacity; i++) {
                 this.groupNameHashes[i] = -1;
             }
@@ -79,6 +85,25 @@ class Js5Index {
 
         for (let i = 0; i < this.size; i++) {
             this.groupChecksums[this.groupIds[i]] = data.g4s();
+        }
+
+        if (hasUncompressedChecksums) {
+            for (let i = 0; i < this.size; i++) {
+                this.groupUncompressedChecksums[this.groupIds[i]] = data.g4s();
+            }
+        }
+
+        if (hasDigests) {
+            for (let i = 0; i < this.size; i++) {
+                this.groupDigests[this.groupIds[i]] = data.g8();
+            }
+        }
+
+        if (hasLengths) {
+            for (let i = 0; i < this.size; i++) {
+                data.g4s();
+                data.g4s();
+            }
         }
 
         for (let i = 0; i < this.size; i++) {
@@ -111,7 +136,7 @@ class Js5Index {
             this.groupCapacities[groupId] = maxFileId + 1;
         }
 
-        if (flags != 0) {
+        if (hasNames) {
             for (let i = 0; i < this.size; i++) {
                 let groupId = this.groupIds[i];
                 let groupSize = this.groupSizes[groupId];
