@@ -13,7 +13,8 @@ export default function (f, opts, next) {
         }
 
         let js5 = new Js5MasterIndex(cache.id);
-        await js5.load();
+        js5.init();
+        await js5.archives[archive].load();
 
         return js5.archives[archive].fileIds[group].length.toString();
     });
@@ -29,7 +30,8 @@ export default function (f, opts, next) {
         }
 
         let js5 = new Js5MasterIndex(cache.id);
-        await js5.load();
+        js5.init();
+        await js5.archives[archive].load();
 
         return js5.archives[archive].size.toString();
     });

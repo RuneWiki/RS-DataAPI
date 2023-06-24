@@ -6,7 +6,7 @@ class Js5Index {
     openrs2 = -1;
     id = -1;
     version = 0;
-    size = 0;
+    size = -1;
     capacity = 0;
 
     groupIds = [];
@@ -137,11 +137,35 @@ class Js5Index {
         }
     }
 
+    async getCapacity() {
+        if (this.size === -1) {
+            await this.load();
+        }
+
+        return this.capacity;
+    }
+
+    async getSize() {
+        if (this.size === -1) {
+            await this.load();
+        }
+
+        return this.size;
+    }
+
     async getGroup(group) {
+        if (this.size === -1) {
+            await this.load();
+        }
+
         return readGroup(this.openrs2, this.id, group);
     }
 
     async getGroupByName(name) {
+        if (this.size === -1) {
+            await this.load();
+        }
+
         let hash = hashCode(name);
         let group = this.groupNameHashes.indexOf(hash);
 
@@ -149,6 +173,10 @@ class Js5Index {
     }
 
     async getFile(group, file) {
+        if (this.size === -1) {
+            await this.load();
+        }
+
         let fileIds = this.fileIds[group];
         let groupSize = this.groupSizes[group];
 
@@ -203,29 +231,12 @@ export default class Js5MasterIndex {
         this.openrs2 = openrs2;
     }
 
-    async load() {
+    init() {
         let cache = findCache(-1, this.openrs2);
 
+        // TODO: skip invalid archives
         for (let archive = 0; archive < cache.indexes; archive++) {
-            try {
-                let index = new Js5Index(archive, this.openrs2);
-                await index.load();
-
-                this.archives[archive] = index;
-            } catch (err) {
-                console.error('Failed to load archive', archive);
-                console.error(err);
-            }
+            this.archives[archive] = new Js5Index(archive, this.openrs2);
         }
-    }
-
-    async getArchive(id) {
-        if (this.archives[id].index == null) {
-            let index = new Js5Index(id);
-            await index.load();
-            this.archives[id].index = index;
-        }
-
-        return this.archives[id].index;
     }
 }
