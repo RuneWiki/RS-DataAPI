@@ -23,6 +23,6 @@ All routes:
 `/dump/inv`: Dump inventory configs into a text format
 `/dump/obj`: Dump object configs into a text format
 
-`/count/:group`
-`/count/:group/:file`
+`/count/:archive`: Count the number of groups in an archive
+`/count/:archive/:group`: Count the number of files in a group
 ```
