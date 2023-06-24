@@ -21,12 +21,17 @@ export async function downloadFile(url, path) {
 }
 
 export async function downloadFileStream(url, path) {
-    fs.mkdirSync(dirname(path), { recursive: true });
-
-    const writer = createWriteStream(path);
-    return axios.get(url, { responseType: 'stream' }).then(response => {
-        response.data.pipe(writer);
-        return finished(writer);
+    return new Promise(async (res, rej) => {
+        try {
+            fs.mkdirSync(dirname(path), { recursive: true });
+            let file = fs.createWriteStream(path);
+            let response = await axios.get(url, { responseType: 'stream' });
+            let stream = response.data;
+            stream.pipe(file);
+            stream.on('end', () => res());
+        } catch (err) {
+            rej(err);
+        }
     });
 }
 
@@ -69,6 +74,8 @@ export async function readGroup(id, archive, group) {
             return Packet.wrap(BZip2.decompress(data.gdata(length)));
         } else if (compression === 2) {
             return Packet.wrap(zlib.gunzipSync(data.gdata(length)));
+        } else if (compression === 3) {
+            // TODO: LZMA
         }
     }
 }
@@ -82,14 +89,16 @@ export async function extractFlatFiles(openrs2) {
         await downloadFileStream(`${url}/flat-file.tar.gz`, `data/${openrs2}-flat-file.tar.gz`);
     }
 
-    let stream = fs.createReadStream(`data/${openrs2}-flat-file.tar.gz`);
-
-    fs.mkdirSync(`data/${openrs2}`, { recursive: true });
-    stream.pipe(tar.x({
-        C: `data/${openrs2}/`,
-        strip: 1,
-        keep: true
-    }));
+    return new Promise(async (res, rej) => {
+        fs.mkdirSync(`data/${openrs2}`, { recursive: true });
+        let stream = fs.createReadStream(`data/${openrs2}-flat-file.tar.gz`);
+        stream.pipe(tar.x({
+            C: `data/${openrs2}/`,
+            strip: 1,
+            keep: true
+        }));
+        stream.on('end', () => res());
+    });
 }
 
 // ----
