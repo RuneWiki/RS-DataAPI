@@ -69,7 +69,6 @@ async function decodeImage(data) {
                 let pos = (x + (y * tileX * width)) * 4;
 
                 img.bitmap.data[pos + 3] = pixel === 0 ? 0 : 255;
-
                 if (pixel === 1) {
                     // restore black colors
                     pixel = 0;
@@ -82,7 +81,10 @@ async function decodeImage(data) {
 
             if ((flags & 0x2) !== 0) {
                 for (let j = 0; j < len; j++) {
-                    let pos = j * 4;
+                    let x = startX + xOffsets[i] + (j % innerWidth);
+                    let y = startY + yOffsets[i] + Math.floor(j / innerWidth);
+                    let pos = (x + (y * tileX * width)) * 4;
+
                     img.bitmap.data[pos + 3] = data.g1();
                 }
             }
@@ -92,12 +94,7 @@ async function decodeImage(data) {
                     let pixel = palette[data.g1()];
                     let pos = (startX + xOffsets[i] + x + ((startY + yOffsets[i] + y) * tileX * width)) * 4;
 
-                    if ((flags & 0x2) !== 0) {
-                        img.bitmap.data[pos + 3] = data.g1();
-                    } else {
-                        img.bitmap.data[pos + 3] = pixel === 0 ? 0 : 255;
-                    }
-
+                    img.bitmap.data[pos + 3] = pixel === 0 ? 0 : 255;
                     if (pixel === 1) {
                         // restore black colors
                         pixel = 0;
@@ -106,6 +103,16 @@ async function decodeImage(data) {
                     img.bitmap.data[pos] = (pixel >> 16) & 0xFF;
                     img.bitmap.data[pos + 1] = (pixel >> 8) & 0xFF;
                     img.bitmap.data[pos + 2] = pixel & 0xFF;
+                }
+            }
+
+            if ((flags & 0x2) !== 0) {
+                for (let x = 0; x < innerWidth; x++) {
+                    for (let y = 0; y < innerHeight; y++) {
+                        let pos = (startX + xOffsets[i] + x + ((startY + yOffsets[i] + y) * tileX * width)) * 4;
+
+                        img.bitmap.data[pos + 3] = data.g1();
+                    }
                 }
             }
         }
