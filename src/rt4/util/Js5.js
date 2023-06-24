@@ -138,7 +138,14 @@ class Js5Index {
     }
 
     async getGroup(group) {
-        return readGroup(this.id, group);
+        return readGroup(this.openrs2, this.id, group);
+    }
+
+    async getGroupByName(name) {
+        let hash = hashCode(name);
+        let group = this.groupNameHashes.indexOf(hash);
+
+        return readGroup(this.openrs2, this.id, group);
     }
 
     async getFile(group, file) {

@@ -26,6 +26,10 @@ export const OPENRS2_DOMAIN = 'https://archive.openrs2.org';
 export const OPENRS2_API = `${OPENRS2_DOMAIN}/caches/$scope/$id`;
 
 export async function getGroup(id, archive, group) {
+    if (archive < 0 || group < 0) {
+        return null;
+    }
+
     if (fs.existsSync(`data/${id}/${archive}/${group}.dat`)) {
         return fs.readFileSync(`data/${id}/${archive}/${group}.dat`);
     }
@@ -37,6 +41,10 @@ export async function getGroup(id, archive, group) {
 }
 
 export async function readGroup(id, archive, group) {
+    if (archive < 0 || group < 0) {
+        return null;
+    }
+
     let data = Packet.wrap(await getGroup(id, archive, group));
 
     let compression = data.g1();

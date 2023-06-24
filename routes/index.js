@@ -82,7 +82,6 @@ export default function (f, opts, next) {
             }
         }
 
-        reply.type('text/plain');
         return output;
     });
 
