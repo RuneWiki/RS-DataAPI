@@ -22,8 +22,8 @@ export async function downloadFile(url, path) {
 
 // ----
 
-const OPENRS2_DOMAIN = 'https://archive.openrs2.org';
-const OPENRS2_API = 'https://archive.openrs2.org/caches/$scope/$id';
+export const OPENRS2_DOMAIN = 'https://archive.openrs2.org';
+export const OPENRS2_API = `${OPENRS2_DOMAIN}/caches/$scope/$id`;
 
 export async function getGroup(id, archive, group) {
     if (fs.existsSync(`data/${id}/${archive}/${group}.dat`)) {

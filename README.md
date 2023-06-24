@@ -10,9 +10,19 @@ See [names.tsv](./names.tsv) for a list of all the hash names I was able to iden
 The web API interfaces with OpenRS2 to accelerate cache datamining.
 
 ```
-/hashes?rev=
-/dump/inv?rev=
-/dump/obj?rev=
-/count/:group?rev=
-/count/:group/:file?rev=
+Query parameters for all routes:
+`openrs2`: internal OpenRS2 ID
+`rev`: runescape build number
+`match` (optional): use a specific index to match against multiple build numbers
+
+All routes:
+`/download`: redirect to openrs2 for a specific revision
+`/find`: print openrs2 cache metadata
+`/hashes`: name hashes for a cache in runestar format (tsv)
+
+`/dump/inv`: Dump inventory configs into a text format
+`/dump/obj`: Dump object configs into a text format
+
+`/count/:group`
+`/count/:group/:file`
 ```
