@@ -153,8 +153,8 @@ class Js5Index {
         return this.size;
     }
 
-    async getGroup(group) {
-        if (this.size === -1) {
+    async getGroup(group, skipLoading = false) {
+        if (this.size === -1 && !skipLoading) {
             await this.load();
         }
 

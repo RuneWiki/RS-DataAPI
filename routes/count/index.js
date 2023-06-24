@@ -33,7 +33,7 @@ export default function (f, opts, next) {
         js5.init();
         await js5.archives[archive].load();
 
-        return js5.archives[archive].size.toString();
+        return js5.archives[archive].capacity.toString();
     });
 
     next();

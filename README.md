@@ -15,8 +15,9 @@ Query parameters for all routes:
 `match` (optional): use a specific index to match against multiple build numbers
 
 All routes:
-`/download`: redirect to openrs2 for a specific revision
 `/find`: print openrs2 cache metadata
+`/download`: redirect to openrs2 for a specific revision
+`/read/:archive/:group`: download a decompressed group
 
 `/hashes`: name hashes for a cache in runestar format (tsv)
 `/hashes/:archive`: name hashes for a single archive in runestar format (tsv)
