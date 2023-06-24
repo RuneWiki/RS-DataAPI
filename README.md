@@ -17,7 +17,9 @@ Query parameters for all routes:
 All routes:
 `/download`: redirect to openrs2 for a specific revision
 `/find`: print openrs2 cache metadata
+
 `/hashes`: name hashes for a cache in runestar format (tsv)
+`/hashes/:archive`: name hashes for a single archive in runestar format (tsv)
 
 `/dump/inv`: Dump inventory configs into a text format
 `/dump/obj`: Dump object configs into a text format
