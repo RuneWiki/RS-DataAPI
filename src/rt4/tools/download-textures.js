@@ -3,7 +3,7 @@ import Jimp from 'jimp';
 import fs from 'fs';
 
 import Js5MasterIndex from '#rt4/util/Js5.js';
-import { extractFlatFiles, findCache } from '#rt4/util/OpenRS2.js';
+import { findCache } from '#rt4/util/OpenRS2.js';
 
 async function decodeImage(data) {
     data.pos = data.length - 2;
@@ -187,16 +187,23 @@ async function decodeImage(data) {
 let js5 = new Js5MasterIndex(findCache(930, -1, 1).id);
 js5.init();
 
-// await extractFlatFiles(js5.openrs2);
+await js5.archives[52].load();
+for (let i = 0; i < js5.archives[52].size; i++) {
+    let group = js5.archives[52].groupIds[i];
 
-await js5.archives[8].load();
-for (let i = 0; i < js5.archives[8].size; i++) {
-    let group = js5.archives[8].groupIds[i];
+    if (!fs.existsSync(`dump/textures_dxt/${group}.dds`)) {
+        let data = await js5.archives[52].getGroup(group);
+        data.save(`dump/textures_dxt/${group}.dds`, data.length, 5);
+    }
+}
 
-    if (!fs.existsSync(`dump/8/${group}.png`)) {
-        let data = await js5.archives[8].getGroup(group);
-        let img = await decodeImage(data);
-        await img.writeAsync(`dump/8/${group}.png`);
+await js5.archives[53].load();
+for (let i = 0; i < js5.archives[53].size; i++) {
+    let group = js5.archives[53].groupIds[i];
+
+    if (!fs.existsSync(`dump/textures_png/${group}.png`)) {
+        let data = await js5.archives[53].getGroup(group);
+        data.save(`dump/textures_png/${group}.png`, data.length, 5);
     }
 }
 
@@ -204,8 +211,40 @@ await js5.archives[54].load();
 for (let i = 0; i < js5.archives[54].size; i++) {
     let group = js5.archives[54].groupIds[i];
 
-    if (!fs.existsSync(`dump/54/${group}.png`)) {
+    if (!fs.existsSync(`dump/textures_png_mipped/${group}.png`)) {
         let data = await js5.archives[54].getGroup(group);
-        data.save(`dump/54/${group}.png`, data.length, 6);
+        data.save(`dump/textures_png_mipped/${group}.png`, data.length, 6);
+    }
+}
+
+await js5.archives[55].load();
+for (let i = 0; i < js5.archives[55].size; i++) {
+    let group = js5.archives[55].groupIds[i];
+
+    if (!fs.existsSync(`dump/textures_etc/${group}.ktx`)) {
+        let data = await js5.archives[55].getGroup(group);
+        data.save(`dump/textures_etc/${group}.ktx`, data.length, 5);
+    }
+}
+
+await js5.archives[59].load();
+for (let i = 0; i < js5.archives[59].size; i++) {
+    let group = js5.archives[59].groupIds[i];
+
+    if (!fs.existsSync(`dump/typefonts/${group}.otf`)) {
+        let data = await js5.archives[59].getGroup(group);
+        data.save(`dump/typefonts/${group}.otf`, data.length);
+    }
+}
+
+// takes longer to convert
+await js5.archives[8].load();
+for (let i = 0; i < js5.archives[8].size; i++) {
+    let group = js5.archives[8].groupIds[i];
+
+    if (!fs.existsSync(`dump/sprites/${group}.png`)) {
+        let data = await js5.archives[8].getGroup(group);
+        let img = await decodeImage(data);
+        await img.writeAsync(`dump/sprites/${group}.png`);
     }
 }

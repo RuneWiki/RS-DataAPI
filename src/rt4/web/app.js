@@ -9,6 +9,7 @@ import FormBody from '@fastify/formbody';
 import Static from '@fastify/static';
 import View from '@fastify/view';
 import Multipart from '@fastify/multipart';
+import { initHashes } from '#rt4/enum/hashes.js';
 
 const fastify = Fastify({
 	logger: true
@@ -31,4 +32,9 @@ fastify.register(Autoload, {
 	dir: path.join(process.cwd(), 'routes')
 });
 
-fastify.listen({ port: process.env.WEB_PORT, host: '0.0.0.0' });
+fastify.listen({ port: process.env.WEB_PORT, host: '0.0.0.0' }, () => {
+    // non-dev mode initializes the hash list
+    if (!process.env.DEV_MODE) {
+        initHashes();
+    }
+});

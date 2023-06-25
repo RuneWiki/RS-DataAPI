@@ -14,8 +14,7 @@ export function hashCode(str) {
     return hash;
 }
 
-// non-dev mode initializes the hash list
-if (!process.env.DEV_MODE) {
+export function initHashes() {
     KNOWN_NAMES.push(...[
         ' ',
         '  ',
