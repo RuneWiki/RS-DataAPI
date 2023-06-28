@@ -25,16 +25,20 @@ GET `/download`: redirect to openrs2's disk.zip for a specific revision
 GET `/read/:archive/:group`: download a decompressed group
 
 GET `/hashes`: name hashes for a cache in runestar format (tsv)
+ex: https://api.runewiki.org/hashes?rev=214
 
 GET `/hashes/:archive`: name hashes for a single archive in runestar format (tsv), returns a little faster in larger caches
 
 GET `/dump/inv`: Dump inventory configs into a text format (confirmed up to rev 930)
+ex: https://api.runewiki.org/dump/obj?rev=718
 
 GET `/dump/obj`: Dump object configs into a text format (confirmed up to rev 727)
+ex: https://api.runewiki.org/dump/obj?rev=530
 
 GET `/count/:archive`: Count the number of groups in an archive
 
 GET `/count/:archive/:group`: Count the number of files in a group
 
 GET `/sprite/:group`: Convert a sprite into PNG format. Accepts group name, group ID, or spritesheet name (without the `,n` bit at the end)
+ex: https://api.runewiki.org/sprite/magicon?rev=530
 ```
