@@ -108,7 +108,7 @@ if (process.env.DEV_MODE != 1 || !fs.existsSync('data/caches.json')) {
     await downloadFile(`${OPENRS2_DOMAIN}/caches.json`, 'data/caches.json');
 }
 
-let caches = JSON.parse(fs.readFileSync('data/caches.json', 'ascii'));
+let caches = JSON.parse(fs.readFileSync('data/caches.json', 'ascii')).reverse();
 
 export function findCache(rev = -1, openrs2 = -1, match = 0, lang = 'en') {
     return caches.filter(c => (c.id == openrs2 || (c.builds.length && c.builds.findIndex(b => b.major == rev) !== -1)) && c.language == lang)[match];
