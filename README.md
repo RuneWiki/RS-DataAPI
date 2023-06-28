@@ -1,44 +1,53 @@
-## RS-DataAPI
-
 This is a datamining-oriented API for RuneScape and Old School RuneScape. It can be used locally or via https://api.runewiki.org/.  
 It utilizes [OpenRS2 Archive](https://archive.openrs2.org/) to access all of its archived caches.
 
 See [names.tsv](./names.tsv) for a static output of hash names for revision 530.
 
-### Query Parameters
+## Web API
 
-```
-`openrs2`: internal OpenRS2 ID
+### Query Options
 
-`rev`: runescape build number
-
-`match` (optional w/ rev): use a specific index to match against multiple build numbers, e.g. rev=530 matches openrs2=254 but you want openrs2=731, you can use rev=530&match=1. This is mainly intended for readability purposes.
-```
+|name|desc|
+|-|-|
+|openrs2|Internal OpenRS2 ID|
+|rev|RuneScape Build Number (major)|
+|match|Combined with rev - matches a specific index out of multiple openrs2 rev matches. e.g. `?rev=530&match=1`
 
 ### Routes
 
-```
-GET `/find`: print openrs2 cache metadata
+`GET /find`:  
+Print openrs2 cache metadata. Useful to get the OpenRS2 ID and metadata.
+ex: https://api.runewiki.org/find?rev=530
 
-GET `/download`: redirect to openrs2's disk.zip for a specific revision
+GET `/download`:  
+Redirect to openrs2's disk.zip for a specific revision (dat2/idx)
+ex: https://api.runewiki.org/download?rev=214
 
-GET `/read/:archive/:group`: download a decompressed group
+GET `/read/:archive/:group`:  
+Download a decompressed group
 
-GET `/hashes`: name hashes for a cache in runestar format (tsv)
+GET `/hashes`:  
+Generate name hashes for a cache in runestar format (tsv)  
 ex: https://api.runewiki.org/hashes?rev=214
 
-GET `/hashes/:archive`: name hashes for a single archive in runestar format (tsv), returns a little faster in larger caches
+GET `/hashes/:archive`:  
+Generate name hashes for a single archive in runestar format (tsv), returns a little faster in larger caches  
+ex: https://api.runewiki.org/hashes/8?rev=930
 
-GET `/dump/inv`: Dump inventory configs into a text format (confirmed up to rev 930)
-ex: https://api.runewiki.org/dump/obj?rev=718
+GET `/dump/inv`:  
+Dump inventory configs into a text format (confirmed up to rev 930)  
+ex: https://api.runewiki.org/dump/inv?rev=718
 
-GET `/dump/obj`: Dump object configs into a text format (confirmed up to rev 727)
+GET `/dump/obj`:  
+Dump object configs into a text format (confirmed up to rev 727)  
 ex: https://api.runewiki.org/dump/obj?rev=530
 
-GET `/count/:archive`: Count the number of groups in an archive
+GET `/count/:archive`:  
+Count the number of groups in an archive
 
-GET `/count/:archive/:group`: Count the number of files in a group
+GET `/count/:archive/:group`:  
+Count the number of files in a group
 
-GET `/sprite/:group`: Convert a sprite into PNG format. Accepts group name, group ID, or spritesheet name (without the `,n` bit at the end)
+GET `/sprite/:group`:  
+Convert a sprite into PNG format. Accepts group name, group ID, or spritesheet name (without the `,n` bit at the end)  
 ex: https://api.runewiki.org/sprite/magicon?rev=530
-```
