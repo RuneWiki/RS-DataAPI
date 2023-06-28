@@ -106,7 +106,7 @@ export default class Packet {
         return Packet.wrap(this.gdata(length, offset, advance));
     }
 
-    gsmart4() {
+    gsmart4_() {
         let value = this.data[this.pos] & 0xFF;
         if ((value & 0x80) == 0) {
             return this.g2();
@@ -115,8 +115,8 @@ export default class Packet {
         }
     }
 
-    // TODO: Java vs JS differences
-    gsmart4_2() {
+    // TODO: Java vs JS differences, because this should be identical to ^
+    gsmart4() {
         let value = this.data[this.pos] & 0xFF;
         if ((value & 0x80) == 0) {
             return this.g2();

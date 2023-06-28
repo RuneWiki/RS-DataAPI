@@ -117,7 +117,7 @@ export default function (f, opts, next) {
 
                 if (code === 1) {
                     if (rev >= 700) {
-                        config.model = data.gsmart4_2();
+                        config.model = data.gsmart4();
                     } else {
                         config.model = data.g2();
                     }
@@ -149,25 +149,25 @@ export default function (f, opts, next) {
                     config.stacksize = data.g2();
                 } else if (code === 23) {
                     if (rev >= 700) {
-                        config.manwear = data.gsmart4_2();
+                        config.manwear = data.gsmart4();
                     } else {
                         config.manwear = data.g2();
                     }
                 } else if (code === 24) {
                     if (rev >= 700) {
-                        config.manwear2 = data.gsmart4_2();
+                        config.manwear2 = data.gsmart4();
                     } else {
                         config.manwear2 = data.g2();
                     }
                 } else if (code === 25) {
                     if (rev >= 700) {
-                        config.womanwear = data.gsmart4_2();
+                        config.womanwear = data.gsmart4();
                     } else {
                         config.womanwear = data.g2();
                     }
                 } else if (code === 26) {
                     if (rev >= 700) {
-                        config.womanwear2 = data.gsmart4_2();
+                        config.womanwear2 = data.gsmart4();
                     } else {
                         config.womanwear2 = data.g2();
                     }
@@ -188,28 +188,28 @@ export default function (f, opts, next) {
                 } else if (code === 40) {
                     let count = data.g1();
 
-                    config.recols = [];
-                    config.recold = [];
+                    config.recol_s = [];
+                    config.recol_d = [];
                     for (let i = 0; i < count; i++) {
-                        config.recols[i] = data.g2();
-                        config.recold[i] = data.g2();
+                        config.recol_s[i] = data.g2();
+                        config.recol_d[i] = data.g2();
                     }
                 } else if (code === 41) {
                     let count = data.g1();
 
-                    config.retexs = [];
-                    config.retexd = [];
+                    config.retex_s = [];
+                    config.retex_d = [];
                     for (let i = 0; i < count; i++) {
-                        config.retexs[i] = data.g2();
-                        config.retexd[i] = data.g2();
+                        config.retex_s[i] = data.g2();
+                        config.retex_d[i] = data.g2();
                     }
                 } else if (code === 42) {
-                    // sprite recolor
+                    // sprite-related
                     let count = data.g1();
 
-                    config.recolp = [];
+                    config.recol_p = [];
                     for (let i = 0; i < count; i++) {
-                        config.recolp[i] = data.g1s();
+                        config.recol_p[i] = data.g1s();
                     }
                 } else if (code === 43) {
                     config.tooltip = data.g4();
@@ -217,37 +217,37 @@ export default function (f, opts, next) {
                     config.stockmarket = true;
                 } else if (code === 78) {
                     if (rev >= 700) {
-                        config.manwear3 = data.gsmart4_2();
+                        config.manwear3 = data.gsmart4();
                     } else {
                         config.manwear3 = data.g2();
                     }
                 } else if (code === 79) {
                     if (rev >= 700) {
-                        config.womanwear3 = data.gsmart4_2();
+                        config.womanwear3 = data.gsmart4();
                     } else {
                         config.womanwear3 = data.g2();
                     }
                 } else if (code === 90) {
                     if (rev >= 700) {
-                        config.manhead = data.gsmart4_2();
+                        config.manhead = data.gsmart4();
                     } else {
                         config.manhead = data.g2();
                     }
                 } else if (code === 91) {
                     if (rev >= 700) {
-                        config.womanhead = data.gsmart4_2();
+                        config.womanhead = data.gsmart4();
                     } else {
                         config.womanhead = data.g2();
                     }
                 } else if (code === 92) {
                     if (rev >= 700) {
-                        config.manhead2 = data.gsmart4_2();
+                        config.manhead2 = data.gsmart4();
                     } else {
                         config.manhead2 = data.g2();
                     }
                 } else if (code === 93) {
                     if (rev >= 700) {
-                        config.womanhead2 = data.gsmart4_2();
+                        config.womanhead2 = data.gsmart4();
                     } else {
                         config.womanhead2 = data.g2();
                     }
@@ -596,23 +596,23 @@ export default function (f, opts, next) {
                 output += `womanhead2=model_${config.womanhead2}\n`;
             }
 
-            if (config.recols) {
-                for (let j = 0; j < config.recols.length; j++) {
-                    output += `recol${j + 1}s=${config.recols[j]}\n`;
-                    output += `recol${j + 1}d=${config.recold[j]}\n`;
+            if (config.recol_s) {
+                for (let j = 0; j < config.recol_s.length; j++) {
+                    output += `recol${j + 1}s=${config.recol_s[j]}\n`;
+                    output += `recol${j + 1}d=${config.recol_d[j]}\n`;
                 }
             }
 
-            if (config.retexs) {
-                for (let j = 0; j < config.retexs.length; j++) {
-                    output += `retex${j + 1}s=${config.retexs[j]}\n`;
-                    output += `retex${j + 1}d=${config.retexd[j]}\n`;
+            if (config.retex_s) {
+                for (let j = 0; j < config.retex_s.length; j++) {
+                    output += `retex${j + 1}s=${config.retex_s[j]}\n`;
+                    output += `retex${j + 1}d=${config.retex_d[j]}\n`;
                 }
             }
 
-            if (config.recolp) {
-                for (let j = 0; j < config.recolp.length; j++) {
-                    output += `recolp${j + 1}=${config.recolp[j]}\n`;
+            if (config.recol_p) {
+                for (let j = 0; j < config.recol_p.length; j++) {
+                    output += `recolp${j + 1}=${config.recol_p[j]}\n`;
                 }
             }
 

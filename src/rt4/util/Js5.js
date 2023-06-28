@@ -51,7 +51,7 @@ class Js5Index {
 
         this.size = 0;
         if (protocol >= 7) {
-            this.size = data.gsmart4();
+            this.size = data.gsmart4_();
         } else {
             this.size = data.g2();
         }
@@ -60,7 +60,7 @@ class Js5Index {
         let maxGroupId = -1;
         for (let i = 0; i < this.size; i++) {
             if (protocol >= 7) {
-                this.groupIds[i] = prevGroupId += data.gsmart4();
+                this.groupIds[i] = prevGroupId += data.gsmart4_();
             } else {
                 this.groupIds[i] = prevGroupId += data.g2();
             }
@@ -123,7 +123,7 @@ class Js5Index {
             this.fileIds[groupId] = [];
             for (let j = 0; j < groupSize; j++) {
                 if (protocol >= 7) {
-                    this.fileIds[groupId][j] = prevFileId += data.gsmart4();
+                    this.fileIds[groupId][j] = prevFileId += data.gsmart4_();
                 } else {
                     this.fileIds[groupId][j] = prevFileId += data.g2();
                 }
