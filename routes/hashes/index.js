@@ -1,5 +1,5 @@
 import Js5MasterIndex from '#rt4/util/Js5.js';
-import { KNOWN_HASHES } from '#rt4/enum/hashes.js';
+import { getNamesByHash } from '#rt4/enum/hashes.js';
 
 import { findCache, OPENRS2_API } from '#rt4/util/OpenRS2.js';
 
@@ -25,7 +25,7 @@ export default function (f, opts, next) {
         for (let g = 0; g < index.capacity; g++) {
             let ghash = index.groupNameHashes[g];
             if (typeof ghash !== 'undefined' && ghash !== -1) {
-                output += `${index.id}\t${g}\t-1\t${ghash}\t${KNOWN_HASHES[ghash] ?? ''}\n`;
+                output += `${index.id}\t${g}\t-1\t${ghash}\t${getNamesByHash(ghash).join('t')}\n`;
             }
 
             if (index.fileNameHashes[g]) {
@@ -33,7 +33,7 @@ export default function (f, opts, next) {
                     let fhash = index.fileNameHashes[g][f];
 
                     if (typeof fhash !== 'undefined' && fhash !== -1 && fhash !== 0) {
-                        output += `${index.id}\t${g}\t${f}\t${fhash}\t${KNOWN_HASHES[fhash] ?? ''}\n`;
+                        output += `${index.id}\t${g}\t${f}\t${fhash}\t${getNamesByHash(fhash).join('t')}\n`;
                     }
                 }
             }
@@ -62,15 +62,15 @@ export default function (f, opts, next) {
             for (let g = 0; g < index.capacity; g++) {
                 let ghash = index.groupNameHashes[g];
                 if (typeof ghash !== 'undefined' && ghash !== -1) {
-                    output += `${index.id}\t${g}\t-1\t${ghash}\t${KNOWN_HASHES[ghash] ?? ''}\n`;
+                    output += `${index.id}\t${g}\t-1\t${ghash}\t${getNamesByHash(ghash).join('t')}\n`;
                 }
-
+    
                 if (index.fileNameHashes[g]) {
                     for (let f = 0; f < index.fileIds.length; f++) {
                         let fhash = index.fileNameHashes[g][f];
-
+    
                         if (typeof fhash !== 'undefined' && fhash !== -1 && fhash !== 0) {
-                            output += `${index.id}\t${g}\t${f}\t${fhash}\t${KNOWN_HASHES[fhash] ?? ''}\n`;
+                            output += `${index.id}\t${g}\t${f}\t${fhash}\t${getNamesByHash(fhash).join('t')}\n`;
                         }
                     }
                 }

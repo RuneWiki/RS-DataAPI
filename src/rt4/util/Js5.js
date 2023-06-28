@@ -1,5 +1,5 @@
 import Packet from '#jagex3/io/Packet.js';
-import { KNOWN_HASHES, KNOWN_NAMES, hashCode } from '#rt4/enum/hashes.js';
+import { hashCode } from '#rt4/enum/hashes.js';
 import { findCache, readGroup } from '#rt4/util/OpenRS2.js';
 
 class Js5Index {
@@ -15,14 +15,12 @@ class Js5Index {
     groupCapacities = [];
     groupSizes = [];
     groupNameHashes = [];
-    groupNames = [];
     groupChecksums = [];
     groupUncompressedChecksums = [];
     groupDigests = [];
     groupVersions = [];
     fileIds = [];
     fileNameHashes = [];
-    fileNames = [];
 
     constructor(id, openrs2) {
         this.id = id;
@@ -79,7 +77,6 @@ class Js5Index {
             for (let i = 0; i < this.size; i++) {
                 let id = this.groupIds[i];
                 this.groupNameHashes[id] = data.g4s();
-                this.groupNames[id] = KNOWN_HASHES[this.groupNameHashes[id]] || null;
             }
         }
 
@@ -142,7 +139,6 @@ class Js5Index {
                 let groupSize = this.groupSizes[groupId];
 
                 this.fileNameHashes[groupId] = [];
-                this.fileNames[groupId] = [];
                 for (let j = 0; j < this.groupCapacities[groupId]; j++) {
                     this.fileNameHashes[groupId][j] = -1;
                 }
@@ -156,7 +152,6 @@ class Js5Index {
                     }
 
                     this.fileNameHashes[groupId][fileId] = data.g4s();
-                    this.fileNames[groupId][fileId] = KNOWN_HASHES[this.fileNameHashes[groupId][fileId]] || null;
                 }
             }
         }

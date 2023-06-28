@@ -3,15 +3,10 @@ import fs from 'fs';
 
 import Js5 from '#rt4/util/Js5.js';
 import { findCache } from '#rt4/util/OpenRS2.js';
-import { KNOWN_HASHES, initHashes } from '#rt4/enum/hashes.js';
+import { initHashes, hashCode, exportHashes, getNamesByHash } from '#rt4/enum/hashes.js';
 
-function hashCode(str) {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-        hash = ((hash << 5) + str.charCodeAt(i) - hash) | 0;
-    }
-    return hash;
-}
+// re-start from the beginning
+const SKIP_KNOWN_HASHES = false;
 
 // ----
 
@@ -81,16 +76,28 @@ for (let i = 0; i < cache.archives.length; i++) {
 
     for (let g = 0; g < index.capacity; g++) {
         let ghash = index.groupNameHashes[g];
-        if (typeof ghash !== 'undefined' && ghash !== -1 && !KNOWN_HASHES[ghash]) {
-            missing.push(ghash);
+        if (typeof ghash !== 'undefined' && ghash !== -1) {
+            if (SKIP_KNOWN_HASHES && getNamesByHash(ghash).length) {
+                continue;
+            }
+
+            if (missing.indexOf(ghash) === -1) {
+                missing.push(ghash);
+            }
         }
 
         if (index.fileNameHashes[g]) {
             for (let f = 0; f < index.fileIds.length; f++) {
                 let fhash = index.fileNameHashes[g][f];
 
-                if (typeof fhash !== 'undefined' && fhash !== -1 && fhash !== 0) {
-                    missing.push(fhash);
+                if (typeof fhash !== 'undefined' && fhash !== -1) {
+                    if (SKIP_KNOWN_HASHES && getNamesByHash(fhash).length) {
+                        continue;
+                    }
+
+                    if (missing.indexOf(fhash) === -1) {
+                        missing.push(fhash);
+                    }
                 }
             }
         }
@@ -105,7 +112,7 @@ function save() {
 
     if (Object.keys(hashes).length) {
         fs.mkdirSync('dump', { recursive: true });
-        fs.writeFileSync(`dump/found-${new Date().getTime()}.json`, JSON.stringify(hashes, null, 2));
+        fs.writeFileSync(`dump/found-${new Date().getTime()}.tsv`, exportHashes(hashes));
     }
 }
 

@@ -1,8 +1,5 @@
 import fs from 'fs';
 
-export const KNOWN_NAMES = [];
-export const KNOWN_HASHES = {};
-
 export function hashCode(str) {
     // str = str.toString();
 
@@ -14,349 +11,90 @@ export function hashCode(str) {
     return hash;
 }
 
+let master = {};
+
+function addHash(name) {
+    let hash = hashCode(name);
+
+    if (!master[hash]) {
+        master[hash] = [];
+    }
+
+    if (master[hash].indexOf(name) === -1) {
+        master[hash].push(name);
+    }
+}
+
 export function initHashes() {
-    KNOWN_NAMES.push(...[
-        ' ',
-        '  ',
-        'xxx',
+    // our own reversed hashes
+    let found = fs.readFileSync('found.tsv', 'ascii').replace(/\r/g, '').split('\n');
+    for (let i = 0; i < found.length; i++) {
+        let [hash, ...names] = found[i].split('\t');
 
-        'bg',
-        // 'vs', // or x5?
-        'xp',
-        'all',
-        'air',
-        'bow',
-        'box',
-        'buy',
-        'env',
-        'fog',
-        'inv',
-        'law',
-        'map',
-        'combat',
-        'labels',
-        'details',
-        'compositemap',
-        'offercount_500',
+        master[hash] = [];
+        for (let j = 0; j < names.length; j++) {
+            master[hash].push(names[j]);
+        }
+    }
 
-        'alone',
-        'aztec',
-        'bark',
-        'books',
-        'chest',
-        'coins',
-        'crag',
-        'cross',
-        'dark',
-        'door',
-        'dream',
-        'egypt',
-        'gaol',
-        'iban',
-        'key',
-        'keys',
-        'lair',
-        'lava',
-        'logo',
-        'main',
-        'march',
-        'mesh',
-        'moody',
-        'mummy',
-        'nomad',
-        'null',
-        'pen',
-        'quest',
-        'regal',
-        'roof',
-        'roof2',
-        'runes',
-        'saga',
-        'shine',
-        'stars',
-        'start',
-        'theme',
-        'achey',
-        'accept',
-        'acorn',
-        'ahrims',
-        'advice',
-        'ambush',
-        'anger1',
-        'anger2',
-        'anger3',
-        'anger4',
-        'anger5',
-        'anger6',
-        'anger7',
-        'anger8',
-        'anger9',
-        'back',
-        'badge',
-        'banner',
-        'barb',
-        'base',
-        'bash',
-        'abox',
-        'arena',
-        'arrow',
-        'arrows',
-        'arrow0',
-        'arrow1',
-        'arrow2',
-        'arrow3',
-        'axe0',
-        'axe1',
-        'axe2',
-        'axe3',
-        'axe101',
-        'award',
-        'boil',
-        'amik',
-        'chap1',
-        'chap2',
-        'chap3',
-        'chap4',
-        'chap5',
-        'chap6',
-        'crack',
-        'dave',
-        'div0',
-        'div1',
-        'div2',
-        'div3',
-        'div4',
-        'div5',
-        'div6',
-        'div7',
-        'draw',
-        'drink',
-        'dwarf',
-        'edge',
-        'fence',
-        'flax',
-        'focus',
-        'food',
-        'fuse',
-        'claw0',
-        'claw1',
-        'claw2',
-        'claw3',
-        'drip',
-        'first',
-        'gear1',
-        'gear2',
-        'gear3',
-        'gear4',
-        'gear5',
-        'gear6',
-        'gear7',
-        'gear8',
-        'gear9',
-        'geara',
-        'gearb',
-        'gearc',
-        'geard',
-        'geare',
-        'gearf',
-        'goad',
-        'grand',
-        'guam',
-        'guide',
-        'guild',
-        'hack0',
-        'hack1',
-        'hack2',
-        'hack3',
-        'hand',
-        'hatch',
-        'haze1',
-        'haze2',
-        'haze3',
-        'haze4',
-        'heal',
-        'herb',
-        'hole',
-        'irit',
-        'item',
-        'jail',
-        'layer',
-        'last',
-        'mage',
-        'maple',
-        'misc',
-        'melee',
-        'music',
-        'more',
-        'ms1',
-        'ms2',
-        'ms3',
-        'ms4',
-        'ms5',
-        'ms6',
-        'ms7',
-        'ms8',
-        'ms9',
-        'ms10',
-        'ms11',
-        'ms12',
-        'mymax',
-        'oak',
-        'ogre',
-        'onyx',
-        'park',
-        'pl1',
-        'pl2',
-        'pl3',
-        'pl4',
-        'pl5',
-        'pl6',
-        'pl7',
-        'pl8',
-        'pl9',
-        'pole0',
-        'pole1',
-        'pole2',
-        'pole3',
-        'pound',
-        'price',
-        'ruby',
-        'head0',
-        'head1',
-        'head2',
-        'head3',
-        'lumb',
-        'row 1',
-        'row 2',
-        'row 3',
-        'row 4',
-        'row 5',
-        'row 6',
-        'row 7',
-        'row 8',
-        'ruins',
-        'rules',
-        'rule1',
-        'rule2',
-        'rule3',
-        'rule4',
-        'rule5',
-        'rule6',
-        'rule7',
-        'rule8',
-        'rule9',
-        'shoe1',
-        'shoe2',
-        'shoe3',
-        'shoe4',
-        'shoe5',
-        'shoe6',
-        'sky',
-        'snow',
-        'sword',
-        'thumb',
-        'vline',
-        'whip0',
-        'whip1',
-        'whip2',
-        'whip3',
-        'wear',
-        'yew',
-
-        'aries',
-        'taurus',
-        'gemini',
-        'cancer',
-        'leo',
-        'virgo',
-        'libra',
-        'scorpio',
-        'sagittarius',
-        'capricorn',
-        'aquarius',
-        'pisces',
-
-        // stats
-        'agility',
-        'attack',
-        'defence',
-        'crafting',
-        'cooking',
-        'construction',
-        'farming',
-        'fletching',
-        'hitpoints',
-        'herblore',
-        'hunter',
-        'mining',
-        'slayer',
-        'ranged',
-        'runecraft',
-        'smithing',
-        'strength',
-        'summoning',
-        'thieving',
-        'woodcutting',
-        'firemaking',
-
-        // runes
-        'fire',
-        'earth',
-        'mind',
-        'chaos',
-        'death',
-        'blood',
-        'nature',
-        'astral',
-        'soul',
-        'cosmic',
-        'dust',
-        'mist',
-        'smoke',
-        'mud',
-        'body',
-    ]);
-
-    console.time('Imported OSRS names');
     // seed with known names from OSRS
-    fs.readFileSync('osrs.tsv', 'ascii').replaceAll('\r\n', '\n').split('\n').forEach(x => {
+    fs.readFileSync('osrs.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
         let parts = x.split('\t');
-        if (parts.length > 3 && parts[4].length && KNOWN_NAMES.indexOf(parts[4]) === -1) {
-            KNOWN_NAMES.push(parts[4]);
+
+        // some do not have a name
+        if (parts.length > 3 && parts[4].length) {
+            addHash(parts[4]);
         }
     });
-    console.timeEnd('Imported OSRS names');
 
-    console.time('Imported 530 names');
-    fs.readFileSync('leanbow.tsv', 'ascii').replaceAll('\r\n', '\n').split('\n').forEach(x => {
+    // seed with interface names from RS2
+    fs.readFileSync('leanbow.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
         let parts = x.split('\t');
-        if (KNOWN_NAMES.indexOf(parts[1]) === -1) {
-            KNOWN_NAMES.push(parts[1]);
-        }
-    });
-    console.timeEnd('Imported 530 names');
 
-    console.time('Imported extra names');
-    fs.readFileSync('walied.tsv', 'ascii').replaceAll('\r\n', '\n').split('\n').forEach(x => {
+        addHash(parts[1]);
+    });
+
+    // seed with known late-era RS2/RS3 names
+    fs.readFileSync('walied.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
         let parts = x.split('\t');
-        if (parts.length > 3 && parts[4].length && KNOWN_NAMES.indexOf(parts[4]) === -1) {
-            KNOWN_NAMES.push(parts[4]);
-        }
-    });
-    fs.readFileSync('walied.individual.tsv', 'ascii').replaceAll('\r\n', '\n').split('\n').forEach(x => {
-        if (KNOWN_NAMES.indexOf(x) === -1) {
-            KNOWN_NAMES.push(x);
-        }
-    });
-    fs.readFileSync('walied.individual.components.tsv', 'ascii').replaceAll('\r\n', '\n').split('\n').forEach(x => {
-        if (KNOWN_NAMES.indexOf(x) === -1) {
-            KNOWN_NAMES.push(x);
-        }
-    });
-    console.timeEnd('Imported extra names');
 
-    console.time('Imported 2004 names');
-    let oldList = [// title
+        // some do not have a name
+        if (parts.length > 3 && parts[4].length) {
+            addHash(parts[4]);
+        }
+    });
+
+    fs.readFileSync('walied.individual.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(name => {
+        addHash(name);
+    });
+
+    fs.readFileSync('walied.individual.components.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(name => {
+        addHash(name);
+    });
+
+    // expand sprite groups
+    Object.keys(master).forEach(hash => {
+        let names = master[hash];
+
+        for (let i = 0; i < names.length; i++) {
+            if (names[i].indexOf(',') !== -1) {
+                if (names[i].indexOf('[') !== -1) {
+                    continue;
+                }
+
+                let parts = names[i].split(',');
+
+                addHash(`${parts[0]}`);
+                for (let j = 0; j < 120; j++) {
+                    addHash(`${parts[0]},${j}`);
+                }
+            }
+        }
+    });
+
+    // 194-377
+    let oldEngine = [
+        // title
         'index.dat',
         'logo.dat',
         'p11.dat',
@@ -588,200 +326,65 @@ export function initHashes() {
         // sounds
         'sounds.dat'
     ];
-    for (let i = 0; i < oldList.length; i++) {
-        if (KNOWN_NAMES.indexOf(oldList[i]) === -1) {
-            KNOWN_NAMES.push(oldList[i]);
-        }
+    for (let i = 0; i < oldEngine.length; i++) {
+        addHash(oldEngine[i]);
+        addHash(oldEngine[i].replace('.dat', ''));
+    }
 
-        let noExtension = oldList[i].split('.')[0];
-        if (KNOWN_NAMES.indexOf(noExtension) === -1) {
-            KNOWN_NAMES.push(noExtension);
+    // all possible static maps
+    for (let x = 0; x < 200; x++) {
+        for (let z = 0; z < 200; z++) {
+            addHash(`m${x}_${z}`);
+            addHash(`l${x}_${z}`);
+            addHash(`n${x}_${z}`);
+            addHash(`e${x}_${z}`);
+            addHash(`um${x}_${z}`);
+            addHash(`ul${x}_${z}`);
         }
     }
-    console.timeEnd('Imported 2004 names');
 
-    // append to all names to find component files
-    console.time('Generated component file names');
-    let len = KNOWN_NAMES.length;
-    for (let i = 0; i < len; i++) {
-        let name = KNOWN_NAMES[i];
-        if (name.indexOf(',') !== -1) {
-            name = name.split(',')[0];
-        }
-        if (name.indexOf('_') !== -1) {
-            name = name.split('_')[0];
-        }
-
-        // unsuffixed name
-        KNOWN_NAMES.push(name);
-
-        // append _num
-        for (let j = 0; j < 100; j++) {
-            KNOWN_NAMES.push(`${name}_${j}`);
-        }
-
-        // append num
-        for (let j = 0; j < 100; j++) {
-            KNOWN_NAMES.push(`${name}${j}`);
-        }
-
-        // apppend _letter
-        for (let j = 0; j < 26; j++) {
-            KNOWN_NAMES.push(`${name}_${String.fromCharCode(97 + j)}`);
-        }
-
-        // apppend letter
-        for (let j = 0; j < 26; j++) {
-            KNOWN_NAMES.push(`${name}${String.fromCharCode(97 + j)}`);
-        }
-    }
-    console.timeEnd('Generated component file names');
-
-    console.time('Generated hash list');
-    // unnamed components inherit their name from their index
+    // autogenerated com names
     for (let i = 0; i < 512; i++) {
-        KNOWN_NAMES.push(`com_${i}`);
-        KNOWN_NAMES.push(`button_${i}`);
-        KNOWN_NAMES.push(`layer_${i}`);
-
-        // for (let a = 0; a < 26; a++) {
-        //     KNOWN_NAMES.push(`com_${String.fromCharCode(97 + a)}`);
-        //     KNOWN_NAMES.push(`button_${String.fromCharCode(97 + a)}`);
-        //     KNOWN_NAMES.push(`layer_${String.fromCharCode(97 + a)}`);
-        // }
+        addHash(`com_${i}`);
+        addHash(`button_${i}`);
+        addHash(`layer_${i}`);
+        addHash(`title_${i}`);
     }
 
-    // some loosely named components can be named "a0", "a1", "a2", etc.
+    // simple com names 0-255
+    for (let i = 0; i < 256; i++) {
+        addHash(i.toString());
+    }
+
+    // simple com names a-z a1-z32
     for (let a = 0; a < 26; a++) {
         let char = String.fromCharCode(97 + a);
+        addHash(char);
+        addHash(`_${char}`);
+        addHash(` _${char}`);
+        addHash(`roles_${char}`);
 
-        for (let b = 0; b < 26; b++) {
-            KNOWN_NAMES.push(`${char}${b}`);
+        // a1 b2 etc
+        for (let b = 0; b < 32; b++) {
+            addHash(`${char}${b}`);
         }
-    }
-
-    // some loosely named components can be named "a", "b", "c", etc.
-    for (let a = 0; a < 26; a++) {
-        KNOWN_NAMES.push(`${String.fromCharCode(97 + a)}`);
-    }
-
-    // some components are just an arbitrary number
-    for (let i = 0; i < 256; i++) {
-        KNOWN_NAMES.push(`${i}`);
     }
 
     // quest journal lines
     for (let i = 0; i < 320; i++) {
-        KNOWN_NAMES.push(`qj${i}`);
+        addHash(`qj${i}`);
+    }
+}
+
+export function exportHashes(list) {
+    let out = '';
+    for (let hash in list) {
+        out += hash + '\t' + list[hash].join('\t') + '\n';
     }
 
-    // map files
-    for (let x = 0; x < 200; x++) {
-        for (let z = 0; z < 200; z++) {
-            KNOWN_NAMES.push(`m${x}_${z}`);
-            KNOWN_NAMES.push(`l${x}_${z}`);
-            KNOWN_NAMES.push(`n${x}_${z}`);
-            KNOWN_NAMES.push(`e${x}_${z}`);
-            KNOWN_NAMES.push(`um${x}_${z}`);
-            KNOWN_NAMES.push(`ul${x}_${z}`);
-        }
-    }
-    console.timeEnd('Generated hash list');
+    return out;
+}
 
-    // append ,num to all names to find sprite groups
-    console.time('Generated sprite group names');
-    len = KNOWN_NAMES.length;
-    for (let i = 0; i < len; i++) {
-        let name = KNOWN_NAMES[i];
-        if (name.indexOf(',') === -1) {
-            continue;
-        }
-
-        name = name.split(',')[0];
-        for (let j = 0; j < 100; j++) {
-            KNOWN_NAMES.push(`${name},${j}`);
-        }
-    }
-    console.timeEnd('Generated sprite group names');
-
-    // remove bad autogenerated names
-    console.time('Filtered names');
-    let override = [
-        'o3o',
-        'o3p',
-        'o3q',
-        'o3r',
-        'o3s',
-        'o3t',
-        'o3u',
-        'o3v',
-        'o3w',
-        'o510',
-        'o511',
-        'o512',
-        'backgroundm',
-        'rda',
-        'rdb',
-        'rdc',
-        'rdd',
-        'u239',
-        'pmn',
-        'pmo',
-        'pmp',
-        'pmq',
-        'pmr',
-        'pms',
-        'pmt',
-        'pmu',
-        'pmv',
-        'pmw',
-        'ep',
-        'er',
-        'es',
-        'et',
-        'eu',
-        'ev',
-        'ew',
-        'bn',
-        'bo',
-        'bp',
-        'bq',
-        'br',
-        'bs',
-        'bt',
-        'bt',
-        'dn',
-        'do',
-        'dp',
-        'dq',
-        'dr',
-        'ds',
-        'dt',
-        'du',
-        'eo',
-        'eq',
-        'en',
-        'bu',
-        'ap',
-    ];
-    for (let i = 0; i < override.length; i++) {
-        let index = 0;
-        while (index !== -1) {
-            index = KNOWN_NAMES.indexOf(override[i]);
-            if (index !== -1) {
-                KNOWN_NAMES.splice(index, 1);
-            }
-        }
-    }
-    console.timeEnd('Filtered names');
-
-    console.time('Generated name hashes');
-    for (let i = KNOWN_NAMES.length - 1; i > 0; i--) {
-        let name = KNOWN_NAMES[i];
-        let hash = hashCode(name);
-        KNOWN_HASHES[hash] = name;
-    }
-    console.timeEnd('Generated name hashes');
-
-    console.log('----');
+export function getNamesByHash(hash) {
+    return master[hash] ?? [];
 }

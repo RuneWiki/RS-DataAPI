@@ -1,8 +1,6 @@
 This is a datamining-oriented API for RuneScape and Old School RuneScape.
 It utilizes [OpenRS2 Archive](https://archive.openrs2.org/)'s API to access archived cache data.
 
-See [names.tsv](./names.tsv) for a static output of hash names for revision 530.
-
 ## Standalone Scripts
 
 Check out [src/rt4/tools](./src/rt4/tools). The files there are scripts I've written to do very specific things. Like dumping all images in rev 930.
@@ -43,11 +41,11 @@ GET `/read/:archive/:group`:
 Download a decompressed group
 
 GET `/hashes`:  
-Generate name hashes for a cache in runestar format (tsv)  
+Generate name hashes for a cache in runestar format (tsv)*  
 ex: https://api.runewiki.org/hashes?rev=214
 
 GET `/hashes/:archive`:  
-Generate name hashes for a single archive in runestar format (tsv), returns a little faster in larger caches  
+Generate name hashes for a single archive in runestar format (tsv)*, returns a little faster in larger caches  
 ex: https://api.runewiki.org/hashes/8?rev=930
 
 GET `/dump/inv`:  
@@ -67,3 +65,5 @@ Count the number of files in a group
 GET `/sprite/:group`:  
 Convert a sprite into PNG format. Accepts group name, group ID, or spritesheet name (without the `,n` bit at the end)  
 ex: https://api.runewiki.org/sprite/magicon?rev=530
+
+\* runestar tsv format is slightly modified - if multiple names match that hash, they will be separated by a tab on the same line. Do with that what you will.
