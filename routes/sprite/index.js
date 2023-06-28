@@ -3,6 +3,21 @@ import { findCache } from '#rt4/util/OpenRS2.js';
 
 import Jimp from 'jimp';
 
+function isPrime(val) {
+    if (val === 1) {
+        // not "prime" but good enough for this function's purpose
+        return true;
+    }
+
+    for (let i = 2; i < val; i++) {
+        if (val % i === 0) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 async function decodeImage(data) {
     data.pos = data.length - 2;
     let info = data.g2();
@@ -57,6 +72,43 @@ async function decodeImage(data) {
 
         let tileX = Math.ceil(Math.sqrt(tiles));
         let tileY = Math.ceil(tiles / tileX);
+        if (isPrime(tiles)) {
+            tileX = tiles;
+            tileY = 1;
+        } else if (tileX * tileY != tiles) {
+            let heightTries = 0;
+
+            // wrong aspect ratio, try subtracting from height and adding to width
+            while (tileX * tileY != tiles && heightTries < 10) {
+                tileY--;
+                tileX++;
+                heightTries++;
+            }
+
+            if (tileX * tileY != tiles) {
+                tileX = Math.ceil(Math.sqrt(tiles));
+                tileY = Math.ceil(tiles / tileX);
+
+                // because we do width second, we're biased towards a wider spritesheet
+                let widthTries = 0;
+
+                // wrong aspect ratio, try subtracting from width and adding to height
+                while (tileX * tileY != tiles && widthTries < 10) {
+                    tileX--;
+                    tileY++;
+                    widthTries++;
+                }
+
+                if (tileX * tileY != tiles) {
+                    // oh well, we tried
+                    tileX = Math.ceil(Math.sqrt(tiles));
+                    tileY = Math.ceil(tiles / tileX);
+                    // tileX = tiles;
+                    // tileY = 1;
+                }
+            }
+        }
+
         let img = new Jimp(tileX * width, tileY * height);
         img.background(0x00000000);
 
@@ -215,6 +267,43 @@ export default function (f, opts, next) {
 
             let width = Math.ceil(Math.sqrt(count));
             let height = Math.ceil(count / width);
+            if (isPrime(count)) {
+                width = count;
+                height = 1;
+            } else if (width * height != count) {
+                let heightTries = 0;
+    
+                // wrong aspect ratio, try subtracting from height and adding to width
+                while (width * height != count && heightTries < 10) {
+                    height--;
+                    width++;
+                    heightTries++;
+                }
+    
+                if (width * height != count) {
+                    width = Math.ceil(Math.sqrt(count));
+                    height = Math.ceil(count / width);
+    
+                    // because we do width second, we're biased towards a wider spritesheet
+                    let widthTries = 0;
+    
+                    // wrong aspect ratio, try subtracting from width and adding to height
+                    while (width * height != count && widthTries < 10) {
+                        width--;
+                        height++;
+                        widthTries++;
+                    }
+    
+                    if (width * height != count) {
+                        // oh well, we tried
+                        width = Math.ceil(Math.sqrt(count));
+                        height = Math.ceil(count / width);
+                        // width = count;
+                        // height = 1;
+                    }
+                }
+            }
+
             let sheet = new Jimp(width * sprites[0].getWidth(), height * sprites[0].getHeight());
             sheet.background(0x00000000);
 
@@ -235,6 +324,11 @@ export default function (f, opts, next) {
             reply.type('image/png');
             return img.getBufferAsync(Jimp.MIME_PNG);
         } else {
+            if (Number(isNaN(name))) {
+                reply.code(404);
+                return `Could not find group ${name}`;
+            }
+
             let data = await js5.archives[8].getGroup(Number(name));
             if (!data) {
                 reply.code(404);
