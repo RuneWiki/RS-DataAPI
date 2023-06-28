@@ -14,6 +14,8 @@ export default function (f, opts, next) {
         let js5 = new Js5MasterIndex(cache.id);
         js5.init();
 
+        await js5.archives[2].load();
+
         let inv = [];
         for (let i = 0; i < js5.archives[2].fileIds[5].length; i++) {
             let id = js5.archives[2].fileIds[5][i];
@@ -88,6 +90,8 @@ export default function (f, opts, next) {
 
         let js5 = new Js5MasterIndex(cache.id);
         js5.init();
+
+        await js5.archives[19].load();
 
         let maxGroup = js5.archives[19].capacity - 1;
         let total = (maxGroup << 8) + js5.archives[19].groupCapacities[maxGroup]; // total + remainder
