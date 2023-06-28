@@ -84,6 +84,12 @@ export default class Packet {
         return value;
     }
 
+    g8() {
+        let low = this.g4();
+        let high = this.g4();
+        return (BigInt(high) << 32n) | BigInt(low);
+    }
+
     gjstr() {
         let len = 0;
         while (this.data[this.pos + len] != 0) {
