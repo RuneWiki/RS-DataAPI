@@ -1,4 +1,4 @@
-This is a datamining-oriented API for RuneScape and Old School RuneScape. It can be used locally or via https://api.runewiki.org/.  
+This is a datamining-oriented API for RuneScape and Old School RuneScape.
 It utilizes [OpenRS2 Archive](https://archive.openrs2.org/)'s API to access archived cache data.
 
 See [names.tsv](./names.tsv) for a static output of hash names for revision 530.
