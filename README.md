@@ -1,32 +1,40 @@
-## RT4-Data
+## RS-DataAPI
 
-Contains some datamining tools based around my [RT4-Client](https://github.com/Pazaz/RT4-Client) (revision 530). It's been adapted to work with OSRS and up to RS2 rev 727 as well.
+This is a datamining-oriented API for RuneScape and Old School RuneScape. It can be used locally or via https://api.runewiki.org/.  
+It utilizes [OpenRS2 Archive](https://archive.openrs2.org/) to access all of its archived caches.
 
-See [names.tsv](./names.tsv) for a list of all the hash names I was able to identify.
+See [names.tsv](./names.tsv) for a static output of hash names for revision 530.
 
-## Web API
-
-The web API interfaces with OpenRS2 to accelerate cache datamining.
+### Query Parameters
 
 ```
-Query parameters for all routes:
 `openrs2`: internal OpenRS2 ID
+
 `rev`: runescape build number
-`match` (optional): use a specific index to match against multiple build numbers
 
-All routes:
-`/find`: print openrs2 cache metadata
-`/download`: redirect to openrs2 for a specific revision
-`/read/:archive/:group`: download a decompressed group
+`match` (optional w/ rev): use a specific index to match against multiple build numbers, e.g. rev=530 matches openrs2=254 but you want openrs2=731, you can use rev=530&match=1. This is mainly intended for readability purposes.
+```
 
-`/hashes`: name hashes for a cache in runestar format (tsv)
-`/hashes/:archive`: name hashes for a single archive in runestar format (tsv)
+### Routes
 
-`/dump/inv`: Dump inventory configs into a text format
-`/dump/obj`: Dump object configs into a text format
+```
+GET `/find`: print openrs2 cache metadata
 
-`/count/:archive`: Count the number of groups in an archive
-`/count/:archive/:group`: Count the number of files in a group
+GET `/download`: redirect to openrs2's disk.zip for a specific revision
 
-`/sprite/:group`: Convert a sprite into PNG format. Accepts group name, group ID, or spritesheet name (without the `,n` bit at the end)
+GET `/read/:archive/:group`: download a decompressed group
+
+GET `/hashes`: name hashes for a cache in runestar format (tsv)
+
+GET `/hashes/:archive`: name hashes for a single archive in runestar format (tsv), returns a little faster in larger caches
+
+GET `/dump/inv`: Dump inventory configs into a text format (confirmed up to rev 930)
+
+GET `/dump/obj`: Dump object configs into a text format (confirmed up to rev 727)
+
+GET `/count/:archive`: Count the number of groups in an archive
+
+GET `/count/:archive/:group`: Count the number of files in a group
+
+GET `/sprite/:group`: Convert a sprite into PNG format. Accepts group name, group ID, or spritesheet name (without the `,n` bit at the end)
 ```
