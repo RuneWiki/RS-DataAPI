@@ -1,9 +1,25 @@
 This is a datamining-oriented API for RuneScape and Old School RuneScape. It can be used locally or via https://api.runewiki.org/.  
-It utilizes [OpenRS2 Archive](https://archive.openrs2.org/) to access all of its archived caches.
+It utilizes [OpenRS2 Archive](https://archive.openrs2.org/)'s API to access archived cache data.
 
 See [names.tsv](./names.tsv) for a static output of hash names for revision 530.
 
+## Standalone Scripts
+
+Check out [src/rt4/tools](./src/rt4/tools). The files there are scripts I've written to do very specific things. Like dumping all images in rev 930.
+
 ## Web API
+
+This can be used locally (default port: 3000) or via https://api.runewiki.org/. The public version has an API rate limit of 10 requests per 5 seconds.  
+Mass-dumping sprites is better suited running a script.
+
+If you have any suggestions on features to add, feel free to reach out here or on Discord.
+
+### Running Locally
+
+1. Install Node 16+.
+2. Run `npm install`.
+3. Copy `.env.example` to `.env`
+4. Run `npm start`
 
 ### Query Options
 
@@ -15,7 +31,7 @@ See [names.tsv](./names.tsv) for a static output of hash names for revision 530.
 
 ### Routes
 
-`GET /find`:  
+GET `/find`:  
 Print openrs2 cache metadata. Useful to get the OpenRS2 ID and metadata.
 ex: https://api.runewiki.org/find?rev=530
 
