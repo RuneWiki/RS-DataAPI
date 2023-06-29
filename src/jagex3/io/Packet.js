@@ -113,6 +113,24 @@ export default class Packet {
         return Packet.wrap(this.gdata(length, offset, advance));
     }
 
+    gsmart() {
+        let value = this.data[this.pos] & 0xFF;
+        if ((value & 0x80) == 0) {
+            return this.g1();
+        } else {
+            return this.g2() - 0x8000;
+        }
+    }
+
+    gsmarts() {
+        let value = this.data[this.pos] & 0xFF;
+        if ((value & 0x80) == 0) {
+            return this.g1() - 0x40;
+        } else {
+            return this.g2() - 0xC000;
+        }
+    }
+
     gsmart4_() {
         let value = this.data[this.pos] & 0xFF;
         if ((value & 0x80) == 0) {

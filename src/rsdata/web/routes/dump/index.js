@@ -477,6 +477,207 @@ export default function (f, opts, next) {
                 }
 
                 if (code === 1) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        out += `model${i + 1}=model_${data.g2()}\n`;
+                    }
+                } else if (code === 2) {
+                    out += `name=${data.gjstr()}\n`;
+                } else if (code === 3) {
+                    out += `desc=${data.gjstr()}\n`;
+                } else if (code === 12) {
+                    let size = data.g1();
+
+                    if (size !== 1) {
+                        out += `size=${size}\n`;
+                    }
+                } else if (code === 13) {
+                    out += `readyanim=seq_${data.g2()}\n`;
+                } else if (code === 14) {
+                    out += `walkanim=seq_${data.g2()}\n`;
+                } else if (code === 15) {
+                    out += `turnleftanim=seq_${data.g2()}\n`;
+                } else if (code === 16) {
+                    out += `turnrightanim=seq_${data.g2()}\n`;
+                } else if (code === 17) {
+                    out += `walkanims=seq_${data.g2()},seq_${data.g2()},seq_${data.g2()},seq_${data.g2()}\n`;
+                } else if (code === 18) {
+                    out += `category=category_${data.g2()}\n`;
+                } else if (code >= 30 && code < 35) {
+                    out += `op${code - 30 + 1}=${data.gjstr()}\n`;
+                } else if (code === 40) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        out += `recol${i + 1}s=${data.g2()}\n`;
+                        out += `recol${i + 1}d=${data.g2()}\n`;
+                    }
+                } else if (code === 41) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        out += `retex${i + 1}s=${data.g2()}\n`;
+                        out += `retex${i + 1}d=${data.g2()}\n`;
+                    }
+                } else if (code === 60) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        out += `head${i + 1}=model_${data.g2()}\n`;
+                    }
+                } else if (code === 93) {
+                    out += 'visonmap=no\n';
+                } else if (code === 95) {
+                    let level = data.g2();
+                    out += `vislevel=${level !== 0 ? level : 'hide'}\n`;
+                } else if (code === 97) {
+                    out += `resizeh=${data.g2()}\n`;
+                } else if (code === 98) {
+                    out += `resizev=${data.g2()}\n`;
+                } else if (code === 99) {
+                    out += `drawpriority=yes\n`;
+                } else if (code === 100) {
+                    out += `ambient=${data.g1s()}\n`;
+                } else if (code === 101) {
+                    out += `contrast=${data.g1s()}\n`;
+                } else if (code === 102) {
+                    let start = data.g1();
+                    let count = 0;
+
+                    for (let i = start; i != 0; i >>= 1) {
+                        count++;
+                    }
+
+                    for (let i = 0; i < count; i++) {
+                        if (((start & 1) << i) !== 0) {
+                            let sprite = data.gsmart4();
+                            let tile = data.gsmart();
+                            out += `icon${i + 1}=${sprite},${tile}\n`;
+                        }
+                    }
+                } else if (code === 103) {
+                    out += `turnspeed=${data.g2()}\n`;
+                } else if (code === 106 || code === 118) {
+                    let multivarbit = data.g2();
+                    if (multivarbit === 65535) {
+                        multivarbit = -1;
+                    }
+
+                    let multivar = data.g2();
+                    if (multivar === 65535) {
+                        multivar = -1;
+                    }
+
+                    let multinpc = -1;
+                    if (code === 118) {
+                        multinpc = data.g2();
+
+                        if (multinpc === 65535) {
+                            multinpc = -1;
+                        }
+                    }
+
+                    if (multivarbit !== -1) {
+                        out += `multivar=varbit_${multivarbit}\n`;
+                    } else {
+                        out += `multivar=var_${multivar}\n`;
+                    }
+
+                    out += `multinpc=npc_${multinpc}\n`;
+
+                    let count = data.g1();
+                    for (let i = 0; i <= count; i++) {
+                        out += `multinpc${i + 1}=npc_${data.g2()}\n`;
+                    }
+                } else if (code === 107) {
+                    out += `active=no\n`;
+                } else if (code === 109) {
+                    out += `slowmove=no\n`;
+                } else if (code === 111) {
+                    if (game === 'oldschool') {
+                        out += `follower=yes\n`;
+                    } else {
+                        out += `shadowed=no\n`;
+                    }
+                } else if (code === 113) {
+                    out += `shadow=${data.g2()},${data.g2()}\n`;
+                } else if (code === 114) {
+                    out += `shadowmod=${data.g1s()},${data.g1s()}\n`;
+                } else if (code === 114) {
+                    if (game === 'oldschool') {
+                        out += `runanim=seq_${data.g2()}\n`;
+                    } else {
+                        out += `code115=${data.g1()},${data.g1()}\n`;
+                    }
+                } else if (code === 115) {
+                    if (game === 'oldschool') {
+                        out += `runanims=seq_${data.g2()},seq_${data.g2()},seq_${data.g2()},seq_${data.g2()}\n`;
+                    } else {
+                        out += `code115=${data.g1()},${data.g1()}\n`;
+                    }
+                } else if (code === 116) {
+                    out += `crawlanim=seq_${data.g2()}\n`;
+                } else if (code === 117) {
+                    out += `crawlanims=seq_${data.g2()},seq_${data.g2()},seq_${data.g2()},seq_${data.g2()}\n`;
+                } else if (code === 119) {
+                    out += `loginscreenproperties=${data.g1s()}\n`;
+                } else if (code === 122) {
+                    out += `hitbar=${data.g2()}\n`;
+                } else if (code === 123) {
+                    out += `iconheight=${data.g2()}\n`;
+                } else if (code === 125) {
+                    out += `spawndirection=${data.g1s()}\n`;
+                } else if (code === 126) {
+                    out += `minimapmarkerobjectentry=${data.g2()}\n`;
+                } else if (code === 127) {
+                    out += `base=base_${data.g2()}\n`;
+                } else if (code === 128) {
+                    out += `code128=${data.g1()}\n`;
+                } else if (code === 134) {
+                    let sound = data.g2();
+                    if (sound !== 65535) {
+                        out += `idlesound=synth_${sound}\n`;
+                    }
+
+                    sound = data.g2();
+                    if (sound !== 65535) {
+                        out += `crawlsound=synth_${sound}\n`;
+                    }
+
+                    sound = data.g2();
+                    if (sound !== 65535) {
+                        out += `walksound=synth_${sound}\n`;
+                    }
+
+                    sound = data.g2();
+                    if (sound !== 65535) {
+                        out += `runsound=synth_${sound}\n`;
+                    }
+
+                    out += `soundradius=${data.g1()}\n`;
+                } else if (code === 135) {
+                    let op = data.g1();
+                    let cursor = data.g2();
+
+                    out += `cursor1=${cursor},${op}\n`;
+                } else if (code === 136) {
+                    let op = data.g1();
+                    let cursor = data.g2();
+
+                    out += `cursor2=${cursor},${op}\n`;
+                } else if (code === 137) {
+                    out += `attackcursor=${data.g2()}\n`;
+                } else if (code === 249) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        let isString = data.gbool();
+                        let key = data.g3();
+                        let value = isString ? data.gjstr() : data.g4s();
+
+                        out += `param=param_${key},${value}\n`;
+                    }
                 } else {
                     // console.log(`Unknown npc config code ${code}`);
                     break;
@@ -1028,6 +1229,251 @@ export default function (f, opts, next) {
                 }
             }
         });
+
+        return out;
+    });
+
+    f.get('/material', async (req, reply) => {
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
+
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
+        }
+
+        if (!req.query.game && rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        // ----
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
+        let js5 = new Js5MasterIndex(cache);
+
+        // ----
+
+        if (rev < 510 || rev > 839) {
+            reply.code(400);
+            return `Revision ${rev} does not support materials`;
+        }
+
+        if (rev > 753) {
+            reply.code(400);
+            return `Revision ${rev} changes not supported yet`;
+        }
+
+        await js5.getArchive(26);
+        let data = await js5.getFile(26, 0, 0);
+
+        let arr1 = [];
+        let arr2 = [];
+        let arr3 = [];
+        let arr4 = [];
+        let arr5 = [];
+        let arr6 = [];
+        let arr7 = [];
+        let arr8 = [];
+        let arr9 = [];
+        let arr10 = [];
+        let arr11 = [];
+        let arr12 = [];
+        let arr13 = [];
+        let arr14 = [];
+        let arr15 = [];
+        let arr16 = [];
+        let arr17 = [];
+        let arr18 = [];
+        let arr19 = [];
+        let arr20 = [];
+        let arr21 = [];
+
+        let count = data.g2();
+        for (let i = 0; i < count; i++) {
+            arr1[i] = data.gbool();
+        }
+
+        for (let i = 0; i < count; i++) {
+            if (arr1[i]) {
+                arr2[i] = data.gbool();
+            }
+        }
+
+        for (let i = 0; i < count; i++) {
+            if (arr1[i]) {
+                arr3[i] = data.gbool();
+            }
+        }
+
+        for (let i = 0; i < count; i++) {
+            if (arr1[i]) {
+                arr4[i] = data.gbool();
+            }
+        }
+
+        if (rev < 600) {
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr5[i] = data.gbool();
+                }
+            }
+        }
+
+        for (let i = 0; i < count; i++) {
+            if (arr1[i]) {
+                arr6[i] = data.g1s();
+            }
+        }
+
+        for (let i = 0; i < count; i++) {
+            if (arr1[i]) {
+                arr7[i] = data.g1s();
+            }
+        }
+
+        for (let i = 0; i < count; i++) {
+            if (arr1[i]) {
+                arr8[i] = data.g1s();
+            }
+        }
+
+        for (let i = 0; i < count; i++) {
+            if (arr1[i]) {
+                arr9[i] = data.g1s();
+            }
+        }
+
+        for (let i = 0; i < count; i++) {
+            if (arr1[i]) {
+                arr10[i] = data.g2();
+            }
+        }
+
+        if (data.available > 0) {
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr11[i] = data.g1s();
+                }
+            }
+
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr12[i] = data.g1s();
+                }
+            }
+
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr13[i] = data.gbool();
+                }
+            }
+
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr14[i] = data.gbool();
+                }
+            }
+
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr15[i] = data.g1s();
+                }
+            }
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr16[i] = data.gbool();
+                }
+            }
+
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr17[i] = data.gbool();
+                }
+            }
+
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr18[i] = data.gbool();
+                }
+            }
+        }
+
+        if (data.available > 0) {
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr19[i] = data.g1();
+                }
+            }
+
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr20[i] = data.g4();
+                }
+            }
+
+            for (let i = 0; i < count; i++) {
+                if (arr1[i]) {
+                    arr21[i] = data.g1();
+                }
+            }
+        }
+
+        if (data.available != 0) {
+            console.log(data.available);
+            reply.code(400);
+            return 'Bad decode';
+        }
+
+        let out = '';
+
+        for (let i = 0; i < count; i++) {
+            if (!arr1[i]) {
+                continue;
+            }
+
+            if (i > 0) {
+                out += '\n';
+            }
+
+            out += `[material_${i}]\n`;
+            out += `arr2=${arr2[i]}\n`;
+            out += `arr3=${arr3[i]}\n`;
+            out += `arr4=${arr4[i]}\n`;
+            if (rev < 700) {
+                out += `arr5=${arr5[i]}\n`;
+            }
+            out += `arr6=${arr6[i]}\n`;
+            out += `arr7=${arr7[i]}\n`;
+            out += `arr8=${arr8[i]}\n`;
+            out += `arr9=${arr9[i]}\n`;
+            out += `arr10=${arr10[i]}\n`;
+
+            if (arr11.length) {
+                out += `arr11=${arr11[i]}\n`;
+                out += `arr12=${arr12[i]}\n`;
+                out += `arr13=${arr13[i]}\n`;
+                out += `arr14=${arr14[i]}\n`;
+                out += `arr15=${arr15[i]}\n`;
+                out += `arr16=${arr16[i]}\n`;
+                out += `arr17=${arr17[i]}\n`;
+                out += `arr18=${arr18[i]}\n`;
+            }
+
+            if (arr19.length) {
+                out += `arr19=${arr19[i]}\n`;
+                out += `arr20=${arr20[i]}\n`;
+                out += `arr21=${arr21[i]}\n`;
+            }
+        }
 
         return out;
     });

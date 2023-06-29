@@ -3,6 +3,7 @@ import { findCache } from '#rsdata/util/OpenRS2.js';
 
 export default function (f, opts, next) {
     f.get(`/:archive/:group`, async (req, reply) => {
+        const { archive, group } = req.params;
         const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
         let { rev = -1, game = 'runescape' } = req.query;
 
@@ -36,6 +37,7 @@ export default function (f, opts, next) {
     });
 
     f.get(`/:archive`, async (req, reply) => {
+        const { archive } = req.params;
         const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
         let { rev = -1, game = 'runescape' } = req.query;
 
