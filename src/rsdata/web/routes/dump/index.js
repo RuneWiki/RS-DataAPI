@@ -126,6 +126,41 @@ export default function (f, opts, next) {
 
         // ----
 
+        function getWearPos(id) {
+            switch (id) {
+                case 0:
+                    return 'hat';
+                case 1:
+                    return 'back';
+                case 2:
+                    return 'front';
+                case 3:
+                    return 'righthand';
+                case 4:
+                    return 'torso';
+                case 5:
+                    return 'lefthand';
+                case 6:
+                    return 'arms';
+                case 7:
+                    return 'legs';
+                case 8:
+                    return 'head';
+                case 9:
+                    return 'hands';
+                case 10:
+                    return 'feet';
+                case 11:
+                    return 'jaw';
+                case 12:
+                    return 'ring';
+                case 13:
+                    return 'quiver';
+                default:
+                    return id.toString();
+            }
+        }
+
         let out = '';
         let dump = async (id, data) => {
             if (id > 0) {
@@ -177,9 +212,9 @@ export default function (f, opts, next) {
                 } else if (code === 12) {
                     out += `cost=${data.g4s()}\n`;
                 } else if (code === 13) {
-                    out += `wearpos=${data.g1()}\n`;
+                    out += `wearpos=${getWearPos(data.g1())}\n`;
                 } else if (code === 14) {
-                    out += `wearpos2=${data.g1()}\n`;
+                    out += `wearpos2=${getWearPos(data.g1())}\n`;
                 } else if (code === 16) {
                     out += `members=yes\n`;
                 } else if (code === 18) {
@@ -235,7 +270,7 @@ export default function (f, opts, next) {
 
                     out += `womanwear2=model_${model}\n`;
                 } else if (code === 27) {
-                    out += `wearpos3=${data.g1()}\n`;
+                    out += `wearpos3=${getWearPos(data.g1())}\n`;
                 } else if (code >= 30 && code < 35) {
                     out += `op${code - 30 + 1}=${data.gjstr()}\n`;
                 } else if (code >= 35 && code < 40) {
