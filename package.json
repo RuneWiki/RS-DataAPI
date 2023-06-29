@@ -1,15 +1,14 @@
 {
-  "name": "2009scape-data",
+  "name": "rs-dataapi",
   "version": "1.0",
   "description": "",
   "type": "module",
   "imports": {
     "#jagex3/*": "./src/jagex3/*",
-    "#rt4/*": "./src/rt4/*"
+    "#rsdata/*": "./src/rsdata/*"
   },
   "scripts": {
-    "start": "nodemon --ignore data src/rt4/web/app.js",
-    "make:names.tsv": "nodemon src/rt4/tools/make-namestsv.js"
+    "start": "nodemon --ignore data src/rsdata/web/app.js"
   },
   "dependencies": {
     "@fastify/autoload": "^5.7.1",

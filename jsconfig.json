@@ -5,8 +5,8 @@
             "#jagex3/*": [
                 "src/jagex3/*"
             ],
-            "#rt4/*": [
-                "src/rt4/*"
+            "#rsdata/*": [
+                "src/rsdata/*"
             ]
         }
     },

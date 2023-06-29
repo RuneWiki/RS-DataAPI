@@ -4,7 +4,7 @@ import path from 'path';
 import Fastify from 'fastify';
 import ejs from 'ejs';
 
-import { initHashes } from '#rt4/enum/hashes.js';
+import { initHashes } from '#rsdata/enum/hashes.js';
 
 const fastify = Fastify({
     logger: process.env.DEV_MODE == 1
@@ -37,7 +37,7 @@ await fastify.register(import('@fastify/formbody'));
 await fastify.register(import('@fastify/multipart'));
 
 await fastify.register(import('@fastify/autoload'), {
-    dir: path.join(process.cwd(), 'routes')
+    dir: path.join(process.cwd(), 'src', 'rsdata', 'web', 'routes')
 });
 
 fastify.listen({ port: process.env.WEB_PORT, host: '0.0.0.0' }, () => {

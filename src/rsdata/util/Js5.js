@@ -1,6 +1,6 @@
 import Packet from '#jagex3/io/Packet.js';
-import { hashCode } from '#rt4/enum/hashes.js';
-import { findCache, readGroup } from '#rt4/util/OpenRS2.js';
+import { hashCode } from '#rsdata/enum/hashes.js';
+import { findCache, readGroup } from '#rsdata/util/OpenRS2.js';
 
 class Js5Index {
     openrs2 = -1;

@@ -3,7 +3,7 @@ It utilizes [OpenRS2 Archive](https://archive.openrs2.org/)'s API to access arch
 
 ## Standalone Scripts
 
-Check out [src/rt4/tools](./src/rt4/tools). The files there are scripts I've written to do very specific things. Like dumping all images in rev 930.
+Check out [src/rsdata/tools](./src/rsdata/tools). The files there are scripts I've written to do very specific things. Like dumping all images in rev 930.
 
 ## Web API
 

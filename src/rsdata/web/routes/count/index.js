@@ -1,5 +1,5 @@
-import Js5MasterIndex from '#rt4/util/Js5.js';
-import { findCache } from '#rt4/util/OpenRS2.js';
+import Js5MasterIndex from '#rsdata/util/Js5.js';
+import { findCache } from '#rsdata/util/OpenRS2.js';
 
 export default function (f, opts, next) {
     f.get(`/:archive/:group`, async (req, reply) => {

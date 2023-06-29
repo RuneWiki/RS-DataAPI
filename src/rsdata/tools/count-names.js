@@ -1,5 +1,5 @@
 import fs from 'fs';
-import Js5 from '#rt4/util/Js5.js';
+import Js5 from '#rsdata/util/Js5.js';
 
 let cache = new Js5();
 await cache.load();

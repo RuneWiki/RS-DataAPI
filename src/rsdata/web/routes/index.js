@@ -1,6 +1,6 @@
-import Js5MasterIndex from '#rt4/util/Js5.js';
+import Js5MasterIndex from '#rsdata/util/Js5.js';
 
-import { findCache, OPENRS2_API } from '#rt4/util/OpenRS2.js';
+import { findCache, OPENRS2_API } from '#rsdata/util/OpenRS2.js';
 
 export default function (f, opts, next) {
     f.get('/download', async (req, reply) => {

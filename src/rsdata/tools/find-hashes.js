@@ -1,12 +1,11 @@
 import {} from 'dotenv/config';
 import fs from 'fs';
 
-import Js5 from '#rt4/util/Js5.js';
-import { findCache } from '#rt4/util/OpenRS2.js';
-import { initHashes, hashCode, exportHashes, getNamesByHash } from '#rt4/enum/hashes.js';
+import Js5 from '#rsdata/util/Js5.js';
+import { findCache } from '#rsdata/util/OpenRS2.js';
+import { initHashes, hashCode, exportHashes, getNamesByHash } from '#rsdata/enum/hashes.js';
 
-// re-start from the beginning
-const SKIP_KNOWN_HASHES = false;
+const SKIP_KNOWN_HASHES = true; // re-start from the beginning
 
 // ----
 
@@ -14,9 +13,10 @@ function* generate(chars) {
     let len = chars.length;
     let queue = Array(len).fill(0).map((_, n) => [n]);
 
-    while (1) {
+    while (true) {
         let a = queue.shift();
         yield a.map(n => chars[n]).join('');
+
         for (let n = a[a.length - 1]; n < len; n++) {
             queue.push(a.concat(n));
         }
@@ -62,15 +62,15 @@ if (!process.env.DEV_MODE) {
     initHashes();
 }
 
-let cache = new Js5(findCache(530).id);
+let cache = new Js5(findCache(410).id);
 cache.init();
 
 let missing = [];
 for (let i = 0; i < cache.archives.length; i++) {
     let index = cache.archives[i];
-    // if (index.id !== 12) {
-    //     continue;
-    // }
+    if (index.id !== 8) {
+        continue;
+    }
 
     await index.load();
 
@@ -90,7 +90,7 @@ for (let i = 0; i < cache.archives.length; i++) {
             for (let f = 0; f < index.fileIds.length; f++) {
                 let fhash = index.fileNameHashes[g][f];
 
-                if (typeof fhash !== 'undefined' && fhash !== -1) {
+                if (typeof fhash !== 'undefined' && fhash !== -1 && fhash != 0) {
                     if (SKIP_KNOWN_HASHES && getNamesByHash(fhash).length) {
                         continue;
                     }
@@ -125,6 +125,6 @@ process.on('SIGINT', function() {
 console.log(missing.length, 'hashes to find');
 
 if (missing.length) {
-    await bruteForce(missing, hashes, '', '');
+    await bruteForce(missing, hashes);
     save();
 }

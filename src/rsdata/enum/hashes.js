@@ -72,6 +72,13 @@ export function initHashes() {
         addHash(name);
     });
 
+    // seed with known names from openrs2
+    fs.readFileSync('openrs2.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+        let parts = x.split('\t');
+
+        addHash(parts[1]);
+    });
+
     // expand sprite groups
     Object.keys(master).forEach(hash => {
         let names = master[hash];
@@ -378,6 +385,7 @@ export function initHashes() {
 
 export function exportHashes(list) {
     let out = '';
+
     for (let hash in list) {
         out += hash + '\t' + list[hash].join('\t') + '\n';
     }
