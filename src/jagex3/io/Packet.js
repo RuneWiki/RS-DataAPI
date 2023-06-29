@@ -96,7 +96,7 @@ export default class Packet {
             len++;
         }
 
-        let str = new TextDecoder('ascii').decode(this.data.subarray(this.pos, this.pos + len));
+        let str = new TextDecoder('windows-1252').decode(this.data.subarray(this.pos, this.pos + len));
         this.pos += len + 1;
         return str;
     }

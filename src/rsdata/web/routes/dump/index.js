@@ -42,9 +42,9 @@ async function executeConfigFiles(js5, group, cb) {
 }
 
 export default function (f, opts, next) {
-    f.get('/inv', async (req, reply) => {
-        const { rev = -1, openrs2 = -1, match = 0, lang = 'en' } = req.query;
-        let { game = 'runescape' } = req.query;
+    f.get('/flu', async (req, reply) => {
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
 
         if (rev === -1 && openrs2 === -1) {
             reply.code(400);
@@ -63,6 +63,223 @@ export default function (f, opts, next) {
             return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
         }
 
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
+        let js5 = new Js5MasterIndex(cache);
+
+        // ----
+
+        let out = '';
+        await executeConfigFiles(js5, 1, async (id, data) => {
+            if (id > 0) {
+                out += '\n';
+            }
+
+            out += `[flu_${id}]\n`;
+            while (data.available > 0) {
+                let code = data.g1();
+                if (code === 0) {
+                    break;
+                }
+
+                if (code === 1) {
+                    out += `colour=0x${data.g3().toString(16).padStart(6, '0')}\n`;
+                } else if (code === 2) {
+                    let texture = data.g2();
+                    if (texture === 65535) {
+                        texture = -1;
+                    }
+
+                    out += `texture=${texture}\n`;
+                } else if (code === 3) {
+                    out += `scale=${data.g2()}\n`;
+                } else if (code === 4) {
+                    out += `blockshadow=no\n`;
+                } else {
+                    // console.log(`Unknown flu config code ${code}`);
+                    break;
+                }
+            }
+        });
+
+        return out;
+    });
+
+    f.get('/idk', async (req, reply) => {
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
+
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
+        }
+
+        if (!req.query.game && rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        // ----
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
+        let js5 = new Js5MasterIndex(cache);
+
+        // ----
+
+        let out = '';
+        await executeConfigFiles(js5, 3, async (id, data) => {
+            if (id > 0) {
+                out += '\n';
+            }
+
+            out += `[idk_${id}]\n`;
+            while (data.available > 0) {
+                let code = data.g1();
+                if (code === 0) {
+                    break;
+                }
+
+                if (code === 1) {
+                } else {
+                    // console.log(`Unknown idk config code ${code}`);
+                    break;
+                }
+            }
+        });
+
+        return out;
+    });
+
+    f.get('/flo', async (req, reply) => {
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
+
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
+        }
+
+        if (!req.query.game && rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        // ----
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
+        let js5 = new Js5MasterIndex(cache);
+
+        // ----
+
+        let out = '';
+        await executeConfigFiles(js5, 4, async (id, data) => {
+            if (id > 0) {
+                out += '\n';
+            }
+
+            out += `[flo_${id}]\n`;
+            while (data.available > 0) {
+                let code = data.g1();
+                if (code === 0) {
+                    break;
+                }
+
+                if (code === 1) {
+                    out += `colour=0x${data.g3().toString(16).toUpperCase().padStart(6, '0')}\n`;
+                } else if (code === 2) {
+                    out += `texture=${data.g1()}\n`;
+                } else if (code === 3) {
+                    if (game === 'runescape' && rev >= 500) {
+                        let texture = data.g2();
+                        if (texture === 65535) {
+                            texture = -1;
+                        }
+                        out += `texture=${data.g2()}\n`;
+                    } else if (game === 'runescape') {
+                        // 194-254 combined flo/flu
+                        out += `overlay=yes\n`;
+                    }
+                } else if (code === 5) {
+                    out += `occlude=no\n`;
+                } else if (code === 6) {
+                    // 194-254
+                    out += `editname=${data.gjstr()}\n`;
+                } else if (code === 7) {
+                    out += `mapcolour=0x${data.g3().toString(16).toUpperCase().padStart(6, '0')}\n`;
+                } else if (code === 8) {
+                    out += 'code8=yes\n';
+                } else if (code === 9) {
+                    out += `scale=${data.g2()}\n`;
+                } else if (code === 10) {
+                    out += `blockshadow=no\n`;
+                } else if (code === 11) {
+                    out += `brightness=${data.g1()}\n`;
+                } else if (code === 12) {
+                    out += `blend=yes\n`;
+                } else if (code === 13) {
+                    out += `watercolour=${data.g3().toString(16).toUpperCase().padStart(6, '0')}\n`;
+                } else if (code === 14) {
+                    out += `wateropacity=${data.g1()}\n`;
+                } else if (code === 16) {
+                    out += `waterintensity=${data.g1()}\n`;
+                } else if (code === 20) {
+                    out += `code20=${data.g2()}\n`;
+                } else if (code === 21) {
+                    out += `code21=${data.g1()}\n`;
+                } else if (code === 22) {
+                    out += `code22=${data.g2()}\n`;
+                } else {
+                    // console.log(`Unknown flo config code ${code}`);
+                    break;
+                }
+            }
+        });
+
+        return out;
+    });
+
+    f.get('/inv', async (req, reply) => {
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
+
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
+        }
+
+        if (!req.query.game && rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        // ----
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
         game = cache.game;
         let js5 = new Js5MasterIndex(cache);
 
@@ -90,11 +307,188 @@ export default function (f, opts, next) {
                         out += `stock${j + 1}=obj_${data.g2()},${data.g2()}\n`;
                     }
                 } else {
-                    console.log(`Unknown inv config code ${code}`);
+                    // console.log(`Unknown inv config code ${code}`);
                     break;
                 }
             }
         });
+
+        return out;
+    });
+
+    f.get('/loc', async (req, reply) => {
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
+
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
+        }
+
+        if (!req.query.game && rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        // ----
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
+        let js5 = new Js5MasterIndex(cache);
+
+        // ----
+
+        let out = '';
+        let dump = async (id, data) => {
+            if (id > 0) {
+                out += '\n';
+            }
+
+            out += `[loc_${id}]\n`;
+            while (data.available > 0) {
+                let code = data.g1();
+                if (code === 0) {
+                    break;
+                }
+
+                if (code === 1) {
+                } else {
+                    // console.log(`Unknown loc config code ${code}`);
+                    break;
+                }
+            }
+        };
+
+        if (cache.indexes >= 16 && game != 'oldschool') {
+            await executeConfigGroups(js5, 16, dump);
+        } else {
+            await executeConfigFiles(js5, 6, dump);
+        }
+
+        return out;
+    });
+
+    f.get('/enum', async (req, reply) => {
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
+
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
+        }
+
+        if (!req.query.game && rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        // ----
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
+        let js5 = new Js5MasterIndex(cache);
+
+        // ----
+
+        let out = '';
+        let dump = async (id, data) => {
+            if (id > 0) {
+                out += '\n';
+            }
+
+            out += `[enum_${id}]\n`;
+            while (data.available > 0) {
+                let code = data.g1();
+                if (code === 0) {
+                    break;
+                }
+
+                if (code === 1) {
+                } else {
+                    // console.log(`Unknown enum config code ${code}`);
+                    break;
+                }
+            }
+        };
+
+        if (cache.indexes >= 17 && game != 'oldschool') {
+            await executeConfigGroups(js5, 17, dump);
+        } else {
+            await executeConfigFiles(js5, 8, dump);
+        }
+
+        return out;
+    });
+
+    f.get('/npc', async (req, reply) => {
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
+
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
+        }
+
+        if (!req.query.game && rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        // ----
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
+        let js5 = new Js5MasterIndex(cache);
+
+        // ----
+
+        let out = '';
+        let dump = async (id, data) => {
+            if (id > 0) {
+                out += '\n';
+            }
+
+            out += `[npc_${id}]\n`;
+            while (data.available > 0) {
+                let code = data.g1();
+                if (code === 0) {
+                    break;
+                }
+
+                if (code === 1) {
+                } else {
+                    // console.log(`Unknown npc config code ${code}`);
+                    break;
+                }
+            }
+        };
+
+        if (cache.indexes >= 18 && game != 'oldschool') {
+            await executeConfigGroups(js5, 18, dump);
+        } else {
+            await executeConfigFiles(js5, 9, dump);
+        }
 
         return out;
     });
@@ -485,6 +879,155 @@ export default function (f, opts, next) {
         } else {
             await executeConfigFiles(js5, 10, dump);
         }
+
+        return out;
+    });
+
+    f.get('/param', async (req, reply) => {
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
+
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
+        }
+
+        if (!req.query.game && rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        // ----
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
+        let js5 = new Js5MasterIndex(cache);
+
+        // ----
+
+        let out = '';
+        await executeConfigFiles(js5, 11, async (id, data) => {
+            if (id > 0) {
+                out += '\n';
+            }
+
+            out += `[param_${id}]\n`;
+            while (data.available > 0) {
+                let code = data.g1();
+                if (code === 0) {
+                    break;
+                }
+
+                if (code === 1) {
+                    let type = 0;
+                    let char = '';
+
+                    if (rev > 800) {
+                        // TODO
+                    } else {
+                        type = data.g1();
+                        char = new TextDecoder('windows-1252').decode(Uint8Array.from([type]));
+                    }
+
+                    switch (char) {
+                        case 'i':
+                            type = 'int';
+                            break;
+                        case 'g':
+                            type = 'enum';
+                            break;
+                        case 'd':
+                            type = 'graphic';
+                            break;
+                        case 'O':
+                            type = 'namedobj';
+                            break;
+                        case 'm':
+                            type = 'model';
+                            break;
+                        case 'S':
+                            type = 'stat';
+                            break;
+                        case 's':
+                            type = 'string';
+                            break;
+                        case 'o':
+                            type = 'obj';
+                            break;
+                        case 'l':
+                            type = 'loc';
+                            break;
+                        case 'I':
+                            type = 'component';
+                            break;
+                        case 'J':
+                            type = 'struct';
+                            break;
+                        case '1':
+                            type = 'boolean';
+                            break;
+                        case 'c':
+                            type = 'coord';
+                            break;
+                        case 'y':
+                            type = 'category';
+                            break;
+                        case 't':
+                            type = 'spotanim';
+                            break;
+                        case 'n':
+                            type = 'npc';
+                            break;
+                        case 'v':
+                            type = 'inv';
+                            break;
+                        case 'P':
+                            type = 'synth';
+                            break;
+                        case 'A':
+                            type = 'seq';
+                            break;
+                        case 'Ð':
+                            type = 'dbrow';
+                            break;
+                        case 'µ':
+                            type = 'mapelement';
+                            break;
+                        // case 'K':
+                        //     break;
+                        // case '@':
+                        //     break;
+                        // case 'x':
+                        //     break;
+                        // case '«':
+                        //     break;
+                        // case '€':
+                        //     break;
+                        default:
+                            // console.log(`Unknown param type ${type}: ${char}`);
+                            break;
+                    }
+
+                    out += `type=${type}\n`;
+                } else if (code === 2) {
+                    out += `default=${data.g4s()}\n`;
+                } else if (code === 4) {
+                    out += `autodisable=no\n`;
+                } else if (code === 5) {
+                    out += `default=${data.gjstr()}\n`;
+                } else {
+                    // console.log(`Unknown param config code ${code}`);
+                    break;
+                }
+            }
+        });
 
         return out;
     });
