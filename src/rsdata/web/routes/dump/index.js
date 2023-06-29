@@ -520,6 +520,12 @@ export default function (f, opts, next) {
                         out += `retex${i + 1}s=${data.g2()}\n`;
                         out += `retex${i + 1}d=${data.g2()}\n`;
                     }
+                } else if (code === 42) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        out += `recol${i + 1}p=${data.g1s()}\n`;
+                    }
                 } else if (code === 60) {
                     let count = data.g1();
 
@@ -542,19 +548,23 @@ export default function (f, opts, next) {
                 } else if (code === 101) {
                     out += `contrast=${data.g1s()}\n`;
                 } else if (code === 102) {
-                    let start = data.g1();
-                    let count = 0;
+                    if (game === 'oldschool') {
+                        let start = data.g1();
+                        let count = 0;
 
-                    for (let i = start; i != 0; i >>= 1) {
-                        count++;
-                    }
-
-                    for (let i = 0; i < count; i++) {
-                        if (((start & 1) << i) !== 0) {
-                            let sprite = data.gsmart4();
-                            let tile = data.gsmart();
-                            out += `icon${i + 1}=${sprite},${tile}\n`;
+                        for (let i = start; i != 0; i >>= 1) {
+                            count++;
                         }
+
+                        for (let i = 0; i < count; i++) {
+                            if (((start & 1) << i) !== 0) {
+                                let sprite = data.gsmart4();
+                                let tile = data.gsmart();
+                                out += `icon${i + 1}=${sprite},${tile}\n`;
+                            }
+                        }
+                    } else {
+                        out += `icon=${data.g2()}\n`;
                     }
                 } else if (code === 103) {
                     out += `turnspeed=${data.g2()}\n`;
@@ -622,6 +632,13 @@ export default function (f, opts, next) {
                     out += `crawlanims=seq_${data.g2()},seq_${data.g2()},seq_${data.g2()},seq_${data.g2()}\n`;
                 } else if (code === 119) {
                     out += `loginscreenproperties=${data.g1s()}\n`;
+                } else if (code === 121) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        let index = data.g1();
+                        out += `modeloff${index + 1}=${data.g1s()},${data.g1s()},${data.g1s()}\n`;
+                    }
                 } else if (code === 122) {
                     out += `hitbar=${data.g2()}\n`;
                 } else if (code === 123) {
@@ -679,7 +696,7 @@ export default function (f, opts, next) {
                         out += `param=param_${key},${value}\n`;
                     }
                 } else {
-                    // console.log(`Unknown npc config code ${code}`);
+                    console.log(`Unknown npc config code ${code}`);
                     break;
                 }
             }
@@ -893,7 +910,7 @@ export default function (f, opts, next) {
 
                         config.recol_p = [];
                         for (let i = 0; i < count; i++) {
-                            out += `recolp${i + 1}=${data.g1s()}\n`;
+                            out += `recol${i + 1}p=${data.g1s()}\n`;
                         }
                     }
                 } else if (code === 43) {
