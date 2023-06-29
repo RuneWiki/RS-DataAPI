@@ -30,7 +30,7 @@ export default function (f, opts, next) {
                 if (missing && !hashes.length) {
                     output += `${index.id}\t${g}\t-1\t${ghash}\n`;
                 } else if (!missing) {
-                    output += `${index.id}\t${g}\t-1\t${ghash}\t${hashes.join('t')}\n`;
+                    output += `${index.id}\t${g}\t-1\t${ghash}\t${hashes.join('\t')}\n`;
                 }
             }
 
@@ -44,7 +44,7 @@ export default function (f, opts, next) {
                         if (missing && !hashes.length) {
                             output += `${index.id}\t${g}\t${f}\t${fhash}\n`;
                         } else if (!missing) {
-                            output += `${index.id}\t${g}\t${f}\t${fhash}\t${hashes.join('t')}\n`;
+                            output += `${index.id}\t${g}\t${f}\t${fhash}\t${hashes.join('\t')}\n`;
                         }
                     }
                 }
@@ -80,7 +80,7 @@ export default function (f, opts, next) {
                     if (missing && !hashes.length) {
                         output += `${index.id}\t${g}\t-1\t${ghash}\n`;
                     } else if (!missing) {
-                        output += `${index.id}\t${g}\t-1\t${ghash}\t${hashes.join('t')}\n`;
+                        output += `${index.id}\t${g}\t-1\t${ghash}\t${hashes.join('\t')}\n`;
                     }
                 }
 
@@ -94,7 +94,7 @@ export default function (f, opts, next) {
                             if (missing && !hashes.length) {
                                 output += `${index.id}\t${g}\t${f}\t${fhash}\n`;
                             } else if (!missing) {
-                                output += `${index.id}\t${g}\t${f}\t${fhash}\t${hashes.join('t')}\n`;
+                                output += `${index.id}\t${g}\t${f}\t${fhash}\t${hashes.join('\t')}\n`;
                             }
                         }
                     }
