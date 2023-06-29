@@ -237,15 +237,33 @@ async function decodeImage(data) {
 export default function (f, opts, next) {
     f.get(`/:name`, async (req, reply) => {
         const { name } = req.params;
-        const { rev = -1, openrs2 = -1, match = 0, lang } = req.query;
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
 
-        let cache = findCache(rev, openrs2, match, lang);
-        if (!cache) {
-            reply.code(404);
-            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang}`;
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
         }
 
+        if (!req.query.game && rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        // ----
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
         let js5 = new Js5MasterIndex(cache);
+
+        // ----
 
         if (await js5.indexes[8].getGroupByName(`${name},0`)) {
             // this is a spritesheet split across multiple groups
