@@ -245,14 +245,13 @@ export default function (f, opts, next) {
             return `Could not find cache for ${rev} ${openrs2} ${match} ${lang}`;
         }
 
-        let js5 = new Js5MasterIndex(cache.id);
-        js5.init();
+        let js5 = new Js5MasterIndex(cache);
 
-        if (await js5.archives[8].getGroupByName(`${name},0`)) {
+        if (await js5.indexes[8].getGroupByName(`${name},0`)) {
             // this is a spritesheet split across multiple groups
             let count = 0;
             for (let i = 0; i < 512; i++) {
-                if (await js5.archives[8].getGroupByName(`${name},${i}`)) {
+                if (await js5.indexes[8].getGroupByName(`${name},${i}`)) {
                     count++;
                 } else {
                     break;
@@ -261,7 +260,7 @@ export default function (f, opts, next) {
 
             let sprites = [];
             for (let i = 0; i < count; i++) {
-                let data = await js5.archives[8].getGroupByName(`${name},${i}`);
+                let data = await js5.indexes[8].getGroupByName(`${name},${i}`);
                 sprites.push(await decodeImage(data));
             }
 
@@ -316,8 +315,8 @@ export default function (f, opts, next) {
 
             reply.type('image/png');
             return sheet.getBufferAsync(Jimp.MIME_PNG);
-        } else if (await js5.archives[8].getGroupByName(name)) {
-            let data = await js5.archives[8].getGroupByName(name);
+        } else if (await js5.indexes[8].getGroupByName(name)) {
+            let data = await js5.indexes[8].getGroupByName(name);
 
             // this is a self-contained spritesheet/single sprite
             let img = await decodeImage(data);
@@ -329,7 +328,7 @@ export default function (f, opts, next) {
                 return `Could not find group ${name}`;
             }
 
-            let data = await js5.archives[8].getGroup(Number(name));
+            let data = await js5.indexes[8].getGroup(Number(name));
             if (!data) {
                 reply.code(404);
                 return `Could not find group ${name}`;

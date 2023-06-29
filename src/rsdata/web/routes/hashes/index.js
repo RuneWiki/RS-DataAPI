@@ -14,12 +14,11 @@ export default function (f, opts, next) {
             return `Could not find cache for ${rev} ${openrs2} ${match}`;
         }
 
-        let js5 = new Js5MasterIndex(cache.id);
-        js5.init();
+        let js5 = new Js5MasterIndex(cache);
 
         let output = '';
         let a = archive;
-        let index = js5.archives[a];
+        let index = js5.indexes[a];
         await index.load();
 
         for (let g = 0; g < index.capacity; g++) {
@@ -63,12 +62,11 @@ export default function (f, opts, next) {
             return `Could not find cache for ${rev} ${openrs2} ${match}`;
         }
 
-        let js5 = new Js5MasterIndex(cache.id);
-        js5.init();
+        let js5 = new Js5MasterIndex(cache);
 
         let output = '';
-        for (let a = 0; a < js5.archives.length; a++) {
-            let index = js5.archives[a];
+        for (let a = 0; a < js5.indexes.length; a++) {
+            let index = js5.indexes[a];
 
             await index.load();
 

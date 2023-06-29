@@ -12,11 +12,10 @@ export default function (f, opts, next) {
             return `Could not find cache for ${rev} ${openrs2} ${match}`;
         }
 
-        let js5 = new Js5MasterIndex(cache.id);
-        js5.init();
-        await js5.archives[archive].load();
+        let js5 = new Js5MasterIndex(cache);
+        await js5.indexes[archive].load();
 
-        return js5.archives[archive].fileIds[group].length.toString();
+        return js5.indexes[archive].fileIds[group].length.toString();
     });
 
     f.get(`/:archive`, async (req, reply) => {
@@ -29,11 +28,10 @@ export default function (f, opts, next) {
             return `Could not find cache for ${rev} ${openrs2} ${match}`;
         }
 
-        let js5 = new Js5MasterIndex(cache.id);
-        js5.init();
-        await js5.archives[archive].load();
+        let js5 = new Js5MasterIndex(cache);
+        await js5.indexes[archive].load();
 
-        return js5.archives[archive].capacity.toString();
+        return js5.indexes[archive].capacity.toString();
     });
 
     next();

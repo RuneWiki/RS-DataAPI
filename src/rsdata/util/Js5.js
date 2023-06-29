@@ -1,6 +1,6 @@
 import Packet from '#jagex3/io/Packet.js';
 import { hashCode } from '#rsdata/enum/hashes.js';
-import { findCache, readGroup } from '#rsdata/util/OpenRS2.js';
+import { readGroup } from '#rsdata/util/OpenRS2.js';
 
 class Js5Index {
     openrs2 = -1;
@@ -28,6 +28,10 @@ class Js5Index {
     }
 
     async load() {
+        if (this.size !== -1) {
+            return;
+        }
+
         let data = await readGroup(this.openrs2, 255, this.id);
         if (!data) {
             return;
@@ -244,19 +248,51 @@ class Js5Index {
 }
 
 export default class Js5MasterIndex {
-    openrs2 = -1;
-    archives = [];
+    openrs2 = null;
+    indexes = [];
 
     constructor(openrs2) {
         this.openrs2 = openrs2;
+
+        // TODO: skipping invalid archives
+        for (let archive = 0; archive < this.openrs2.indexes; archive++) {
+            this.indexes[archive] = new Js5Index(archive, this.openrs2.id);
+        }
     }
 
-    init() {
-        let cache = findCache(-1, this.openrs2);
-
-        // TODO: skip invalid archives
-        for (let archive = 0; archive < cache.indexes; archive++) {
-            this.archives[archive] = new Js5Index(archive, this.openrs2);
+    async getArchive(archive) {
+        if (archive >= this.openrs2.indexes || archive < 0) {
+            return null;
         }
+
+        if (this.indexes[archive].size === -1) {
+            await this.indexes[archive].load();
+        }
+
+        return this.indexes[archive];
+    }
+
+    async getGroup(archive, group) {
+        if (archive >= this.openrs2.indexes || archive < 0) {
+            return null;
+        }
+
+        return this.indexes[archive].getGroup(group);
+    }
+
+    async getGroupByName(archive, name) {
+        if (archive >= this.openrs2.indexes || archive < 0) {
+            return null;
+        }
+
+        return this.indexes[archive].getGroupByName(name);
+    }
+
+    async getFile(archive, group, file) {
+        if (archive >= this.openrs2.indexes || archive < 0) {
+            return null;
+        }
+
+        return this.indexes[archive].getFile(group, file);
     }
 }

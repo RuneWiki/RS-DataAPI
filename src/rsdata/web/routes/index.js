@@ -30,10 +30,9 @@ export default function (f, opts, next) {
             return `Could not find cache for ${rev} ${openrs2} ${match}`;
         }
 
-        let js5 = new Js5MasterIndex(cache.id);
-        js5.init();
+        let js5 = new Js5MasterIndex(cache);
 
-        let data = await js5.archives[archive].getGroup(group, true);
+        let data = await js5.indexes[archive].getGroup(group, true);
         if (!data) {
             reply.code(404);
             return `Could not find group ${group} in archive ${archive}`;
@@ -81,11 +80,10 @@ export default function (f, opts, next) {
             return `Could not find cache for ${rev} ${openrs2} ${match}`;
         }
 
-        let js5 = new Js5MasterIndex(cache.id);
-        js5.init();
+        let js5 = new Js5MasterIndex(cache);
 
-        for (let i = 0; i < js5.archives.length; i++) {
-            await js5.archives[i].load();
+        for (let i = 0; i < js5.indexes.length; i++) {
+            await js5.indexes[i].load();
         }
 
         return js5;
