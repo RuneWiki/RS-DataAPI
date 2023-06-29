@@ -273,35 +273,26 @@ export default function (f, opts, next) {
                 } else if (code === 75) {
                     let grams = data.g2s();
 
-                    // try to guess the unit used
-                    // we have one rule to follow: no decimals allowed
                     let weight = grams;
                     let unit = 'g';
 
-                    if (grams % 1000 === 0) {
-                        weight = grams / 1000;
-                        unit = 'kg';
-                    }
+                    if (weight != 0) {
+                        if (weight % 1000 === 0) {
+                            weight = weight / 1000;
+                            unit = 'kg';
+                        } else {
+                            const g_per_oz = 28_3495;
+                            let oz = Math.floor((weight * 10000 + g_per_oz - 1) / g_per_oz);
 
-                    if (unit === 'g') {
-                        let pounds = grams * 0.00220462;
-                        let rounded = Math.round(pounds);
-                        let toGrams = rounded * 453.592;
-
-                        if (Math.floor(toGrams) === grams) {
-                            weight = Math.round(pounds);
-                            unit = 'lb';
-                        }
-                    }
-
-                    if (unit === 'g') {
-                        let ounces = grams * 0.035274;
-                        let rounded = Math.round(ounces);
-                        let toGrams = rounded * 28.3495;
-
-                        if (Math.floor(toGrams) === grams) {
-                            weight = Math.round(ounces);
-                            unit = 'oz';
+                            if (Math.floor((oz * g_per_oz) / 10000) == weight) {
+                                if (oz % 16 === 0) {
+                                    weight = oz / 16;
+                                    unit = 'lb';
+                                } else {
+                                    weight = oz;
+                                    unit = 'oz';
+                                }
+                            }
                         }
                     }
 
