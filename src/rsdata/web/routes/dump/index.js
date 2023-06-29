@@ -271,7 +271,41 @@ export default function (f, opts, next) {
                 } else if (code === 65) {
                     out += 'stockmarket=yes\n';
                 } else if (code === 75) {
-                    out += `weight=${data.g2s()}g\n`;
+                    let grams = data.g2s();
+
+                    // try to guess the unit used
+                    // we have one rule to follow: no decimals allowed
+                    let weight = grams;
+                    let unit = 'g';
+
+                    if (grams % 1000 === 0) {
+                        weight = grams / 1000;
+                        unit = 'kg';
+                    }
+
+                    if (unit === 'g') {
+                        let pounds = grams * 0.00220462;
+                        let rounded = Math.round(pounds);
+                        let toGrams = rounded * 453.592;
+
+                        if (Math.floor(toGrams) === grams) {
+                            weight = Math.round(pounds);
+                            unit = 'lb';
+                        }
+                    }
+
+                    if (unit === 'g') {
+                        let ounces = grams * 0.035274;
+                        let rounded = Math.round(ounces);
+                        let toGrams = rounded * 28.3495;
+
+                        if (Math.floor(toGrams) === grams) {
+                            weight = Math.round(ounces);
+                            unit = 'oz';
+                        }
+                    }
+
+                    out += `weight=${weight}${unit}\n`;
                 } else if (code === 78) {
                     let model = -1;
 
