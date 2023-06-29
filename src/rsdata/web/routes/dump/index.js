@@ -13,12 +13,12 @@ async function executeConfigGroups(js5, archive, cb) {
         let file = id & 0xFF;
 
         if (!(await js5.indexes[archive].getGroup(group))) {
-            // skip to next group
+            // skip to next group (incomplete cache?)
             i += 0xFF;
             continue;
         }
 
-        let data = await js5.indexes[19].getFile(group, file);
+        let data = await js5.indexes[archive].getFile(group, file);
         if (!data) {
             continue;
         }
@@ -90,7 +90,7 @@ export default function (f, opts, next) {
                         out += `stock${j + 1}=obj_${data.g2()},${data.g2()}\n`;
                     }
                 } else {
-                    console.log(`Unrecognized inv config code ${code}`);
+                    console.log(`Unknown inv config code ${code}`);
                     break;
                 }
             }
@@ -142,7 +142,7 @@ export default function (f, opts, next) {
                 if (code === 1) {
                     let model = -1;
 
-                    if (rev >= 700) {
+                    if (game == 'runescape' && rev >= 700) {
                         model = data.gsmart4();
                     } else {
                         model = data.g2();
@@ -164,7 +164,12 @@ export default function (f, opts, next) {
                 } else if (code === 8) {
                     out += `2dyof=${data.g2s()}\n`;
                 } else if (code === 9) {
-                    out += 'code9=yes\n';
+                    if (game == 'oldschool' && rev > 180) {
+                        // TODO
+                        out += `code9=${data.gjstr()}\n`;
+                    } else {
+                        out += 'code9=yes\n';
+                    }
                 } else if (code === 10) {
                     out += `code10=seq_${data.g2()}\n`;
                 } else if (code === 11) {
@@ -182,21 +187,22 @@ export default function (f, opts, next) {
                 } else if (code === 23) {
                     let model = -1;
 
-                    if (rev >= 700) {
+                    if (game == 'runescape' && rev >= 700) {
                         model = data.gsmart4();
                     } else {
                         model = data.g2();
                     }
 
-                    if (rev > 500) {
+                    if (game == 'runescape' && rev > 500) {
                         out += `manwear=model_${model}\n`;
                     } else {
-                        out += `manwear=model_${model},${data.g1()}\n`;
+                        let offset = data.g1();
+                        out += `manwear=model_${model},${offset}\n`;
                     }
                 } else if (code === 24) {
                     let model = -1;
 
-                    if (rev >= 700) {
+                    if (game == 'runescape' && rev >= 700) {
                         model = data.gsmart4();
                     } else {
                         model = data.g2();
@@ -206,21 +212,22 @@ export default function (f, opts, next) {
                 } else if (code === 25) {
                     let model = -1;
 
-                    if (rev >= 700) {
+                    if (game == 'runescape' && rev >= 700) {
                         model = data.gsmart4();
                     } else {
                         model = data.g2();
                     }
 
-                    if (rev > 500) {
+                    if (game == 'runescape' && rev > 500) {
                         out += `womanwear=model_${model}\n`;
                     } else {
-                        out += `womanwear=model_${model},${data.g1()}\n`;
+                        let offset = data.g1();
+                        out += `womanwear=model_${model},${offset}\n`;
                     }
                 } else if (code === 26) {
                     let model = -1;
 
-                    if (rev >= 700) {
+                    if (game == 'runescape' && rev >= 700) {
                         model = data.gsmart4();
                     } else {
                         model = data.g2();
@@ -249,8 +256,7 @@ export default function (f, opts, next) {
                     }
                 } else if (code === 42) {
                     if (game == 'oldschool') {
-                        // guessing
-                        out += `shiftclick=${data.g1()}\n`;
+                        out += `shiftop=${data.g1()}\n`;
                     } else {
                         // sprite-related
                         let count = data.g1();
@@ -264,10 +270,12 @@ export default function (f, opts, next) {
                     out += `tooltip=0x${data.g4().toString(16).padStart(6, '0')}\n`;
                 } else if (code === 65) {
                     out += 'stockmarket=yes\n';
+                } else if (code === 75) {
+                    out += `weight=${data.g2s()}g\n`;
                 } else if (code === 78) {
                     let model = -1;
 
-                    if (rev >= 700) {
+                    if (game == 'runescape' && rev >= 700) {
                         model = data.gsmart4();
                     } else {
                         model = data.g2();
@@ -277,7 +285,7 @@ export default function (f, opts, next) {
                 } else if (code === 79) {
                     let model = -1;
 
-                    if (rev >= 700) {
+                    if (game == 'runescape' && rev >= 700) {
                         model = data.gsmart4();
                     } else {
                         model = data.g2();
@@ -287,7 +295,7 @@ export default function (f, opts, next) {
                 } else if (code === 90) {
                     let model = -1;
 
-                    if (rev >= 700) {
+                    if (game == 'runescape' && rev >= 700) {
                         model = data.gsmart4();
                     } else {
                         model = data.g2();
@@ -297,7 +305,7 @@ export default function (f, opts, next) {
                 } else if (code === 91) {
                     let model = -1;
 
-                    if (rev >= 700) {
+                    if (game == 'runescape' && rev >= 700) {
                         model = data.gsmart4();
                     } else {
                         model = data.g2();
@@ -307,7 +315,7 @@ export default function (f, opts, next) {
                 } else if (code === 92) {
                     let model = -1;
 
-                    if (rev >= 700) {
+                    if (game == 'runescape' && rev >= 700) {
                         model = data.gsmart4();
                     } else {
                         model = data.g2();
@@ -317,7 +325,7 @@ export default function (f, opts, next) {
                 } else if (code === 93) {
                     let model = -1;
 
-                    if (rev >= 700) {
+                    if (game == 'runescape' && rev >= 700) {
                         model = data.gsmart4();
                     } else {
                         model = data.g2();
@@ -325,7 +333,7 @@ export default function (f, opts, next) {
 
                     out += `womanhead2=model_${model}\n`;
                 } else if (code === 94) {
-                    data.g2(); // OSRS
+                    out += `category=category_${data.g2()}\n`;
                 } else if (code === 95) {
                     out += `2dzan=${data.g2()}\n`;
                 } else if (code === 96) {
@@ -388,15 +396,13 @@ export default function (f, opts, next) {
                     // guessing
                     out += `picksize=${data.g1()}\n`;
                 } else if (code === 139) {
-                    out += `bindlink=obj_${data.g2()}\n`;
+                    out += `boughtlink=obj_${data.g2()}\n`;
                 } else if (code === 140) {
-                    out += `bindtemplate=obj_${data.g2()}\n`;
+                    out += `boughttemplate=obj_${data.g2()}\n`;
                 } else if (code === 148) {
-                    // guessing
-                    out += `placelink=obj_${data.g2()}\n`;
+                    out += `placeholderlink=obj_${data.g2()}\n`;
                 } else if (code === 149) {
-                    // guessing
-                    out += `placetemplate=obj_${data.g2()}\n`;
+                    out += `placeholdertemplate=obj_${data.g2()}\n`;
                 } else if (code === 249) {
                     let count = data.g1();
 
@@ -408,13 +414,13 @@ export default function (f, opts, next) {
                         out += `param=param_${key},${value}\n`;
                     }
                 } else {
-                    console.log(`Unrecognized obj config code ${code}`);
+                    console.log(`Unrecognized obj config code ${code}`, data.gdata(data.pos + 2, 0, false));
                     break;
                 }
             }
         };
 
-        if (cache.indexes >= 20) {
+        if (cache.indexes >= 20 && game != 'oldschool') {
             await executeConfigGroups(js5, 19, dump);
         } else {
             await executeConfigFiles(js5, 10, dump);

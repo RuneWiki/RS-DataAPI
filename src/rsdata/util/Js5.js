@@ -224,6 +224,7 @@ class Js5Index {
 
             data.pos = data.length - 1;
             let stripes = data.g1();
+
             data.pos -= (groupSize * stripes * 4) + 1;
 
             let off = 0;
