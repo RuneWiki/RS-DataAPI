@@ -31,6 +31,7 @@ export default function (f, opts, next) {
     });
 
     f.get('/read/:archive/:group', async (req, reply) => {
+        const { archive, group } = req.params;
         const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
         let { rev = -1, game = 'runescape' } = req.query;
 
@@ -59,8 +60,13 @@ export default function (f, opts, next) {
 
         let data = await js5.indexes[archive].getGroup(group, true);
         if (!data) {
-            reply.code(404);
-            return `Could not find group ${group} in archive ${archive}`;
+            // maybe this is a name?
+            data = await js5.indexes[archive].getGroupByName(group);
+
+            if (!data) {
+                reply.code(404);
+                return `Could not find group ${group} in archive ${archive}`;
+            }
         }
 
         if (archive == 52) {
