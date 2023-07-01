@@ -711,6 +711,305 @@ export default function (f, opts, next) {
         return out;
     });
 
+    f.get('/obj/category', async (req, reply) => {
+        const { openrs2 = -1, match = 0, lang = 'en', named = false, ids = false } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
+
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
+        }
+
+        if (rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
+        let js5 = new Js5MasterIndex(cache);
+
+        // ----
+
+        let categories = {};
+        let objs = [];
+
+        let dump = async (id, data) => {
+            let obj = {};
+
+            while (data.available > 0) {
+                let code = data.g1();
+                if (code === 0) {
+                    break;
+                }
+
+                if (code === 1) {
+                    let model = -1;
+
+                    if (game == 'runescape' && rev >= 700) {
+                        model = data.gsmart4();
+                    } else {
+                        model = data.g2();
+                    }
+                } else if (code === 2) {
+                    obj.name = data.gjstr();
+                } else if (code === 3) {
+                    data.gjstr();
+                } else if (code === 4) {
+                    data.g2();
+                } else if (code === 5) {
+                    data.g2();
+                } else if (code === 6) {
+                    data.g2();
+                } else if (code === 7) {
+                    data.g2s();
+                } else if (code === 8) {
+                    data.g2s();
+                } else if (code === 9) {
+                    if (game == 'oldschool' && rev > 180) {
+                        data.gjstr();
+                    }
+                } else if (code === 10) {
+                    data.g2();
+                } else if (code === 11) {
+                } else if (code === 12) {
+                    data.g4s();
+                } else if (code === 13) {
+                    data.g1();
+                } else if (code === 14) {
+                    data.g1();
+                } else if (code === 16) {
+                } else if (code === 18) {
+                    data.g2();
+                } else if (code === 23) {
+                    if (game == 'runescape' && rev >= 700) {
+                        data.gsmart4();
+                    } else {
+                        data.g2();
+                    }
+
+                    if (game == 'runescape' && rev > 500) {
+                    } else {
+                        data.g1();
+                    }
+                } else if (code === 24) {
+                    if (game == 'runescape' && rev >= 700) {
+                        data.gsmart4();
+                    } else {
+                        data.g2();
+                    }
+                } else if (code === 25) {
+                    if (game == 'runescape' && rev >= 700) {
+                        data.gsmart4();
+                    } else {
+                        data.g2();
+                    }
+
+                    if (game == 'runescape' && rev > 500) {
+                    } else {
+                        data.g1();
+                    }
+                } else if (code === 26) {
+                    if (game == 'runescape' && rev >= 700) {
+                        data.gsmart4();
+                    } else {
+                        data.g2();
+                    }
+                } else if (code === 27) {
+                    data.g1();
+                } else if (code >= 30 && code < 35) {
+                    data.gjstr();
+                } else if (code >= 35 && code < 40) {
+                    data.gjstr();
+                } else if (code === 40) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        data.g2();
+                        data.g2();
+                    }
+                } else if (code === 41) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        data.g2();
+                        data.g2();
+                    }
+                } else if (code === 42) {
+                    if (game == 'oldschool') {
+                        data.g1();
+                    } else {
+                        // sprite-related
+                        let count = data.g1();
+
+                        config.recol_p = [];
+                        for (let i = 0; i < count; i++) {
+                            data.g1s();
+                        }
+                    }
+                } else if (code === 43) {
+                    data.g4();
+                } else if (code === 65) {
+                } else if (code === 75) {
+                    data.g2s();
+                } else if (code === 78) {
+                    if (game == 'runescape' && rev >= 700) {
+                        data.gsmart4();
+                    } else {
+                        data.g2();
+                    }
+                } else if (code === 79) {
+                    if (game == 'runescape' && rev >= 700) {
+                        data.gsmart4();
+                    } else {
+                        data.g2();
+                    }
+                } else if (code === 90) {
+                    if (game == 'runescape' && rev >= 700) {
+                        data.gsmart4();
+                    } else {
+                        data.g2();
+                    }
+                } else if (code === 91) {
+                    if (game == 'runescape' && rev >= 700) {
+                        data.gsmart4();
+                    } else {
+                        data.g2();
+                    }
+                } else if (code === 92) {
+                    if (game == 'runescape' && rev >= 700) {
+                        data.gsmart4();
+                    } else {
+                        data.g2();
+                    }
+                } else if (code === 93) {
+                    if (game == 'runescape' && rev >= 700) {
+                        data.gsmart4();
+                    } else {
+                        data.g2();
+                    }
+                } else if (code === 94) {
+                    obj.category = data.g2();
+                } else if (code === 95) {
+                    data.g2();
+                } else if (code === 96) {
+                    data.g1();
+                } else if (code === 97) {
+                    data.g2();
+                } else if (code === 98) {
+                    data.g2();
+                } else if (code >= 100 && code < 110) {
+                    data.g2();
+                    data.g2();
+                } else if (code === 110) {
+                    data.g2();
+                } else if (code === 111) {
+                    data.g2();
+                } else if (code === 112) {
+                    data.g2();
+                } else if (code === 113) {
+                    data.g1s();
+                } else if (code === 114) {
+                    data.g1s();
+                } else if (code === 115) {
+                    data.g1();
+                } else if (code === 121) {
+                    data.g2();
+                } else if (code === 122) {
+                    data.g2();
+                } else if (code === 125) {
+                    data.g1s();
+                    data.g1s();
+                    data.g1s();
+                } else if (code === 126) {
+                    data.g1s();
+                    data.g1s();
+                    data.g1s();
+                } else if (code === 127) {
+                    data.g1();
+                    data.g2();
+                } else if (code === 128) {
+                    data.g1();
+                    data.g2();
+                } else if (code === 129) {
+                    data.g1();
+                    data.g2();
+                } else if (code === 130) {
+                    data.g1();
+                    data.g2();
+                } else if (code === 132) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        data.g2();
+                    }
+                } else if (code === 134) {
+                    data.g1();
+                } else if (code === 139) {
+                    data.g2();
+                } else if (code === 140) {
+                    data.g2();
+                } else if (code === 148) {
+                    data.g2();
+                } else if (code === 149) {
+                    data.g2();
+                } else if (code === 249) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        let isString = data.gbool();
+                        let key = data.g3();
+                        let value = isString ? data.gjstr() : data.g4s();
+                    }
+                } else {
+                    console.log(`Unrecognized obj config code ${code}`, data.gdata(data.pos + 2, 0, false));
+                    break;
+                }
+            }
+
+            objs[id] = obj;
+        };
+
+        if (cache.indexes >= 20 && game != 'oldschool') {
+            await executeConfigGroups(js5, 19, dump);
+        } else {
+            await executeConfigFiles(js5, 10, dump);
+        }
+
+        for (let i = 0; i < objs.length; i++) {
+            let obj = objs[i];
+            if (typeof obj.category === 'undefined') {
+                continue;
+            }
+
+            if (!categories[obj.category]) {
+                categories[obj.category] = [];
+            }
+
+            if (named == 'true') {
+                if (ids == 'true') {
+                    categories[obj.category].push({
+                        id: i,
+                        name: obj.name ?? `obj_${i}`
+                    });
+                } else {
+                    categories[obj.category].push(obj.name ?? `obj_${i}`);
+                }
+            } else {
+                categories[obj.category].push(i);
+            }
+        }
+
+        return categories;
+    });
+
     f.get('/obj', async (req, reply) => {
         const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
         let { rev = -1, game = 'runescape' } = req.query;
