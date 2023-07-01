@@ -14,7 +14,11 @@ export default function (f, opts, next) {
             return 'Either rev or openrs2 must be specified';
         }
 
-        if (!req.query.game && rev !== -1 && rev < 234) {
+        if (openrs2 !== -1) {
+            game = null;
+        }
+
+        if (rev !== -1 && rev < 234) {
             game = 'oldschool';
         }
 
@@ -80,7 +84,11 @@ export default function (f, opts, next) {
             return 'Either rev or openrs2 must be specified';
         }
 
-        if (!req.query.game && rev !== -1 && rev < 234) {
+        if (openrs2 !== -1) {
+            game = null;
+        }
+
+        if (rev !== -1 && rev < 234) {
             game = 'oldschool';
         }
 
