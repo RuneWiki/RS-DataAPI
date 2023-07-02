@@ -13,14 +13,13 @@ export default class ObjTypeList {
     }
 
     async load(readCb = null, readCbOnly = false) {
-        if (this.js5.openrs2.game === 'runescape' && this.js5.openrs2.builds.length && this.js5.openrs2.builds[0].major < 400) {
+        let game = this.js5.openrs2.game;
+
+        if (game === 'runescape' && this.js5.openrs2.builds.length && this.js5.openrs2.builds[0].major < 400) {
             let jag = new Jagfile(new Packet(await getGroup(this.js5.openrs2.id, 0, 2)));
 
             let dat = jag.read('obj.dat');
-            let idx = jag.read('obj.idx');
-
-            let count = idx.g2();
-            dat.pos = 2;
+            let count = dat.g2();
 
             dat.terminator = '\n';
             for (let i = 0; i < count; i++) {
@@ -28,7 +27,7 @@ export default class ObjTypeList {
             }
 
             this.count = count;
-        } else if (this.js5.openrs2.indexes >= 20 && this.js5.openrs2.game != 'oldschool') {
+        } else if (this.js5.openrs2.indexes >= 20 && game != 'oldschool') {
             await this.js5.indexes[19].load();
 
             let lastGroup = this.js5.indexes[19].capacity - 1;

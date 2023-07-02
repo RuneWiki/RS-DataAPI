@@ -1,3 +1,5 @@
+import Jagfile from '#jagex3/io/Jagfile.js';
+import ObjType from '#rsdata/cache/ObjType.js';
 import ObjTypeList from '#rsdata/cache/ObjTypeList.js';
 import Js5MasterIndex from '#rsdata/util/Js5.js';
 import { findCache } from '#rsdata/util/OpenRS2.js';
@@ -1052,6 +1054,253 @@ export default function (f, opts, next) {
             return 'Either rev or openrs2 must be specified';
         }
 
+        // ----
+
+        function getWearPos(id) {
+            switch (id) {
+                case 0:
+                    return 'hat';
+                case 1:
+                    return 'back';
+                case 2:
+                    return 'front';
+                case 3:
+                    return 'righthand';
+                case 4:
+                    return 'torso';
+                case 5:
+                    return 'lefthand';
+                case 6:
+                    return 'arms';
+                case 7:
+                    return 'legs';
+                case 8:
+                    return 'head';
+                case 9:
+                    return 'hands';
+                case 10:
+                    return 'feet';
+                case 11:
+                    return 'jaw';
+                case 12:
+                    return 'ring';
+                case 13:
+                    return 'quiver';
+                default:
+                    return id.toString();
+            }
+        }
+
+        let out = '';
+        let lastId = -1;
+        let dump = (id, code, ...data) => {
+            if (lastId != id) {
+                if (id > 0) {
+                    out += '\n';
+                }
+
+                out += `[obj_${id}]\n`;
+            }
+
+            lastId = id;
+
+            if (code === 1) {
+                out += `model=model_${data[0]}\n`;
+            } else if (code === 2) {
+                out += `name=${data[0]}\n`;
+            } else if (code === 3) {
+                out += `desc=${data[0]}\n`;
+            } else if (code === 4) {
+                out += `2dzoom=${data[0]}\n`;
+            } else if (code === 5) {
+                out += `2dxan=${data[0]}\n`;
+            } else if (code === 6) {
+                out += `2dyan=${data[0]}\n`;
+            } else if (code === 7) {
+                out += `2dxof=${data[0]}\n`;
+            } else if (code === 8) {
+                out += `2dyof=${data[0]}\n`;
+            } else if (code === 9) {
+                out += `code9=${data[0]}\n`;
+            } else if (code === 10) {
+                out += `code10=seq_${data[0]}\n`;
+            } else if (code === 11) {
+                out += 'stackable=yes\n';
+            } else if (code === 12) {
+                out += `cost=${data[0]}\n`;
+            } else if (code === 13) {
+                out += `wearpos=${getWearPos(data[0])}\n`;
+            } else if (code === 14) {
+                out += `wearpos2=${getWearPos(data[0])}\n`;
+            } else if (code === 16) {
+                out += 'members=yes\n';
+            } else if (code === 18) {
+                out += `stacksize=${data[0]}\n`;
+            } else if (code === 23) {
+                if (data.length > 1) {
+                    out += `manwear=model_${data[0]},${data[1]}\n`;
+                } else {
+                    out += `manwear=model_${data[0]}\n`;
+                }
+            } else if (code === 24) {
+                out += `manwear2=model_${data[0]}\n`;
+            } else if (code === 25) {
+                if (data.length > 1) {
+                    out += `womanwear=model_${data[0]},${data[1]}\n`;
+                } else {
+                    out += `womanwear=model_${data[0]}\n`;
+                }
+            } else if (code === 26) {
+                out += `womanwear2=model_${data[0]}\n`;
+            } else if (code === 27) {
+                out += `wearpos3=${getWearPos(data[0])}\n`;
+            } else if (code >= 30 && code < 35) {
+                out += `op${code - 30 + 1}=${data[0]}\n`;
+            } else if (code >= 35 && code < 40) {
+                out += `iop${code - 35 + 1}=${data[0]}\n`;
+            } else if (code === 40) {
+                for (let i = 0; i < data[0].length; i++) {
+                    out += `recol${i + 1}s=${data[0][i]}\n`;
+                    out += `recol${i + 1}d=${data[1][i]}\n`;
+                }
+            } else if (code === 41) {
+                for (let i = 0; i < data[0].length; i++) {
+                    out += `retex${i + 1}s=${data[0][i]}\n`;
+                    out += `retex${i + 1}d=${data[1][i]}\n`;
+                }
+            } else if (code === 42) {
+                if (game === 'oldschool') {
+                    out += `shiftop=${data[0]}\n`;
+                } else {
+                    for (let i = 0; i < data[0].length; i++) {
+                        out += `recol${i + 1}p=${data[0][i]}\n`;
+                    }
+                }
+            } else if (code === 43) {
+                out += `tooltip=0x${data[0].toString(16).toUpperCase().padStart(6, '0')}\n`;
+            } else if (code === 65) {
+                out += 'stockmarket=yes\n';
+            } else if (code === 75) {
+                let grams = data[0];
+
+                let weight = grams;
+                let unit = 'g';
+
+                if (weight != 0) {
+                    if (weight % 1000 === 0) {
+                        weight = weight / 1000;
+                        unit = 'kg';
+                    } else {
+                        const g_per_oz = 28_3495;
+                        let oz = Math.floor((Math.abs(weight) * 10000 + g_per_oz - 1) / g_per_oz);
+
+                        if (Math.floor((oz * g_per_oz) / 10000) == Math.abs(weight)) {
+                            if (oz % 16 === 0) {
+                                weight = oz / 16;
+                                unit = 'lb';
+                            } else {
+                                weight = oz;
+                                unit = 'oz';
+                            }
+
+                            if (grams < 0) {
+                                weight = -weight;
+                            }
+                        }
+                    }
+                }
+
+                out += `weight=${weight}${unit}\n`;
+            } else if (code === 78) {
+                out += `manwear3=model_${data[0]}\n`;
+            } else if (code === 79) {
+                out += `manwear3=model_${data[0]}\n`;
+            } else if (code === 90) {
+                out += `manhead=model_${data[0]}\n`;
+            } else if (code === 91) {
+                out += `womanhead=model_${data[0]}\n`;
+            } else if (code === 92) {
+                out += `manhead2=model_${data[0]}\n`;
+            } else if (code === 93) {
+                out += `womanhead2=model_${data[0]}\n`;
+            } else if (code === 94) {
+                out += `category=category_${data[0]}\n`;
+            } else if (code === 95) {
+                out += `2dzan=${data[0]}\n`;
+            } else if (code === 96) {
+                out += `code96=${data[0]}\n`;
+            } else if (code === 97) {
+                out += `certlink=obj_${data[0]}\n`;
+            } else if (code === 98) {
+                out += `certtemplate=obj_${data[0]}\n`;
+            } else if (code >= 100 && code < 110) {
+                out += `count${code - 100 + 1}=obj_${data[0]},${data[1]}\n`;
+            } else if (code === 110) {
+                out +=`resizex=${data[0]}\n`;
+            } else if (code === 111) {
+                out +=`resizey=${data[0]}\n`;
+            } else if (code === 112) {
+                out +=`resizez=${data[0]}\n`;
+            } else if (code === 113) {
+                out +=`ambient=${data[0]}\n`;
+            } else if (code === 114) {
+                out +=`contrast=${data[0]}\n`;
+            } else if (code === 115) {
+                out +=`team=${data[0]}\n`;
+            } else if (code === 121) {
+                out +=`lentlink=obj_${data[0]}\n`;
+            } else if (code === 122) {
+                out +=`lenttemplate=obj_${data[0]}\n`;
+            } else if (code === 125) {
+                out +=`manwearoff=${data[0]},${data[1]},${data[2]}\n`;
+            } else if (code === 126) {
+                out +=`manwearoff=${data[0]},${data[1]},${data[2]}\n`;
+            } else if (code === 127) {
+                out += `cursor1=${data[1]},${data[0]}\n`;
+            } else if (code === 128) {
+                out += `cursor2=${data[1]},${data[0]}\n`;
+            } else if (code === 129) {
+                out += `cursor3=${data[1]},${data[0]}\n`;
+            } else if (code === 130) {
+                out += `cursor4=${data[1]},${data[0]}\n`;
+            } else if (code === 132) {
+                for (let i = 0; i < data[0].length; i++) {
+                    out += `quest${i + 1}=${data[0][i]}\n`;
+                }
+            } else if (code === 134) {
+                out += `picksize=${data[0]}\n`;
+            } else if (code === 139) {
+                out += `boughtlink=obj_${data[0]}\n`;
+            } else if (code === 140) {
+                out += `boughttemplate=obj_${data[0]}\n`;
+            } else if (code === 148) {
+                out += `placeholderlink=obj_${data[0]}\n`;
+            } else if (code === 149) {
+                out += `placeholdertemplate=obj_${data[0]}\n`;
+            } else if (code === 249) {
+                for (let i = 0; i < data[0].length; i++) {
+                    out += `param${i + 1}=${data[0][i].key},${data[0][i].value}\n`;
+                }
+            }
+        };
+
+        if (game === 'runescape' && (rev == 194 || rev == 204 || rev == 222 || rev == 225)) {
+            let jag = Jagfile.load(`caches/${rev}/config`);
+
+            let dat = jag.read('obj.dat');
+            let count = dat.g2();
+
+            dat.terminator = '\n';
+            for (let i = 0; i < count; i++) {
+                let obj = new ObjType();
+                obj.id = i;
+
+                obj.decode({ builds: [ { major: rev } ], game }, dat, dump);
+            }
+
+            return out;
+        }
+
         if (openrs2 !== -1) {
             game = null;
         }
@@ -1059,6 +1308,8 @@ export default function (f, opts, next) {
         if (rev !== -1 && rev < 234) {
             game = 'oldschool';
         }
+
+        // ----
 
         let cache = findCache(rev, openrs2, match, lang, game);
         if (!cache) {
@@ -1150,235 +1401,6 @@ export default function (f, opts, next) {
             reply.type('application/json');
             return JSON.stringify(objs, null, 2);
         } else {
-            function getWearPos(id) {
-                switch (id) {
-                    case 0:
-                        return 'hat';
-                    case 1:
-                        return 'back';
-                    case 2:
-                        return 'front';
-                    case 3:
-                        return 'righthand';
-                    case 4:
-                        return 'torso';
-                    case 5:
-                        return 'lefthand';
-                    case 6:
-                        return 'arms';
-                    case 7:
-                        return 'legs';
-                    case 8:
-                        return 'head';
-                    case 9:
-                        return 'hands';
-                    case 10:
-                        return 'feet';
-                    case 11:
-                        return 'jaw';
-                    case 12:
-                        return 'ring';
-                    case 13:
-                        return 'quiver';
-                    default:
-                        return id.toString();
-                }
-            }
-
-            let out = '';
-            let lastId = -1;
-
-            let dump = (id, code, ...data) => {
-                if (lastId != id) {
-                    if (id > 0) {
-                        out += '\n';
-                    }
-
-                    out += `[obj_${id}]\n`;
-                }
-
-                lastId = id;
-
-                if (code === 1) {
-                    out += `model=model_${data[0]}\n`;
-                } else if (code === 2) {
-                    out += `name=${data[0]}\n`;
-                } else if (code === 3) {
-                    out += `desc=${data[0]}\n`;
-                } else if (code === 4) {
-                    out += `2dzoom=${data[0]}\n`;
-                } else if (code === 5) {
-                    out += `2dxan=${data[0]}\n`;
-                } else if (code === 6) {
-                    out += `2dyan=${data[0]}\n`;
-                } else if (code === 7) {
-                    out += `2dxof=${data[0]}\n`;
-                } else if (code === 8) {
-                    out += `2dyof=${data[0]}\n`;
-                } else if (code === 9) {
-                    out += `code9=${data[0]}\n`;
-                } else if (code === 10) {
-                    out += `code10=seq_${data[0]}\n`;
-                } else if (code === 11) {
-                    out += 'stackable=yes\n';
-                } else if (code === 12) {
-                    out += `cost=${data[0]}\n`;
-                } else if (code === 13) {
-                    out += `wearpos=${getWearPos(data[0])}\n`;
-                } else if (code === 14) {
-                    out += `wearpos2=${getWearPos(data[0])}\n`;
-                } else if (code === 16) {
-                    out += 'members=yes\n';
-                } else if (code === 18) {
-                    out += `stacksize=${data[0]}\n`;
-                } else if (code === 23) {
-                    if (data.length > 1) {
-                        out += `manwear=model_${data[0]},${data[1]}\n`;
-                    } else {
-                        out += `manwear=model_${data[0]}\n`;
-                    }
-                } else if (code === 24) {
-                    out += `manwear2=model_${data[0]}\n`;
-                } else if (code === 25) {
-                    if (data.length > 1) {
-                        out += `womanwear=model_${data[0]},${data[1]}\n`;
-                    } else {
-                        out += `womanwear=model_${data[0]}\n`;
-                    }
-                } else if (code === 26) {
-                    out += `womanwear2=model_${data[0]}\n`;
-                } else if (code === 27) {
-                    out += `wearpos3=${getWearPos(data[0])}\n`;
-                } else if (code >= 30 && code < 35) {
-                    out += `op${code - 30 + 1}=${data[0]}\n`;
-                } else if (code >= 35 && code < 40) {
-                    out += `iop${code - 35 + 1}=${data[0]}\n`;
-                } else if (code === 40) {
-                    for (let i = 0; i < data[0].length; i++) {
-                        out += `recol${i + 1}s=${data[0][i]}\n`;
-                        out += `recol${i + 1}d=${data[1][i]}\n`;
-                    }
-                } else if (code === 41) {
-                    for (let i = 0; i < data[0].length; i++) {
-                        out += `retex${i + 1}s=${data[0][i]}\n`;
-                        out += `retex${i + 1}d=${data[1][i]}\n`;
-                    }
-                } else if (code === 42) {
-                    if (game === 'oldschool') {
-                        out += `shiftop=${data[0]}\n`;
-                    } else {
-                        for (let i = 0; i < data[0].length; i++) {
-                            out += `recol${i + 1}p=${data[0][i]}\n`;
-                        }
-                    }
-                } else if (code === 43) {
-                    out += `tooltip=0x${data[0].toString(16).toUpperCase().padStart(6, '0')}\n`;
-                } else if (code === 65) {
-                    out += 'stockmarket=yes\n';
-                } else if (code === 75) {
-                    let grams = data[0];
-
-                    let weight = grams;
-                    let unit = 'g';
-
-                    if (weight != 0) {
-                        if (weight % 1000 === 0) {
-                            weight = weight / 1000;
-                            unit = 'kg';
-                        } else {
-                            const g_per_oz = 28_3495;
-                            let oz = Math.floor((Math.abs(weight) * 10000 + g_per_oz - 1) / g_per_oz);
-
-                            if (Math.floor((oz * g_per_oz) / 10000) == Math.abs(weight)) {
-                                if (oz % 16 === 0) {
-                                    weight = oz / 16;
-                                    unit = 'lb';
-                                } else {
-                                    weight = oz;
-                                    unit = 'oz';
-                                }
-
-                                if (grams < 0) {
-                                    weight = -weight;
-                                }
-                            }
-                        }
-                    }
-
-                    out += `weight=${weight}${unit}\n`;
-                } else if (code === 78) {
-                    out += `manwear3=model_${data[0]}\n`;
-                } else if (code === 79) {
-                    out += `manwear3=model_${data[0]}\n`;
-                } else if (code === 90) {
-                    out += `manhead=model_${data[0]}\n`;
-                } else if (code === 91) {
-                    out += `womanhead=model_${data[0]}\n`;
-                } else if (code === 92) {
-                    out += `manhead2=model_${data[0]}\n`;
-                } else if (code === 93) {
-                    out += `womanhead2=model_${data[0]}\n`;
-                } else if (code === 94) {
-                    out += `category=category_${data[0]}\n`;
-                } else if (code === 95) {
-                    out += `2dzan=${data[0]}\n`;
-                } else if (code === 96) {
-                    out += `code96=${data[0]}\n`;
-                } else if (code === 97) {
-                    out += `certlink=obj_${data[0]}\n`;
-                } else if (code === 98) {
-                    out += `certtemplate=obj_${data[0]}\n`;
-                } else if (code >= 100 && code < 110) {
-                    out += `count${code - 100 + 1}=obj_${data[0]},${data[1]}\n`;
-                } else if (code === 110) {
-                    out +=`resizex=${data[0]}\n`;
-                } else if (code === 111) {
-                    out +=`resizey=${data[0]}\n`;
-                } else if (code === 112) {
-                    out +=`resizez=${data[0]}\n`;
-                } else if (code === 113) {
-                    out +=`ambient=${data[0]}\n`;
-                } else if (code === 114) {
-                    out +=`contrast=${data[0]}\n`;
-                } else if (code === 115) {
-                    out +=`team=${data[0]}\n`;
-                } else if (code === 121) {
-                    out +=`lentlink=obj_${data[0]}\n`;
-                } else if (code === 122) {
-                    out +=`lenttemplate=obj_${data[0]}\n`;
-                } else if (code === 125) {
-                    out +=`manwearoff=${data[0]},${data[1]},${data[2]}\n`;
-                } else if (code === 126) {
-                    out +=`manwearoff=${data[0]},${data[1]},${data[2]}\n`;
-                } else if (code === 127) {
-                    out += `cursor1=${data[1]},${data[0]}\n`;
-                } else if (code === 128) {
-                    out += `cursor2=${data[1]},${data[0]}\n`;
-                } else if (code === 129) {
-                    out += `cursor3=${data[1]},${data[0]}\n`;
-                } else if (code === 130) {
-                    out += `cursor4=${data[1]},${data[0]}\n`;
-                } else if (code === 132) {
-                    for (let i = 0; i < data[0].length; i++) {
-                        out += `quest${i + 1}=${data[0][i]}\n`;
-                    }
-                } else if (code === 134) {
-                    out += `picksize=${data[0]}\n`;
-                } else if (code === 139) {
-                    out += `boughtlink=obj_${data[0]}\n`;
-                } else if (code === 140) {
-                    out += `boughttemplate=obj_${data[0]}\n`;
-                } else if (code === 148) {
-                    out += `placeholderlink=obj_${data[0]}\n`;
-                } else if (code === 149) {
-                    out += `placeholdertemplate=obj_${data[0]}\n`;
-                } else if (code === 249) {
-                    for (let i = 0; i < data[0].length; i++) {
-                        out += `param${i + 1}=${data[0][i].key},${data[0][i].value}\n`;
-                    }
-                }
-            };
-
             await objTypes.load(dump, true);
             return out;
         }
