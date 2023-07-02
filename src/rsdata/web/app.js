@@ -210,7 +210,7 @@ const resolvers = {
 
             for (let i = 0; i < objTypes.count; i++) {
                 let obj = await objTypes.get(i);
-                if (obj.category === -1) {
+                if (typeof obj.category === 'undefined') {
                     continue;
                 }
 

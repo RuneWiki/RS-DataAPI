@@ -1,6 +1,13 @@
 This is a datamining-oriented API for RuneScape and Old School RuneScape.
 It utilizes [OpenRS2 Archive](https://archive.openrs2.org/)'s API to access archived cache data.
 
+## Running Locally
+
+1. Install Node 16+.
+2. Run `npm install`.
+3. Copy `.env.example` to `.env`
+4. Run `npm start`
+
 ## Standalone Scripts
 
 Check out [src/rsdata/tools](./src/rsdata/tools). The files there are scripts I've written to do very specific things. Like dumping all images in rev 930.
@@ -11,13 +18,6 @@ This can be used locally (default port: 3000) or via https://api.runewiki.org/. 
 Mass-dumping sprites is better suited running a script.
 
 If you have any suggestions on features to add, feel free to reach out here or on Discord.
-
-### Running Locally
-
-1. Install Node 16+.
-2. Run `npm install`.
-3. Copy `.env.example` to `.env`
-4. Run `npm start`
 
 ### Query Options
 
@@ -67,3 +67,33 @@ Convert a sprite into PNG format. Accepts group name, group ID, or spritesheet n
 ex: https://api.runewiki.org/sprite/magicon?rev=530
 
 \* runestar tsv format is slightly modified - if multiple names match that hash, they will be separated by a tab on the same line. Do with that what you will.
+
+## GraphQL API
+
+The GraphQL API is available at `/graphql`. There is a web-based IDE available at `/graphiql`.
+
+The available queries are `obj`, `objs`, and `objsByCategory`. GraphiQL will show you the schemas.
+
+Some examples:
+```graphql
+{
+  objs(filter:["name=Cannon base"], rev: 214) {
+    id
+    name
+    iops
+    category
+    weight
+  }
+}
+```
+```graphql
+{
+  objsByCategory(rev:214) {
+    category
+    objs {
+      id
+      name
+    }
+  }
+}
+```
