@@ -1075,45 +1075,116 @@ export default function (f, opts, next) {
 
         // ----
 
-        function getWearPos(id) {
-            switch (id) {
-                case 0:
-                    return 'hat';
-                case 1:
-                    return 'back';
-                case 2:
-                    return 'front';
-                case 3:
-                    return 'righthand';
-                case 4:
-                    return 'torso';
-                case 5:
-                    return 'lefthand';
-                case 6:
-                    return 'arms';
-                case 7:
-                    return 'legs';
-                case 8:
-                    return 'head';
-                case 9:
-                    return 'hands';
-                case 10:
-                    return 'feet';
-                case 11:
-                    return 'jaw';
-                case 12:
-                    return 'ring';
-                case 13:
-                    return 'quiver';
-                default:
-                    return id.toString();
-            }
-        }
-
         if (format === 'json') {
             await objTypes.load();
             return objTypes.configs;
+        } else if (format === 'runelite') {
+            await objTypes.load();
+
+            let objs = [];
+            for (let i = 0; i < objTypes.count; i++) {
+                let obj = await objTypes.get(i);
+
+                if (!obj.ops) {
+                    obj.ops = new Array(5);
+                }
+
+                if (obj.ops && !obj.ops[2]) {
+                    obj.ops[2] = 'Take';
+                }
+
+                if (!obj.iops) {
+                    obj.iops = new Array(5);
+                }
+
+                if (obj.iops && !obj.iops[4]) {
+                    obj.iops[4] = 'Drop';
+                }
+
+                let rl = {
+                    id: i,
+                    name: obj.name ?? 'null',
+                    resizeX: typeof obj.resizex !== 'undefined' ? obj.resizex : 128,
+                    resizeY: typeof obj.resizey !== 'undefined' ? obj.resizey : 128,
+                    resizeZ: typeof obj.resizez !== 'undefined' ? obj.resizez : 128,
+                    xan2d: obj.xan2d ?? 0,
+                    yan2d: obj.yan2d ?? 0,
+                    zan2d: obj.zan2d ?? 0,
+                    cost: obj.cost ?? 0,
+                    isTradable: obj.stockmarket ?? false,
+                    stackable: obj.stackable ?? false,
+                    inventoryModel: obj.inventoryModel ?? -1,
+                    members: obj.members ?? false,
+                    zoom2d: obj.zoom2d ?? 2000,
+                    xOffset2d: obj.xan2d ?? 0,
+                    yOffset2d: obj.yan2d ?? 0,
+                    ambient: typeof obj.ambient !== 'undefined' ? obj.ambient : 0,
+                    contrast: typeof obj.contrast !== 'undefined' ? obj.contrast : 0,
+                    options: obj.ops,
+                    interfaceOptions: obj.iops,
+                    maleModel0: typeof obj.manwear !== 'undefined' ? obj.manwear : -1,
+                    maleModel1: typeof obj.manwear2 !== 'undefined' ? obj.manwear2 : -1,
+                    maleModel2: typeof obj.manwear3 !== 'undefined' ? obj.manwear3 : -1,
+                    maleOffset: obj.manwearOffsetY ?? 0,
+                    maleHeadModel: typeof obj.manhead !== 'undefined' ? obj.manhead : -1,
+                    maleHeadModel2: typeof obj.manhead2 !== 'undefined' ? obj.manhead2 : -1,
+                    femaleModel0: typeof obj.womanwear !== 'undefined' ? obj.womanwear : -1,
+                    femaleModel1: typeof obj.womanwear2 !== 'undefined' ? obj.womanwear2 : -1,
+                    femaleModel2: typeof obj.womanwear3 !== 'undefined' ? obj.womanwear3 : -1,
+                    femaleOffset: obj.womanwearOffsetY ?? 0,
+                    femaleHeadModel: typeof obj.womanhead !== 'undefined' ? obj.womanhead : -1,
+                    femaleHeadModel2: typeof obj.womanhead2 !== 'undefined' ? obj.womanhead2 : -1,
+                    notedID: typeof obj.certlink !== 'undefined' ? obj.certlink : -1,
+                    notedTemplate: typeof obj.certtemplate !== 'undefined' ? obj.certtemplate : -1,
+                    team: typeof obj.team !== 'undefined' ? obj.team : 0,
+                    shiftClickDropIndex: typeof obj.shiftop !== 'undefined' ? obj.shiftop : -2,
+                    boughtId: typeof obj.boughtlink !== 'undefined' ? obj.boughtlink : -1,
+                    boughtTemplate: typeof obj.boughttemplate !== 'undefined' ? obj.boughttemplate : -1,
+                    placeholderId: typeof obj.placeholderlink !== 'undefined' ? obj.placeholderlink : -1,
+                    placeholderTemplate: typeof obj.placeholdertemplate !== 'undefined' ? obj.placeholdertemplate : -1,
+                    params: obj.params ?? null
+                };
+                objs[i] = rl;
+            }
+
+            reply.type('application/json');
+            return JSON.stringify(objs, null, 2);
         } else {
+            function getWearPos(id) {
+                switch (id) {
+                    case 0:
+                        return 'hat';
+                    case 1:
+                        return 'back';
+                    case 2:
+                        return 'front';
+                    case 3:
+                        return 'righthand';
+                    case 4:
+                        return 'torso';
+                    case 5:
+                        return 'lefthand';
+                    case 6:
+                        return 'arms';
+                    case 7:
+                        return 'legs';
+                    case 8:
+                        return 'head';
+                    case 9:
+                        return 'hands';
+                    case 10:
+                        return 'feet';
+                    case 11:
+                        return 'jaw';
+                    case 12:
+                        return 'ring';
+                    case 13:
+                        return 'quiver';
+                    default:
+                        return id.toString();
+                }
+            }
+
             let out = '';
             let lastId = -1;
 
