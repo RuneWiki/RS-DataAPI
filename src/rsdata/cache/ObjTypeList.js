@@ -9,7 +9,7 @@ export default class ObjTypeList {
         this.js5 = js5;
     }
 
-    async load(readCb = null) {
+    async load(readCb = null, readCbOnly = false) {
         if (this.js5.openrs2.indexes >= 20 && this.js5.openrs2.game != 'oldschool') {
             await this.js5.indexes[19].load();
 
@@ -26,8 +26,10 @@ export default class ObjTypeList {
                     continue;
                 }
 
-                await this.get(id, readCb);
+                await this.get(id, readCb, readCbOnly);
             }
+
+            this.count = total;
         } else {
             await this.js5.indexes[2].load();
 
@@ -40,14 +42,18 @@ export default class ObjTypeList {
             for (let i = 0; i < this.js5.indexes[2].fileIds[10].length; i++) {
                 let id = this.js5.indexes[2].fileIds[10][i];
 
-                await this.get(id, readCb);
+                await this.get(id, readCb, readCbOnly);
             }
+
+            this.count = this.js5.indexes[2].fileIds[10].length;
         }
 
-        this.count = this.configs.length;
+        if (readCbOnly) {
+            this.configs = [];
+        }
     }
 
-    async get(id, readCb = null) {
+    async get(id, readCb = null, readCbOnly = false) {
         if (this.configs[id]) {
             return this.configs[id];
         }
@@ -63,7 +69,7 @@ export default class ObjTypeList {
 
             let data = await this.js5.getFile(19, group, file);
             if (!data) {
-                return obj;
+                return null;
             }
 
             obj.decode(this.js5.openrs2, data, readCb);
@@ -72,13 +78,17 @@ export default class ObjTypeList {
 
             let data = await this.js5.getFile(2, 10, id);
             if (!data) {
-                return obj;
+                return null;
             }
 
             obj.decode(this.js5.openrs2, data, readCb);
         }
 
-        this.configs[id] = obj;
-        return obj;
+        if (!readCbOnly) {
+            this.configs[id] = obj;
+            return obj;
+        } else {
+            return null;
+        }
     }
 }

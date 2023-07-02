@@ -1308,7 +1308,7 @@ export default function (f, opts, next) {
                 }
             };
 
-            await objTypes.load(dump);
+            await objTypes.load(dump, true);
             return out;
         }
     });

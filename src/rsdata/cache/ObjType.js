@@ -1,81 +1,81 @@
 export default class ObjType {
     id = -1;
 
-    model = -1;
-    name = null;
-    desc = null;
-    zoom2d = 2000;
-    xan2d = 0;
-    yan2d = 0;
-    xof2d = 0;
-    yof2d = 0;
-    code9 = null;
-    code10 = -1;
-    stackable = false;
-    cost = 0;
-    wearpos = -1;
-    wearpos2 = -1;
-    members = false;
-    stacksize = 1;
-    manwear = -1;
-    manwearOffsetX = 0;
-    manwearOffsetY = 0;
-    manwearOffsetZ = 0;
-    manwear2 = -1;
-    womanwear = -1;
-    womanwearOffsetX = 0;
-    womanwearOffsetY = 0;
-    womanwearOffsetZ = 0;
-    womanwear2 = -1;
-    wearpos3 = -1;
-    ops = new Array(5);
-    iops = new Array(5);
-    recol_s = [];
-    recol_d = [];
-    retex_s = [];
-    retex_d = [];
-    shiftop = 0;
-    recol_p = [];
-    tooltip = 0;
-    stockmarket = false;
-    weight = 0;
-    manwear3 = -1;
-    womanwear3 = -1;
-    manhead = -1;
-    manhead2 = -1;
-    womanhead = -1;
-    womanhead2 = -1;
-    category = -1;
-    zan2d = 0;
-    certlink = -1;
-    certtemplate = -1;
-    countobj = [];
-    resizex = 128;
-    resizey = 128;
-    resizez = 128;
-    ambient = 0;
-    contrast = 0;
-    team = 0;
-    lentlink = -1;
-    lenttemplate = -1;
-    cursor1 = -1;
-    cursor1op = -1;
-    cursor2 = -1;
-    cursor2op = -1;
-    cursor3 = -1;
-    cursor3op = -1;
-    cursor4 = -1;
-    cursor4op = -1;
-    quest = [];
-    picksize = 0;
-    boughtlink = -1;
-    boughttemplate = -1;
-    placeholderlink = -1;
-    placeholdertemplate = -1;
-    params = [];
+    // model = -1;
+    // name = null;
+    // desc = null;
+    // zoom2d = 2000;
+    // xan2d = 0;
+    // yan2d = 0;
+    // xof2d = 0;
+    // yof2d = 0;
+    // code9 = null;
+    // code10 = -1;
+    // stackable = false;
+    // cost = 0;
+    // wearpos = -1;
+    // wearpos2 = -1;
+    // members = false;
+    // stacksize = 1;
+    // manwear = -1;
+    // manwearOffsetX = 0;
+    // manwearOffsetY = 0;
+    // manwearOffsetZ = 0;
+    // manwear2 = -1;
+    // womanwear = -1;
+    // womanwearOffsetX = 0;
+    // womanwearOffsetY = 0;
+    // womanwearOffsetZ = 0;
+    // womanwear2 = -1;
+    // wearpos3 = -1;
+    // ops = new Array(5);
+    // iops = new Array(5);
+    // recol_s = [];
+    // recol_d = [];
+    // retex_s = [];
+    // retex_d = [];
+    // shiftop = 0;
+    // recol_p = [];
+    // tooltip = 0;
+    // stockmarket = false;
+    // weight = 0;
+    // manwear3 = -1;
+    // womanwear3 = -1;
+    // manhead = -1;
+    // manhead2 = -1;
+    // womanhead = -1;
+    // womanhead2 = -1;
+    // category = -1;
+    // zan2d = 0;
+    // certlink = -1;
+    // certtemplate = -1;
+    // countobj = [];
+    // resizex = 128;
+    // resizey = 128;
+    // resizez = 128;
+    // ambient = 0;
+    // contrast = 0;
+    // team = 0;
+    // lentlink = -1;
+    // lenttemplate = -1;
+    // cursor1 = -1;
+    // cursor1op = -1;
+    // cursor2 = -1;
+    // cursor2op = -1;
+    // cursor3 = -1;
+    // cursor3op = -1;
+    // cursor4 = -1;
+    // cursor4op = -1;
+    // quest = [];
+    // picksize = 0;
+    // boughtlink = -1;
+    // boughttemplate = -1;
+    // placeholderlink = -1;
+    // placeholdertemplate = -1;
+    // params = [];
 
     decode(openrs2, data, readCb = null) {
-        while (true) {
+        while (data.available > 0) {
             let code = data.g1();
             if (code === 0) {
                 break;
@@ -257,6 +257,10 @@ export default class ObjType {
                 readCb(this.id, code, this.wearpos3);
             }
         } else if (code >= 30 && code < 35) {
+            if (!this.ops) {
+                this.ops = new Array(5);
+            }
+
             this.ops[code - 30] = data.gjstr();
 
             if (readCb) {
@@ -275,6 +279,8 @@ export default class ObjType {
         } else if (code === 40) {
             let count = data.g1();
 
+            this.recol_s = [];
+            this.recol_d = [];
             for (let i = 0; i < count; i++) {
                 this.recol_s[i] = data.g2();
                 this.recol_d[i] = data.g2();
@@ -286,6 +292,8 @@ export default class ObjType {
         } else if (code === 41) {
             let count = data.g1();
 
+            this.retex_s = [];
+            this.retex_d = [];
             for (let i = 0; i < count; i++) {
                 this.retex_s[i] = data.g2();
                 this.retex_d[i] = data.g2();
@@ -305,6 +313,7 @@ export default class ObjType {
                 // sprite-related
                 let count = data.g1();
 
+                this.recol_p = [];
                 for (let i = 0; i < count; i++) {
                     this.recol_p[i] = data.g1s();
                 }
@@ -422,8 +431,13 @@ export default class ObjType {
                 readCb(this.id, code, this.certtemplate);
             }
         } else if (code >= 100 && code < 110) {
+            if (!this.countobj) {
+                this.countobj = new Array(10);
+            }
+
             let obj = data.g2();
             let count = data.g2();
+
             this.countobj[code - 100] = { obj, count };
 
             if (readCb) {
@@ -524,6 +538,7 @@ export default class ObjType {
         } else if (code === 132) {
             let count = data.g1();
 
+            this.quest = [];
             for (let i = 0; i < count; i++) {
                 this.quest[i] = data.g2();
             }
@@ -564,6 +579,7 @@ export default class ObjType {
         } else if (code === 249) {
             let count = data.g1();
 
+            this.params = [];
             for (let i = 0; i < count; i++) {
                 let isString = data.gbool();
                 let key = data.g3();
@@ -576,7 +592,7 @@ export default class ObjType {
                 readCb(this.id, code, this.params);
             }
         } else {
-            console.log(`Unrecognized obj config code ${code}`);
+            console.log(`Unknown obj config code ${code}`);
         }
     }
 }
