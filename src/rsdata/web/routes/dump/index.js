@@ -2,7 +2,7 @@ import Jagfile from '#jagex3/io/Jagfile.js';
 import ObjType from '#rsdata/cache/ObjType.js';
 import ObjTypeList from '#rsdata/cache/ObjTypeList.js';
 import Js5MasterIndex from '#rsdata/util/Js5.js';
-import { findCache } from '#rsdata/util/OpenRS2.js';
+import { findCache, findCacheNew } from '#rsdata/util/OpenRS2.js';
 
 async function executeConfigGroups(js5, archive, cb) {
     await js5.indexes[archive].load();
@@ -1046,13 +1046,24 @@ export default function (f, opts, next) {
     });
 
     f.get('/obj', async (req, reply) => {
-        const { openrs2 = -1, match = 0, lang = 'en', format = 'txt' } = req.query;
-        let { rev = -1, game = 'runescape' } = req.query;
+        const { openrs2 = null, format = 'txt' } = req.query;
+        let { rev = null, match = 0, game = null } = req.query;
 
-        if (rev === -1 && openrs2 === -1) {
-            reply.code(400);
-            return 'Either rev or openrs2 must be specified';
+        let caches = findCacheNew(openrs2, rev, game);
+        if (!caches.length) {
+            reply.code(404);
+            return `No suitable caches found for query: ${JSON.stringify(req.query)}\nIf you specified a revision, it may have conflicts between different games - e.g. try specifying &game=oldschool or &game=runescape.\nOr perhaps your query is too specific.\nA successful request can look like ?rev=214 or ?rev=194&game=oldschool.`;
         }
+
+        if (match >= caches.length) {
+            match = caches.length - 1;
+        }
+
+        let cache = caches[match];
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
 
         // ----
 
@@ -1295,36 +1306,16 @@ export default function (f, opts, next) {
                 let obj = new ObjType();
                 obj.id = i;
 
-                obj.decode({ builds: [ { major: rev } ], game }, dat, dump);
+                obj.decode(cache, dat, dump);
             }
 
             return out;
         }
 
-        if (openrs2 !== -1) {
-            game = null;
-        }
-
-        if (rev !== -1 && rev < 234) {
-            game = 'oldschool';
-        }
-
         // ----
 
-        let cache = findCache(rev, openrs2, match, lang, game);
-        if (!cache) {
-            reply.code(400);
-            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
-        }
-
-        if (cache.builds.length) {
-            rev = cache.builds[0].major;
-        }
-        game = cache.game;
         let js5 = new Js5MasterIndex(cache);
         let objTypes = new ObjTypeList(js5);
-
-        // ----
 
         if (format === 'json') {
             await objTypes.load();

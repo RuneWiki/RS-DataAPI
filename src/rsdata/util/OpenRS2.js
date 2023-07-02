@@ -108,12 +108,79 @@ if (process.env.DEV_MODE != 1 || !fs.existsSync('data/caches.json')) {
     await downloadFile(`${OPENRS2_DOMAIN}/caches.json`, 'data/caches.json');
 }
 
-let caches = JSON.parse(fs.readFileSync('data/caches.json', 'ascii')).reverse();
+let caches = JSON.parse(fs.readFileSync('data/caches.json', 'ascii'));
+caches.sort((a, b) => a.id - b.id);
+caches.push({
+    id: -1,
+    game: 'runescape',
+    builds: [
+        {
+            major: 194
+        }
+    ]
+});
+caches.push({
+    id: -1,
+    game: 'runescape',
+    builds: [
+        {
+            major: 204
+        }
+    ]
+});
+caches.push({
+    id: -1,
+    game: 'runescape',
+    builds: [
+        {
+            major: 222
+        }
+    ]
+});
+caches.push({
+    id: -1,
+    game: 'runescape',
+    builds: [
+        {
+            major: 225
+        }
+    ]
+});
 
 export function findCache(rev = -1, openrs2 = -1, match = 0, lang = 'en', game) {
     if (game) {
         return caches.filter(c => (c.id == openrs2 || (c.builds.length && c.builds.findIndex(b => b.major == rev) !== -1)) && c.language == lang && c.game == game)[match];
     } else {
         return caches.filter(c => (c.id == openrs2 || (c.builds.length && c.builds.findIndex(b => b.major == rev) !== -1)) && c.language == lang)[match];
+    }
+}
+
+export function findCacheNew(openrs2 = null, rev = null, game = null) {
+    if (rev === null && openrs2 === null) {
+        return [];
+    }
+
+    if (openrs2 !== null) {
+        let results = caches.filter(c => c.id == openrs2);
+        return results;
+    }
+
+    if (game) {
+        return caches.filter(c => c.builds.some(b => b.major == rev) && c.game == game);
+    } else {
+        let results = caches.filter(c => c.builds.some(b => b.major == rev));
+
+        let games = [];
+        results.forEach(r => {
+            if (!games.includes(r.game)) {
+                games.push(r.game);
+            }
+        });
+        if (games.length > 1) {
+            // not specific enough!
+            return [];
+        }
+
+        return results;
     }
 }
