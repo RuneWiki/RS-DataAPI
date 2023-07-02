@@ -1338,7 +1338,7 @@ export default function (f, opts, next) {
                     cost: obj.cost ?? 0,
                     isTradable: obj.stockmarket ?? false,
                     stackable: obj.stackable ?? false,
-                    inventoryModel: obj.inventoryModel ?? -1,
+                    inventoryModel: obj.model ?? -1,
                     members: obj.members ?? false,
                     zoom2d: obj.zoom2d ?? 2000,
                     xOffset2d: obj.xan2d ?? 0,
