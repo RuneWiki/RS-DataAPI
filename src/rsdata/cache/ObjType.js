@@ -592,7 +592,8 @@ export default class ObjType {
                 readCb(this.id, code, this.params);
             }
         } else {
-            console.log(`Unknown obj config code ${code}`);
+            console.log(`Unrecognized obj config code: ${code}`);
+            data.pos = data.length;
         }
     }
 }

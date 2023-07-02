@@ -1,4 +1,7 @@
+import Jagfile from '#jagex3/io/Jagfile.js';
+import Packet from '#jagex3/io/Packet.js';
 import ObjType from '#rsdata/cache/ObjType.js';
+import { getGroup } from '#rsdata/util/OpenRS2.js';
 
 export default class ObjTypeList {
     js5 = null;
@@ -10,7 +13,22 @@ export default class ObjTypeList {
     }
 
     async load(readCb = null, readCbOnly = false) {
-        if (this.js5.openrs2.indexes >= 20 && this.js5.openrs2.game != 'oldschool') {
+        if (this.js5.openrs2.game === 'runescape' && this.js5.openrs2.builds.length && this.js5.openrs2.builds[0].major < 400) {
+            let jag = new Jagfile(new Packet(await getGroup(this.js5.openrs2.id, 0, 2)));
+
+            let dat = jag.read('obj.dat');
+            let idx = jag.read('obj.idx');
+
+            let count = idx.g2();
+            dat.pos = 2;
+
+            dat.terminator = '\n';
+            for (let i = 0; i < count; i++) {
+                await this.getOld(i, dat, readCb, readCbOnly);
+            }
+
+            this.count = count;
+        } else if (this.js5.openrs2.indexes >= 20 && this.js5.openrs2.game != 'oldschool') {
             await this.js5.indexes[19].load();
 
             let lastGroup = this.js5.indexes[19].capacity - 1;
@@ -83,6 +101,24 @@ export default class ObjTypeList {
 
             obj.decode(this.js5.openrs2, data, readCb);
         }
+
+        if (!readCbOnly) {
+            this.configs[id] = obj;
+            return obj;
+        } else {
+            return null;
+        }
+    }
+
+    async getOld(id, data, readCb = null, readCbOnly = false) {
+        if (this.configs[id]) {
+            return this.configs[id];
+        }
+
+        let obj = new ObjType();
+        obj.id = id;
+
+        obj.decode(this.js5.openrs2, data, readCb);
 
         if (!readCbOnly) {
             this.configs[id] = obj;

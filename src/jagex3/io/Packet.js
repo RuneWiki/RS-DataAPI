@@ -2,6 +2,8 @@ import fs from 'fs';
 import { dirname } from 'path';
 
 export default class Packet {
+    terminator = '\0';
+
     constructor(src) {
         if (src instanceof Packet) {
             src = src.data;
@@ -92,7 +94,7 @@ export default class Packet {
 
     gjstr() {
         let len = 0;
-        while (this.data[this.pos + len] != 0) {
+        while (this.data[this.pos + len] != this.terminator.charCodeAt(0)) {
             len++;
         }
 
