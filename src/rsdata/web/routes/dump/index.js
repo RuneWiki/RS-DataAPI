@@ -1,5 +1,6 @@
-import Jagfile from '#jagex3/io/Jagfile.js';
-import ObjType from '#rsdata/cache/ObjType.js';
+import tar from 'tar';
+import tarStream from 'tar-stream';
+
 import ObjTypeList from '#rsdata/cache/ObjTypeList.js';
 import Js5MasterIndex from '#rsdata/util/Js5.js';
 import { findCache, findCacheNew } from '#rsdata/util/OpenRS2.js';
@@ -1046,7 +1047,7 @@ export default function (f, opts, next) {
     });
 
     f.get('/obj', async (req, reply) => {
-        const { openrs2 = null, format = 'txt' } = req.query;
+        const { openrs2 = null, format = 'txt', download = 'raw' } = req.query;
         let { rev = null, match = 0, game = null } = req.query;
 
         let caches = findCacheNew(openrs2, rev, game);
@@ -1372,8 +1373,20 @@ export default function (f, opts, next) {
                 objs[i] = rl;
             }
 
-            reply.type('application/json');
-            return JSON.stringify(objs, null, 2);
+            if (download == 'archive') {
+                reply.type('application/x-tar');
+
+                // create a tarball containing every json object in separate files like 0.json, 1.json, etc
+                let tar = tarStream.pack();
+                for (let i = 0; i < objs.length; i++) {
+                    tar.entry({ name: `${i}.json` }, JSON.stringify(objs[i], null, 2));
+                }
+                tar.finalize();
+                return tar;
+            } else {
+                reply.type('application/json');
+                return JSON.stringify(objs, null, 2);
+            }
         } else {
             await objTypes.load(dump, true);
             return out;

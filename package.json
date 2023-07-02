@@ -28,7 +28,8 @@
     "graphql": "^16.7.1",
     "jimp": "^0.22.8",
     "mercurius": "^13.0.0",
-    "tar": "^6.1.15"
+    "tar": "^6.1.15",
+    "tar-stream": "^3.1.5"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"
