@@ -1295,23 +1295,6 @@ export default function (f, opts, next) {
             }
         };
 
-        if (game === 'runescape' && (rev == 194 || rev == 204 || rev == 222 || rev == 225)) {
-            let jag = Jagfile.load(`caches/${rev}/config`);
-
-            let dat = jag.read('obj.dat');
-            let count = dat.g2();
-
-            dat.terminator = '\n';
-            for (let i = 0; i < count; i++) {
-                let obj = new ObjType();
-                obj.id = i;
-
-                obj.decode(cache, dat, dump);
-            }
-
-            return out;
-        }
-
         // ----
 
         let js5 = new Js5MasterIndex(cache);
@@ -1384,7 +1367,7 @@ export default function (f, opts, next) {
                     boughtTemplate: typeof obj.boughttemplate !== 'undefined' ? obj.boughttemplate : -1,
                     placeholderId: typeof obj.placeholderlink !== 'undefined' ? obj.placeholderlink : -1,
                     placeholderTemplate: typeof obj.placeholdertemplate !== 'undefined' ? obj.placeholdertemplate : -1,
-                    params: obj.params ?? null
+                    // params: obj.params ?? null
                 };
                 objs[i] = rl;
             }

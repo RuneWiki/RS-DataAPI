@@ -1,3 +1,4 @@
+import fs from 'fs';
 import Jagfile from '#jagex3/io/Jagfile.js';
 import Packet from '#jagex3/io/Packet.js';
 import ObjType from '#rsdata/cache/ObjType.js';
@@ -16,7 +17,12 @@ export default class ObjTypeList {
         let game = this.js5.openrs2.game;
 
         if (game === 'runescape' && this.js5.openrs2.builds.length && this.js5.openrs2.builds[0].major < 400) {
-            let jag = new Jagfile(new Packet(await getGroup(this.js5.openrs2.id, 0, 2)));
+            let config = await getGroup(this.js5.openrs2.id, 0, 2);
+            if (!config) {
+                config = fs.readFileSync(`caches/${this.js5.openrs2.builds[0].major}/config`);
+            }
+
+            let jag = new Jagfile(new Packet(config));
 
             let dat = jag.read('obj.dat');
             let count = dat.g2();
