@@ -127,13 +127,18 @@ const schema = `
 
   type Query {
     obj(id: Int, rev: Int, openrs2: Int, match: Int, lang: String, game: String): [Obj]
-    objByCategory(category: Int, rev: Int, openrs2: Int, match: Int, lang: String, game: String): [ObjCategory]
+    objs(filter: [String], rev: Int, openrs2: Int, match: Int, lang: String, game: String): [Obj]
+    objsByCategory(category: Int, rev: Int, openrs2: Int, match: Int, lang: String, game: String): [ObjCategory]
   }
 `;
 
 const resolvers = {
     Query: {
         obj: async (_, { id, rev, openrs2, match, lang, game }) => {
+            if (typeof id === 'undefined') {
+                throw new Error('Query requires `id` filter, use objs for a full search instead');
+            }
+
             if (!rev && !openrs2) {
                 throw new Error('Cannot find a suitable cache: missing rev or openrs2 parameter');
             }
@@ -146,20 +151,48 @@ const resolvers = {
             let js5 = new Js5MasterIndex(cache);
             let objTypes = new ObjTypeList(js5);
 
-            if (typeof id !== 'undefined') {
-                let obj = await objTypes.get(id);
+            let obj = await objTypes.get(id);
 
-                return [
-                    obj
-                ];
+            return [
+                obj
+            ];
+        },
+
+        objs: async (_, { filter, rev, openrs2, match, lang, game }) => {
+            if (!rev && !openrs2) {
+                throw new Error('Cannot find a suitable cache: missing rev or openrs2 parameter');
+            }
+
+            let cache = findCache(rev, openrs2, match, lang, game);
+            if (!cache) {
+                throw new Error('Cannot find a suitable cache: no match found');
+            }
+
+            let js5 = new Js5MasterIndex(cache);
+            let objTypes = new ObjTypeList(js5);
+
+            await objTypes.load();
+
+            if (filter) {
+                let objs = objTypes.configs;
+
+                for (let i = 0; i < filter.length; i++) {
+                    let subject = filter[i];
+                    if (subject.indexOf('=')) {
+                        let [key, value] = subject.split('=');
+                        objs = objs.filter(obj => obj[key] == value);
+                    } else {
+                        objs = objs.filter(obj => obj[subject]);
+                    }
+                }
+
+                return objs;
             } else {
-                await objTypes.load();
-
                 return objTypes.configs;
             }
         },
 
-        objByCategory: async (_, { category, rev, openrs2, match, lang, game }) => {
+        objsByCategory: async (_, { category, rev, openrs2, match, lang, game }) => {
             if (!rev && !openrs2) {
                 throw new Error('Cannot find a suitable cache: missing rev or openrs2 parameter');
             }
