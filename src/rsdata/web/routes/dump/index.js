@@ -680,8 +680,8 @@ export default function (f, opts, next) {
                     rotate180Animation: npc.walkanim_b ?? -1,
                     rotate90RightAnimation: npc.walkanim_r ?? -1,
                     rotate90LeftAnimation: npc.walkanim_l ?? -1,
-                    recolorToFind: npc.recol_s ?? [],
-                    recolorToReplace: npc.recol_d ?? [],
+                    recolorToFind: npc.recol_s ? npc.recol_s.map(x => x > 0x7FFF ? x -= 0x10000 : x) : [],
+                    recolorToReplace: npc.recol_d ? npc.recol_d.map(x => x > 0x7FFF ? x -= 0x10000 : x) : [],
                     actions: npc.ops ?? new Array(5),
                     isMinimapVisible: npc.visonmap ?? false,
                     combatLevel: npc.vislevel ?? 0,
@@ -1352,8 +1352,8 @@ export default function (f, opts, next) {
                     placeholderTemplate: typeof obj.placeholdertemplate !== 'undefined' ? obj.placeholdertemplate : -1,
                     //
                     examine: obj.desc ?? null,
-                    recolorToFind: obj.recol_s ?? [],
-                    recolorToReplace: obj.recol_d ?? [],
+                    recolorToFind: obj.recol_s ? obj.recol_s.map(x => x > 0x7FFF ? x -= 0x10000 : x) : [],
+                    recolorToReplace: obj.recol_d ? obj.recol_d.map(x => x > 0x7FFF ? x -= 0x10000 : x) : [],
                     // retextureToFind: obj.retex_s ?? [],
                     // retextureToReplace: obj.retex_d ?? [],
                 };
