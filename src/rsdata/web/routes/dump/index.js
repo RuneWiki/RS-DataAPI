@@ -1,9 +1,9 @@
-import tar from 'tar';
 import tarStream from 'tar-stream';
 
 import ObjTypeList from '#rsdata/cache/ObjTypeList.js';
 import Js5MasterIndex from '#rsdata/util/Js5.js';
 import { findCache, findCacheNew } from '#rsdata/util/OpenRS2.js';
+import NpcTypeList from '#rsdata/cache/NpcTypeList.js';
 
 async function executeConfigGroups(js5, archive, cb) {
     await js5.indexes[archive].load();
@@ -463,284 +463,266 @@ export default function (f, opts, next) {
     });
 
     f.get('/npc', async (req, reply) => {
-        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
-        let { rev = -1, game = 'runescape' } = req.query;
+        const { openrs2 = null, format = 'txt', download = 'raw' } = req.query;
+        let { rev = null, match = 0, game = null } = req.query;
 
-        if (rev === -1 && openrs2 === -1) {
-            reply.code(400);
-            return 'Either rev or openrs2 must be specified';
+        let caches = findCacheNew(openrs2, rev, game);
+        if (!caches.length) {
+            reply.code(404);
+            return `No suitable caches found for query: ${JSON.stringify(req.query)}\nIf you specified a revision, it may have conflicts between different games - e.g. try specifying &game=oldschool or &game=runescape.\nOr perhaps your query is too specific.\nA successful request can look like ?rev=214 or ?rev=194&game=oldschool.`;
         }
 
-        if (openrs2 !== -1) {
-            game = null;
+        if (match >= caches.length) {
+            match = caches.length - 1;
         }
 
-        if (rev !== -1 && rev < 234) {
-            game = 'oldschool';
-        }
-
-        // ----
-
-        let cache = findCache(rev, openrs2, match, lang, game);
-        if (!cache) {
-            reply.code(400);
-            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
-        }
-
+        let cache = caches[match];
         if (cache.builds.length) {
             rev = cache.builds[0].major;
         }
         game = cache.game;
-        let js5 = new Js5MasterIndex(cache);
 
         // ----
 
         let out = '';
-        let dump = async (id, data) => {
-            if (id > 0) {
-                out += '\n';
-            }
-
-            out += `[npc_${id}]\n`;
-            while (data.available > 0) {
-                let code = data.g1();
-                if (code === 0) {
-                    break;
+        let lastId = -1;
+        let dump = (id, code, ...data) => {
+            if (lastId != id) {
+                if (id > 0) {
+                    out += '\n';
                 }
 
-                if (code === 1) {
-                    let count = data.g1();
+                out += `[npc_${id}]\n`;
+            }
 
-                    for (let i = 0; i < count; i++) {
-                        out += `model${i + 1}=model_${data.g2()}\n`;
-                    }
-                } else if (code === 2) {
-                    out += `name=${data.gjstr()}\n`;
-                } else if (code === 3) {
-                    out += `desc=${data.gjstr()}\n`;
-                } else if (code === 12) {
-                    let size = data.g1();
+            lastId = id;
 
-                    if (size !== 1) {
-                        out += `size=${size}\n`;
-                    }
-                } else if (code === 13) {
-                    out += `readyanim=seq_${data.g2()}\n`;
-                } else if (code === 14) {
-                    out += `walkanim=seq_${data.g2()}\n`;
-                } else if (code === 15) {
-                    out += `turnleftanim=seq_${data.g2()}\n`;
-                } else if (code === 16) {
-                    out += `turnrightanim=seq_${data.g2()}\n`;
-                } else if (code === 17) {
-                    out += `walkanims=seq_${data.g2()},seq_${data.g2()},seq_${data.g2()},seq_${data.g2()}\n`;
-                } else if (code === 18) {
-                    out += `category=category_${data.g2()}\n`;
-                } else if (code >= 30 && code < 35) {
-                    out += `op${code - 30 + 1}=${data.gjstr()}\n`;
-                } else if (code === 40) {
-                    let count = data.g1();
-
-                    for (let i = 0; i < count; i++) {
-                        out += `recol${i + 1}s=${data.g2()}\n`;
-                        out += `recol${i + 1}d=${data.g2()}\n`;
-                    }
-                } else if (code === 41) {
-                    let count = data.g1();
-
-                    for (let i = 0; i < count; i++) {
-                        out += `retex${i + 1}s=${data.g2()}\n`;
-                        out += `retex${i + 1}d=${data.g2()}\n`;
-                    }
-                } else if (code === 42) {
-                    let count = data.g1();
-
-                    for (let i = 0; i < count; i++) {
-                        out += `recol${i + 1}p=${data.g1s()}\n`;
-                    }
-                } else if (code === 60) {
-                    let count = data.g1();
-
-                    for (let i = 0; i < count; i++) {
-                        out += `head${i + 1}=model_${data.g2()}\n`;
-                    }
-                } else if (code === 93) {
-                    out += 'visonmap=no\n';
-                } else if (code === 95) {
-                    let level = data.g2();
-                    out += `vislevel=${level !== 0 ? level : 'hide'}\n`;
-                } else if (code === 97) {
-                    out += `resizeh=${data.g2()}\n`;
-                } else if (code === 98) {
-                    out += `resizev=${data.g2()}\n`;
-                } else if (code === 99) {
-                    out += `drawpriority=yes\n`;
-                } else if (code === 100) {
-                    out += `ambient=${data.g1s()}\n`;
-                } else if (code === 101) {
-                    out += `contrast=${data.g1s()}\n`;
-                } else if (code === 102) {
-                    if (game === 'oldschool') {
-                        let start = data.g1();
-                        let count = 0;
-
-                        for (let i = start; i != 0; i >>= 1) {
-                            count++;
-                        }
-
-                        for (let i = 0; i < count; i++) {
-                            if (((start & 1) << i) !== 0) {
-                                let sprite = data.gsmart4();
-                                let tile = data.gsmart();
-                                out += `icon${i + 1}=${sprite},${tile}\n`;
-                            }
-                        }
-                    } else {
-                        out += `icon=${data.g2()}\n`;
-                    }
-                } else if (code === 103) {
-                    out += `turnspeed=${data.g2()}\n`;
-                } else if (code === 106 || code === 118) {
-                    let multivarbit = data.g2();
-                    if (multivarbit === 65535) {
-                        multivarbit = -1;
-                    }
-
-                    let multivar = data.g2();
-                    if (multivar === 65535) {
-                        multivar = -1;
-                    }
-
-                    let multinpc = -1;
-                    if (code === 118) {
-                        multinpc = data.g2();
-
-                        if (multinpc === 65535) {
-                            multinpc = -1;
-                        }
-                    }
-
-                    if (multivarbit !== -1) {
-                        out += `multivar=varbit_${multivarbit}\n`;
-                    } else {
-                        out += `multivar=var_${multivar}\n`;
-                    }
-
-                    out += `multinpc=npc_${multinpc}\n`;
-
-                    let count = data.g1();
-                    for (let i = 0; i <= count; i++) {
-                        out += `multinpc${i + 1}=npc_${data.g2()}\n`;
-                    }
-                } else if (code === 107) {
-                    out += `active=no\n`;
-                } else if (code === 109) {
-                    out += `slowmove=no\n`;
-                } else if (code === 111) {
-                    if (game === 'oldschool') {
-                        out += `follower=yes\n`;
-                    } else {
-                        out += `shadowed=no\n`;
-                    }
-                } else if (code === 113) {
-                    out += `shadow=${data.g2()},${data.g2()}\n`;
-                } else if (code === 114) {
-                    out += `shadowmod=${data.g1s()},${data.g1s()}\n`;
-                } else if (code === 114) {
-                    if (game === 'oldschool') {
-                        out += `runanim=seq_${data.g2()}\n`;
-                    } else {
-                        out += `code115=${data.g1()},${data.g1()}\n`;
-                    }
-                } else if (code === 115) {
-                    if (game === 'oldschool') {
-                        out += `runanims=seq_${data.g2()},seq_${data.g2()},seq_${data.g2()},seq_${data.g2()}\n`;
-                    } else {
-                        out += `code115=${data.g1()},${data.g1()}\n`;
-                    }
-                } else if (code === 116) {
-                    out += `crawlanim=seq_${data.g2()}\n`;
-                } else if (code === 117) {
-                    out += `crawlanims=seq_${data.g2()},seq_${data.g2()},seq_${data.g2()},seq_${data.g2()}\n`;
-                } else if (code === 119) {
-                    out += `loginscreenproperties=${data.g1s()}\n`;
-                } else if (code === 121) {
-                    let count = data.g1();
-
-                    for (let i = 0; i < count; i++) {
-                        let index = data.g1();
-                        out += `modeloff${index + 1}=${data.g1s()},${data.g1s()},${data.g1s()}\n`;
-                    }
-                } else if (code === 122) {
-                    out += `hitbar=${data.g2()}\n`;
-                } else if (code === 123) {
-                    out += `iconheight=${data.g2()}\n`;
-                } else if (code === 125) {
-                    out += `spawndirection=${data.g1s()}\n`;
-                } else if (code === 126) {
-                    out += `minimapmarkerobjectentry=${data.g2()}\n`;
-                } else if (code === 127) {
-                    out += `base=base_${data.g2()}\n`;
-                } else if (code === 128) {
-                    out += `code128=${data.g1()}\n`;
-                } else if (code === 134) {
-                    let sound = data.g2();
-                    if (sound !== 65535) {
-                        out += `idlesound=synth_${sound}\n`;
-                    }
-
-                    sound = data.g2();
-                    if (sound !== 65535) {
-                        out += `crawlsound=synth_${sound}\n`;
-                    }
-
-                    sound = data.g2();
-                    if (sound !== 65535) {
-                        out += `walksound=synth_${sound}\n`;
-                    }
-
-                    sound = data.g2();
-                    if (sound !== 65535) {
-                        out += `runsound=synth_${sound}\n`;
-                    }
-
-                    out += `soundradius=${data.g1()}\n`;
-                } else if (code === 135) {
-                    let op = data.g1();
-                    let cursor = data.g2();
-
-                    out += `cursor1=${cursor},${op}\n`;
-                } else if (code === 136) {
-                    let op = data.g1();
-                    let cursor = data.g2();
-
-                    out += `cursor2=${cursor},${op}\n`;
-                } else if (code === 137) {
-                    out += `attackcursor=${data.g2()}\n`;
-                } else if (code === 249) {
-                    let count = data.g1();
-
-                    for (let i = 0; i < count; i++) {
-                        let isString = data.gbool();
-                        let key = data.g3();
-                        let value = isString ? data.gjstr() : data.g4s();
-
-                        out += `param=param_${key},${value}\n`;
+            if (code === 1) {
+                for (let i = 0; i < data[0].length; i++) {
+                    out += `model${i + 1}=model_${data[0][i]}\n`;
+                }
+            } else if (code === 2) {
+                out += `name=${data[0]}\n`;
+            } else if (code === 3) {
+                out += `desc=${data[0]}\n`;
+            } else if (code === 12) {
+                if (data[0] != 1) {
+                    out += `size=${data[0]}\n`;
+                }
+            } else if (code === 13) {
+                out += `readyanim=seq_${data[0]}\n`;
+            } else if (code === 14) {
+                out += `walkanim=seq_${data[0]}\n`;
+            } else if (code === 15) {
+                out += `turnleftanim=${data[0]}\n`;
+            } else if (code === 16) {
+                out += `turnrightanim=${data[0]}\n`;
+            } else if (code === 17) {
+                out += `walkanims=seq_${data[0]},seq_${data[1]},seq_${data[2]},seq_${data[3]}\n`;
+            } else if (code === 18) {
+                out += `category=category_${data[0]}\n`;
+            } else if (code >= 30 && code < 35) {
+                out += `op${code - 30 + 1}=${data[0]}\n`;
+            } else if (code === 40) {
+                for (let i = 0; i < data[0].length; i++) {
+                    out += `recol${i + 1}s=${data[0][i]}\n`;
+                    out += `recol${i + 1}d=${data[1][i]}\n`;
+                }
+            } else if (code === 41) {
+                for (let i = 0; i < data[0].length; i++) {
+                    out += `retex${i + 1}s=${data[0][i]}\n`;
+                    out += `retex${i + 1}d=${data[1][i]}\n`;
+                }
+            } else if (code === 42) {
+                for (let i = 0; i < data[0].length; i++) {
+                    out += `recol${i + 1}p=${data[0][i]}\n`;
+                }
+            } else if (code === 60) {
+                for (let i = 0; i < data[0].length; i++) {
+                    out += `head${i + 1}=model_${data[0][i]}\n`;
+                }
+            } else if (code === 93) {
+                out += 'visonmap=no\n';
+            } else if (code === 95) {
+                if (data[0] == 0) {
+                    out += 'vislevel=hide\n';
+                } else {
+                    out += `vislevel=${data[0]}\n`;
+                }
+            } else if (code === 97) {
+                out += `resizeh=${data[0]}\n`;
+            } else if (code === 98) {
+                out += `resizev=${data[0]}\n`;
+            } else if (code === 99) {
+                out += 'drawpriority=yes\n';
+            } else if (code === 100) {
+                out += `ambient=${data[0]}\n`;
+            } else if (code === 101) {
+                out += `contrast=${data[0]}\n`;
+            } else if (code === 102) {
+                if (game === 'oldschool') {
+                    for (let i = 0; i < data[0].length; i++) {
+                        out += `icon${i + 1}=${data[0][i][0]},${data[0][i][1]}\n`;
                     }
                 } else {
-                    console.log(`Unknown npc config code ${code}`);
-                    break;
+                    out += `icon=${data[0]}\n`;
+                }
+            } else if (code === 103) {
+                out += `turnspeed=${data[0]}\n`;
+            } else if (code === 106 || code === 118) {
+                if (data[0] != -1) {
+                    out += `multivar=varbit_${data[0]}\n`;
+                } else if (data[1] != -1) {
+                    out += `multivar=var_${data[1]}\n`;
+                }
+
+                if (data[2] != -1) {
+                    out += `multinpc=npc_${data[2]}\n`;
+                }
+
+                for (let i = 0; i < data[3].length; i++) {
+                    if (data[3][i] == -1) {
+                        continue;
+                    }
+
+                    out += `multinpc${i + 1}=npc_${data[3][i]}\n`;
+                }
+            } else if (code === 107) {
+                out += 'active=no\n';
+            } else if (code === 109) {
+                out += 'slowmove=no';
+            } else if (code === 111) {
+                if (game === 'oldschool') {
+                    out += 'follower=yes\n';
+                } else {
+                    out += 'shadowed=no\n';
+                }
+            } else if (code === 113) {
+                out += `shadow=${data[0]},${data[1]}\n`;
+            } else if (code === 114) {
+                if (game === 'oldschool') {
+                    out += `runanim=${data[0]}\n`;
+                } else {
+                    out += `shadowmod=${data[0]},${data[1]}\n`;
+                }
+            } else if (code === 115) {
+                if (game === 'oldschool') {
+                    out += `runanims=seq_${data[0]},seq_${data[1]},seq_${data[2]},seq_${data[3]}\n`;
+                } else {
+                    out += `shadowmod2=${data[0]},${data[1]}\n`;
+                }
+            } else if (code === 116) {
+                out += `crawlanim=seq_${data[0]}\n`;
+            } else if (code === 117) {
+                out += `crawlanims=seq_${data[0]},seq_${data[1]},seq_${data[2]},seq_${data[3]}\n`;
+            } else if (code === 119) {
+                out += `loginscreenproperties=${data[0]}\n`;
+            } else if (code === 121) {
+                for (let i = 0; i < data[0].length; i++) {
+                    if (!data[0][i]) {
+                        continue;
+                    }
+
+                    out += `modeloff${i + 1}=${data[0][i][0]},${data[0][i][1]},${data[0][i][2]}\n`;
+                }
+            } else if (code === 122) {
+                out += `hitbar=${data[0]}\n`;
+            } else if (code === 123) {
+                out += `iconheight=${data[0]}\n`;
+            } else if (code === 125) {
+                out += `spawndirection=${data[0]}\n`;
+            } else if (code === 126) {
+                out += `minimapmarkerobjectentry=${data[0]}\n`;
+            } else if (code === 127) {
+                out += `base=bas_${data[0]}\n`;
+            } else if (code === 128) {
+                out += `code128=${data[0]}\n`;
+            } else if (code === 134) {
+                out += `sounds=synth_${data[0]},synth_${data[1]},synth_${data[2]},synth_${data[3]},${data[4]}\n`;
+            } else if (code === 135) {
+                out += `cursor1=${data[1]},${data[0]}\n`;
+            } else if (code === 136) {
+                out += `cursor2=${data[1]},${data[0]}\n`;
+            } else if (code === 137) {
+                out += `attackcursor=${data[0]}`;
+            } else if (code === 249) {
+                for (let i = 0; i < data[0].length; i++) {
+                    out += `param=param_${data[0][i].key},${data[0][i].value}\n`;
                 }
             }
         };
 
-        if (cache.indexes >= 18 && game != 'oldschool') {
-            await executeConfigGroups(js5, 18, dump);
-        } else {
-            await executeConfigFiles(js5, 9, dump);
-        }
+        // ----
 
-        return out;
+        let js5 = new Js5MasterIndex(cache);
+        let npcTypes = new NpcTypeList(js5);
+
+        if (format === 'json') {
+            await npcTypes.load();
+            return npcTypes.configs;
+        } else if (format === 'runelite') {
+            await npcTypes.load();
+
+            let npcs = [];
+            for (let i = 0; i < npcTypes.count; i++) {
+                let npc = await npcTypes.get(i);
+
+                let rl = {
+                    id: i,
+                    name: npc.name ?? null,
+                    size: npc.size ?? 1,
+                    models: npc.models ?? [],
+                    chatheadModels: npc.heads ?? [],
+                    standingAnimation: npc.readyanim ?? -1,
+                    rotateLeftAnimation: npc.turnleftanim ?? -1,
+                    rotateRightAnimation: npc.turnrightanim ?? -1,
+                    walkingAnimation: npc.walkanim ?? -1,
+                    rotate180Animation: npc.walkanim_b ?? -1,
+                    rotate90RightAnimation: npc.walkanim_r ?? -1,
+                    rotate90LeftAnimation: npc.walkanim_l ?? -1,
+                    recolorToFind: npc.recol_s ?? [],
+                    recolorToReplace: npc.recol_d ?? [],
+                    actions: npc.ops ?? new Array(5),
+                    isMinimapVisible: npc.visonmap ?? false,
+                    combatLevel: npc.vislevel ?? 0,
+                    widthScale: npc.resizeh ?? 128,
+                    heightScale: npc.resizev ?? 128,
+                    hasRenderPriority: npc.drawpriority ?? false,
+                    ambient: npc.ambient ?? 0,
+                    contrast: npc.contrast ?? 0,
+                    headIcon: npc.icon ?? -1,
+                    rotationSpeed: npc.turnspeed ?? 32,
+                    varbitId: npc.multivarbit ?? -1,
+                    varpId: npc.multivar ?? -1,
+                    isInteractable: npc.active ?? true,
+                    rotationFlag: npc.slowmove ?? true,
+                    isPet: npc.follower ?? false,
+                    //
+                    examine: npc.desc ?? null,
+                    // retextureToFind: npc.retex_s ?? [],
+                    // retextureToReplace: npc.retex_d ?? [],
+                };
+
+                npcs[i] = rl;
+            }
+
+            if (download == 'archive') {
+                reply.type('application/x-tar');
+
+                let tar = tarStream.pack();
+                for (let i = 0; i < npcs.length; i++) {
+                    tar.entry({ name: `${i}.json` }, JSON.stringify(npcs[i], null, 2));
+                }
+                tar.finalize();
+                return tar;
+            } else {
+                reply.type('application/json');
+                return JSON.stringify(npcs, null, 2);
+            }
+        } else {
+            await npcTypes.load(dump, true);
+            return out;
+        }
     });
 
     f.get('/obj/category', async (req, reply) => {
@@ -1248,25 +1230,25 @@ export default function (f, opts, next) {
             } else if (code >= 100 && code < 110) {
                 out += `count${code - 100 + 1}=obj_${data[0]},${data[1]}\n`;
             } else if (code === 110) {
-                out +=`resizex=${data[0]}\n`;
+                out += `resizex=${data[0]}\n`;
             } else if (code === 111) {
-                out +=`resizey=${data[0]}\n`;
+                out += `resizey=${data[0]}\n`;
             } else if (code === 112) {
-                out +=`resizez=${data[0]}\n`;
+                out += `resizez=${data[0]}\n`;
             } else if (code === 113) {
-                out +=`ambient=${data[0]}\n`;
+                out += `ambient=${data[0]}\n`;
             } else if (code === 114) {
-                out +=`contrast=${data[0]}\n`;
+                out += `contrast=${data[0]}\n`;
             } else if (code === 115) {
-                out +=`team=${data[0]}\n`;
+                out += `team=${data[0]}\n`;
             } else if (code === 121) {
-                out +=`lentlink=obj_${data[0]}\n`;
+                out += `lentlink=obj_${data[0]}\n`;
             } else if (code === 122) {
-                out +=`lenttemplate=obj_${data[0]}\n`;
+                out += `lenttemplate=obj_${data[0]}\n`;
             } else if (code === 125) {
-                out +=`manwearoff=${data[0]},${data[1]},${data[2]}\n`;
+                out += `manwearoff=${data[0]},${data[1]},${data[2]}\n`;
             } else if (code === 126) {
-                out +=`manwearoff=${data[0]},${data[1]},${data[2]}\n`;
+                out += `manwearoff=${data[0]},${data[1]},${data[2]}\n`;
             } else if (code === 127) {
                 out += `cursor1=${data[1]},${data[0]}\n`;
             } else if (code === 128) {
@@ -1368,9 +1350,14 @@ export default function (f, opts, next) {
                     boughtTemplate: typeof obj.boughttemplate !== 'undefined' ? obj.boughttemplate : -1,
                     placeholderId: typeof obj.placeholderlink !== 'undefined' ? obj.placeholderlink : -1,
                     placeholderTemplate: typeof obj.placeholdertemplate !== 'undefined' ? obj.placeholdertemplate : -1,
-                    // params: obj.params ?? null,
-                    examine: obj.desc ?? null
+                    //
+                    examine: obj.desc ?? null,
+                    recolorToFind: obj.recol_s ?? [],
+                    recolorToReplace: obj.recol_d ?? [],
+                    // retextureToFind: obj.retex_s ?? [],
+                    // retextureToReplace: obj.retex_d ?? [],
                 };
+
                 objs[i] = rl;
             }
 
