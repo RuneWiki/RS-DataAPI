@@ -69,10 +69,18 @@ class NpcType {
                 readCb(this.id, code, this.turnleftanim);
             }
         } else if (code === 16) {
-            this.turnrightanim = data.g2();
+            if (game === 'oldschool') {
+                this.turnrightanim = data.g2();
 
-            if (readCb) {
-                readCb(this.id, code, this.turnrightanim);
+                if (readCb) {
+                    readCb(this.id, code, this.turnrightanim);
+                }
+            } else {
+                this.disposealpha = true;
+
+                if (readCb) {
+                    readCb(this.id, code, this.disposealpha);
+                }
             }
         } else if (code === 17) {
             this.walkanim = data.g2();
@@ -146,6 +154,24 @@ class NpcType {
 
             if (readCb) {
                 readCb(this.id, code, this.heads);
+            }
+        } else if (code === 90) {
+            this.code90 = data.g2();
+
+            if (readCb) {
+                readCb(this.id, code, this.code90);
+            }
+        } else if (code === 91) {
+            this.code91 = data.g2();
+
+            if (readCb) {
+                readCb(this.id, code, this.code91);
+            }
+        } else if (code === 92) {
+            this.code92 = data.g2();
+
+            if (readCb) {
+                readCb(this.id, code, this.code92);
             }
         } else if (code === 93) {
             this.visonmap = false;

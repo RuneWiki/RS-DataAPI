@@ -516,7 +516,11 @@ export default function (f, opts, next) {
             } else if (code === 15) {
                 out += `turnleftanim=${data[0]}\n`;
             } else if (code === 16) {
-                out += `turnrightanim=${data[0]}\n`;
+                if (game === 'oldschool') {
+                    out += `turnrightanim=${data[0]}\n`;
+                } else {
+                    out += 'disposealpha=yes\n';
+                }
             } else if (code === 17) {
                 out += `walkanims=seq_${data[0]},seq_${data[1]},seq_${data[2]},seq_${data[3]}\n`;
             } else if (code === 18) {
@@ -541,6 +545,12 @@ export default function (f, opts, next) {
                 for (let i = 0; i < data[0].length; i++) {
                     out += `head${i + 1}=model_${data[0][i]}\n`;
                 }
+            } else if (code === 90) {
+                out += `code90=${data[0]}\n`;
+            } else if (code === 91) {
+                out += `code91=${data[0]}\n`;
+            } else if (code === 92) {
+                out += `code92=${data[0]}\n`;
             } else if (code === 93) {
                 out += 'visonmap=no\n';
             } else if (code === 95) {
