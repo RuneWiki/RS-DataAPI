@@ -1368,7 +1368,8 @@ export default function (f, opts, next) {
                     boughtTemplate: typeof obj.boughttemplate !== 'undefined' ? obj.boughttemplate : -1,
                     placeholderId: typeof obj.placeholderlink !== 'undefined' ? obj.placeholderlink : -1,
                     placeholderTemplate: typeof obj.placeholdertemplate !== 'undefined' ? obj.placeholdertemplate : -1,
-                    // params: obj.params ?? null
+                    // params: obj.params ?? null,
+                    examine: obj.desc ?? null
                 };
                 objs[i] = rl;
             }
