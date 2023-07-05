@@ -1232,7 +1232,7 @@ export default function (f, opts, next) {
             } else if (code === 95) {
                 out += `2dzan=${data[0]}\n`;
             } else if (code === 96) {
-                out += `dummyitem=yes\n`;
+                out += `dummyitem=${data[0]}\n`;
             } else if (code === 97) {
                 out += `certlink=obj_${data[0]}\n`;
             } else if (code === 98) {
