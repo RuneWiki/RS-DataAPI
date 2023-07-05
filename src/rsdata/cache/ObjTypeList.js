@@ -418,10 +418,10 @@ class ObjType {
                 readCb(this.id, code, this.zan2d);
             }
         } else if (code === 96) {
-            this.code96 = data.g1();
+            this.dummyitem = data.g1();
 
             if (readCb) {
-                readCb(this.id, code, this.code96);
+                readCb(this.id, code, this.dummyitem);
             }
         } else if (code === 97) {
             this.certlink = data.g2();
