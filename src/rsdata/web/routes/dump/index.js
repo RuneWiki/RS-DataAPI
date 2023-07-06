@@ -1232,7 +1232,17 @@ export default function (f, opts, next) {
             } else if (code === 95) {
                 out += `2dzan=${data[0]}\n`;
             } else if (code === 96) {
-                out += `dummyitem=${data[0]}\n`;
+                switch (data[0]) {
+                    // case 1:
+                    //     out += `dummyitem=inv_only\n`;
+                    //     break;
+                    // case 2:
+                    //     out += `dummyitem=graphic_only\n`;
+                    //     break;
+                    default:
+                        out += `dummyitem=${data[0]}\n`;
+                        break;
+                }
             } else if (code === 97) {
                 out += `certlink=obj_${data[0]}\n`;
             } else if (code === 98) {

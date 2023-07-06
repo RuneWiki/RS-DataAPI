@@ -92,6 +92,7 @@ const schema = `
     stockmarket: Boolean
     weight: Int
     category: Int
+    dummyitem: Int
     certlink: Int
     certtemplate: Int
     countobj: [ConfigObjCount]
