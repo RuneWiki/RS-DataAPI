@@ -1534,6 +1534,9 @@ export default function (f, opts, next) {
                     out += `autodisable=no\n`;
                 } else if (code === 5) {
                     out += `default=${data.gjstr()}\n`;
+                } else if (code === 101) {
+                    let type = data.gsmart();
+                    out += `type=${type}\n`;
                 } else {
                     // console.log(`Unknown param config code ${code}`);
                     break;
