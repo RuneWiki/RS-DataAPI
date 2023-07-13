@@ -66,15 +66,14 @@ export default function (f, opts, next) {
 
         // ----
 
-        let data = await js5.indexes[archive].getGroup(group, true);
+        let data = await js5.indexes[archive].getGroupByName(group);
         if (!data) {
-            // maybe this is a name?
-            data = await js5.indexes[archive].getGroupByName(group);
+            data = await js5.indexes[archive].getGroup(group, true);
+        }
 
-            if (!data) {
-                reply.code(404);
-                return `Could not find group ${group} in archive ${archive}`;
-            }
+        if (!data) {
+            reply.code(404);
+            return `Could not find group ${group} in archive ${archive}`;
         }
 
         if (archive == 52) {

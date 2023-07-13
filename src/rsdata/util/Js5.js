@@ -1,6 +1,6 @@
 import Packet from '#jagex3/io/Packet.js';
 import { hashCode } from '#rsdata/enum/hashes.js';
-import { readGroup } from '#rsdata/util/OpenRS2.js';
+import { getXteas, readGroup } from '#rsdata/util/OpenRS2.js';
 
 class Js5Index {
     openrs2 = -1;
@@ -182,6 +182,15 @@ class Js5Index {
             await this.load();
         }
 
+        if (this.id === 5) {
+            let xteas = await getXteas(this.openrs2);
+
+            let match = xteas.find(x => x.group == group);
+            if (match) {
+                return readGroup(this.openrs2, this.id, group, match.key);
+            }
+        }
+
         return readGroup(this.openrs2, this.id, group);
     }
 
@@ -192,6 +201,15 @@ class Js5Index {
 
         let hash = hashCode(name);
         let group = this.groupNameHashes.indexOf(hash);
+
+        if (this.id === 5) {
+            let xteas = await getXteas(this.openrs2);
+
+            let match = xteas.find(x => x.group == group);
+            if (match) {
+                return readGroup(this.openrs2, this.id, group, match.key);
+            }
+        }
 
         return readGroup(this.openrs2, this.id, group);
     }

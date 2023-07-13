@@ -151,4 +151,42 @@ export default class Packet {
             return this.g4s() & 0x7FFFFFFF;
         }
     }
+
+    tinydec(keys = [0, 0, 0, 0]) {
+        const ROUNDS = 32;
+        const DELTA = 0x9E3779B9;
+
+        let start = this.pos;
+        this.pos = 5; // skip js5 compression, length
+        let blocks = (this.length - 5) / 8;
+
+        for (let i = 0; i < blocks; i++) {
+            let y = this.g4s();
+            let z = this.g4s();
+            let sum = (DELTA * ROUNDS) >>> 0;
+
+            while (sum) {
+                z -= (((y << 4) >>> 0 ^ (y >>> 5)) + y) ^ (sum + keys[(sum >> 11) & 3]);
+                z = z >>> 0;
+                sum = (sum - DELTA) >>> 0;
+                y -= (((z << 4) >>> 0 ^ (z >>> 5)) + z) ^ (sum + keys[sum & 3]);
+                y = y >>> 0;
+            }
+
+            this.pos -= 8;
+            this.p4(y);
+            this.p4(z);
+        }
+
+        this.pos = start;
+    }
+
+    // ----
+
+    p4(value) {
+        this.data[this.pos++] = value >> 24;
+        this.data[this.pos++] = value >> 16;
+        this.data[this.pos++] = value >> 8;
+        this.data[this.pos++] = value;
+    }
 }

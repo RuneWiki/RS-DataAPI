@@ -40,6 +40,18 @@ export async function downloadFileStream(url, path) {
 export const OPENRS2_DOMAIN = 'https://archive.openrs2.org';
 export const OPENRS2_API = `${OPENRS2_DOMAIN}/caches/$scope/$id`;
 
+export async function getXteas(id) {
+    if (fs.existsSync(`data/${id}/keys.json`)) {
+        return JSON.parse(fs.readFileSync(`data/${id}/keys.json`));
+    }
+
+    let url = OPENRS2_API.replace('$scope', 'runescape').replace('$id', id);
+    let api = `${url}/keys.json`;
+
+    await downloadFile(api, `data/${id}/keys.json`, false);
+    return JSON.parse(fs.readFileSync(`data/${id}/keys.json`));
+}
+
 export async function getGroup(id, archive, group) {
     if (archive < 0 || group < 0) {
         return null;
@@ -55,12 +67,15 @@ export async function getGroup(id, archive, group) {
     return await downloadFile(api, `data/${id}/${archive}/${group}.dat`);
 }
 
-export async function readGroup(id, archive, group) {
+export async function readGroup(id, archive, group, keys) {
     if (archive < 0 || group < 0) {
         return null;
     }
 
     let data = Packet.wrap(await getGroup(id, archive, group));
+    if (keys) {
+        data.tinydec(keys);
+    }
 
     let compression = data.g1();
     let length = data.g4();
@@ -73,6 +88,10 @@ export async function readGroup(id, archive, group) {
         if (compression === 1) {
             return Packet.wrap(BZip2.decompress(data.gdata(length)));
         } else if (compression === 2) {
+            if (keys) {
+                return Packet.wrap(zlib.inflateRawSync(data.gdata(length, data.pos + 10, -8 - (data.pos + 10) + data.length)));
+            }
+
             return Packet.wrap(zlib.gunzipSync(data.gdata(length)));
         } else if (compression === 3) {
             // TODO: LZMA
