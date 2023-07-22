@@ -495,6 +495,82 @@ export default function (f, opts, next) {
         return out;
     });
 
+    f.get('/struct', async (req, reply) => {
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
+
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
+        }
+
+        if (openrs2 !== -1) {
+            game = null;
+        }
+
+        if (rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        // ----
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
+        let js5 = new Js5MasterIndex(cache);
+
+        // ----
+
+
+
+        let out = '';
+        let dump = async (id, data) => {
+            if (id > 0) {
+                out += '\n';
+            }
+
+            out += `[struct_${id}]\n`;
+            while (data.available > 0) {
+                let code = data.g1();
+                if (code === 0) {
+                    break;
+                }
+
+                if (code === 249) {
+                    let count = data.g1();
+
+                    for (let i = 0; i < count; i++) {
+                        let isString = data.gbool();
+                        let key = data.g3();
+                        let value = isString ? data.gjstr() : data.g4s();
+
+                        out += `param=param_${key},${value}\n`;
+                    }
+                } else {
+                    // console.log(`Unknown enum config code ${code}`);
+                    break;
+                }
+            }
+        };
+
+        if (game === 'oldschool') {
+            await executeConfigFiles(js5, 34, dump);
+        } else if (rev >= 745) {
+            await executeConfigGroups(js5, 22, dump);
+        } else {
+            await executeConfigFiles(js5, 26, dump);
+        }
+
+        return out;
+    });
+
     f.get('/npc', async (req, reply) => {
         const { openrs2 = null, format = 'txt', download = 'raw' } = req.query;
         let { rev = null, match = 0, game = null } = req.query;
@@ -1481,7 +1557,7 @@ export default function (f, opts, next) {
                 }
 
                 if (code === 1) {
-                    let type = ParamType.getType(data.g1());;
+                    let type = ParamType.getType(data.g1());
                     out += `type=${type}\n`;
                 } else if (code === 2) {
                     out += `default=${data.g4s()}\n`;
