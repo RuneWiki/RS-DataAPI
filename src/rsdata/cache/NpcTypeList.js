@@ -499,13 +499,13 @@ export default class NpcTypeList {
 
             let lastGroup = this.js5.indexes[18].capacity - 1;
             let remainder = this.js5.indexes[18].groupCapacities[lastGroup];
-            let total = (lastGroup << 8) + remainder;
+            let total = (lastGroup << 7) + remainder;
 
             for (let id = 0; id < total; id++) {
-                let group = id >>> 8;
+                let group = id >>> 7;
 
                 if (!(await this.js5.indexes[18].getGroup(group))) {
-                    i += 0xFF;
+                    id += 0x7F;
                     continue;
                 }
 
