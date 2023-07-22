@@ -443,6 +443,59 @@ class NpcType {
             if (readCb) {
                 readCb(this.id, code, this.attackcursor);
             }
+        } else if (code === 138) {
+            let value = data.g2();
+
+            if (readCb) {
+                readCb(this.id, code, value);
+            }
+        } else if (code === 139) {
+            let value = data.g2();
+
+            if (readCb) {
+                readCb(this.id, code, value);
+            }
+        } else if (code === 140) {
+            let value = data.g1();
+
+            if (readCb) {
+                readCb(this.id, code, value);
+            }
+        } else if (code === 141) {
+            let value = true;
+
+            if (readCb) {
+                readCb(this.id, code, value);
+            }
+        } else if (code === 142) {
+            let value = data.g2();
+
+            if (readCb) {
+                readCb(this.id, code, value);
+            }
+        } else if (code === 143) {
+            let value = true;
+
+            if (readCb) {
+                readCb(this.id, code, value);
+            }
+        } else if (code >= 150 && code < 155) {
+            let value = data.gjstr();
+
+            if (readCb) {
+                readCb(this.id, code, value);
+            }
+        } else if (code === 160) {
+            let count = data.g1();
+
+            let array = [];
+            for (let i = 0; i < count; i++) {
+                array.push(data.g2());
+            }
+
+            if (readCb) {
+                readCb(this.id, code, array);
+            }
         } else if (code === 249) {
             let count = data.g1();
 
@@ -546,8 +599,8 @@ export default class NpcTypeList {
         if (this.js5.openrs2.indexes >= 18 && this.js5.openrs2.game != 'oldschool') {
             await this.js5.indexes[18].load();
 
-            let group = id >> 8;
-            let file = id & 0xFF;
+            let group = id >> 7;
+            let file = id & 0x7F;
 
             let data = await this.js5.getFile(18, group, file);
             if (!data) {

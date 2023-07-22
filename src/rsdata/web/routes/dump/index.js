@@ -768,6 +768,8 @@ export default function (f, opts, next) {
                 for (let i = 0; i < data[0].length; i++) {
                     out += `param=param_${data[0][i].key},${data[0][i].value}\n`;
                 }
+            } else {
+                out += `code${code}=${data.join(',')}\n`;
             }
         };
 
