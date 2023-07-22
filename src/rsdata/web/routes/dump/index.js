@@ -4,6 +4,7 @@ import ObjTypeList from '#rsdata/cache/ObjTypeList.js';
 import Js5MasterIndex from '#rsdata/util/Js5.js';
 import { findCache, findCacheNew } from '#rsdata/util/OpenRS2.js';
 import NpcTypeList from '#rsdata/cache/NpcTypeList.js';
+import ParamType from '#rsdata/cache/ParamType.js';
 
 async function executeConfigGroups(js5, archive, cb) {
     await js5.indexes[archive].load();
@@ -446,6 +447,27 @@ export default function (f, opts, next) {
                 }
 
                 if (code === 1) {
+                    let type = ParamType.getType(data.g1());
+                    out += `inputtype=${type}\n`;
+                } else if (code === 2) {
+                    let type = ParamType.getType(data.g1());
+                    out += `outputtype=${type}\n`;
+                } else if (code === 3) {
+                    out += `default=${data.gjstr()}\n`;
+                } else if (code === 4) {
+                    out += `default=${data.g4s()}\n`;
+                } else if (code === 5) {
+                    let count = data.g2();
+
+                    for (let j = 0; j < count; j++) {
+                        out += `val=${data.g4s()},${data.gjstr()}\n`;
+                    }
+                } else if (code === 6) {
+                    let count = data.g2();
+
+                    for (let j = 0; j < count; j++) {
+                        out += `val=${data.g4s()},${data.g4s()}\n`;
+                    }
                 } else {
                     // console.log(`Unknown enum config code ${code}`);
                     break;
@@ -1448,95 +1470,7 @@ export default function (f, opts, next) {
                 }
 
                 if (code === 1) {
-                    let type = 0;
-                    let char = '';
-
-                    if (rev > 800) {
-                        // TODO
-                    } else {
-                        type = data.g1();
-                        char = new TextDecoder('windows-1252').decode(Uint8Array.from([type]));
-                    }
-
-                    switch (char) {
-                        case 'i':
-                            type = 'int';
-                            break;
-                        case 'g':
-                            type = 'enum';
-                            break;
-                        case 'd':
-                            type = 'graphic';
-                            break;
-                        case 'O':
-                            type = 'namedobj';
-                            break;
-                        case 'm':
-                            type = 'model';
-                            break;
-                        case 'S':
-                            type = 'stat';
-                            break;
-                        case 's':
-                            type = 'string';
-                            break;
-                        case 'o':
-                            type = 'obj';
-                            break;
-                        case 'l':
-                            type = 'loc';
-                            break;
-                        case 'I':
-                            type = 'component';
-                            break;
-                        case 'J':
-                            type = 'struct';
-                            break;
-                        case '1':
-                            type = 'boolean';
-                            break;
-                        case 'c':
-                            type = 'coord';
-                            break;
-                        case 'y':
-                            type = 'category';
-                            break;
-                        case 't':
-                            type = 'spotanim';
-                            break;
-                        case 'n':
-                            type = 'npc';
-                            break;
-                        case 'v':
-                            type = 'inv';
-                            break;
-                        case 'P':
-                            type = 'synth';
-                            break;
-                        case 'A':
-                            type = 'seq';
-                            break;
-                        case 'Ð':
-                            type = 'dbrow';
-                            break;
-                        case 'µ':
-                            type = 'mapelement';
-                            break;
-                        // case 'K':
-                        //     break;
-                        // case '@':
-                        //     break;
-                        // case 'x':
-                        //     break;
-                        // case '«':
-                        //     break;
-                        // case '€':
-                        //     break;
-                        default:
-                            // console.log(`Unknown param type ${type}: ${char}`);
-                            break;
-                    }
-
+                    let type = ParamType.getType(data.g1());;
                     out += `type=${type}\n`;
                 } else if (code === 2) {
                     out += `default=${data.g4s()}\n`;
