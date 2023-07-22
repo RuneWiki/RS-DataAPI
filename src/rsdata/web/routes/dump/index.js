@@ -439,7 +439,14 @@ export default function (f, opts, next) {
                 out += '\n';
             }
 
+            let inputtype = null;
+            let outputtype = null;
+
             out += `[enum_${id}]\n`;
+            if (rev > 800) {
+                return;
+            }
+
             while (data.available > 0) {
                 let code = data.g1();
                 if (code === 0) {
@@ -447,26 +454,30 @@ export default function (f, opts, next) {
                 }
 
                 if (code === 1) {
-                    let type = ParamType.getType(data.g1());
-                    out += `inputtype=${type}\n`;
+                    let type = data.g1();
+
+                    inputtype = ParamType.getType(type);
+                    out += `inputtype=${inputtype}\n`;
                 } else if (code === 2) {
-                    let type = ParamType.getType(data.g1());
-                    out += `outputtype=${type}\n`;
+                    let type = data.g1();
+
+                    outputtype = ParamType.getType(type);
+                    out += `outputtype=${outputtype}\n`;
                 } else if (code === 3) {
                     out += `default=${data.gjstr()}\n`;
                 } else if (code === 4) {
-                    out += `default=${data.g4s()}\n`;
+                    out += `default=${ParamType.prefixTypeValue(outputtype, data.g4s())}\n`;
                 } else if (code === 5) {
                     let count = data.g2();
 
                     for (let j = 0; j < count; j++) {
-                        out += `val=${data.g4s()},${data.gjstr()}\n`;
+                        out += `val=${ParamType.prefixTypeValue(inputtype, data.g4s())},${data.gjstr()}\n`;
                     }
                 } else if (code === 6) {
                     let count = data.g2();
 
                     for (let j = 0; j < count; j++) {
-                        out += `val=${data.g4s()},${data.g4s()}\n`;
+                        out += `val=${ParamType.prefixTypeValue(inputtype, data.g4s())},${ParamType.prefixTypeValue(outputtype, data.g4s())}\n`;
                     }
                 } else {
                     // console.log(`Unknown enum config code ${code}`);
