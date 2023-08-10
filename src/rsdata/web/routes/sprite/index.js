@@ -18,7 +18,7 @@ function isPrime(val) {
     return true;
 }
 
-async function decodeImage(data) {
+async function decodeImage(data, transparent = true) {
     data.pos = data.length - 2;
     let info = data.g2();
     let version = info >> 15;
@@ -60,7 +60,13 @@ async function decodeImage(data) {
             throw new Error('Invalid image data');
         }
 
-        let palette = [0];
+        let palette = [];
+        if (transparent) {
+            palette[0] = 0;
+        } else {
+            palette[0] = 0xFF00FFFF;
+        }
+
         for (let i = 1; i < paletteCount; i++) {
             palette[i] = data.g3();
 
@@ -109,8 +115,12 @@ async function decodeImage(data) {
             }
         }
 
-        let img = new Jimp(tileX * width, tileY * height);
-        img.background(0x00000000);
+        let img;
+        if (transparent) {
+            img = new Jimp(tileX * width, tileY * height).colorType(2);
+        } else {
+            img = new Jimp(tileX * width, tileY * height, 0xFF00FFFF).colorType(2);
+        }
 
         data.pos = 0;
         for (let i = 0; i < tiles; i++) {
@@ -124,7 +134,12 @@ async function decodeImage(data) {
             let flags = data.g1();
             if ((flags & 0x1) === 0) {
                 for (let j = 0; j < len; j++) {
-                    let pixel = palette[data.g1()];
+                    let color = data.g1();
+                    if (color === 0) {
+                        continue;
+                    }
+
+                    let pixel = palette[color];
                     let x = startX + xOffsets[i] + (j % innerWidth);
                     let y = startY + yOffsets[i] + Math.floor(j / innerWidth);
                     let pos = (x + (y * tileX * width)) * 4;
@@ -152,7 +167,12 @@ async function decodeImage(data) {
             } else {
                 for (let x = 0; x < innerWidth; x++) {
                     for (let y = 0; y < innerHeight; y++) {
-                        let pixel = palette[data.g1()];
+                        let color = data.g1();
+                        if (color === 0) {
+                            continue;
+                        }
+
+                        let pixel = palette[color];
                         let pos = (startX + xOffsets[i] + x + ((startY + yOffsets[i] + y) * tileX * width)) * 4;
 
                         img.bitmap.data[pos + 3] = pixel === 0 ? 0 : 255;
@@ -192,8 +212,12 @@ async function decodeImage(data) {
 
             let tileX = Math.ceil(Math.sqrt(tiles));
             let tileY = Math.ceil(tiles / tileX);
-            let img = new Jimp(tileX * width, tileY * height);
-            img.background(0x00000000);
+            let img;
+            if (transparent) {
+                img = new Jimp(tileX * width, tileY * height).colorType(2);
+            } else {
+                img = new Jimp(tileX * width, tileY * height, 0xFF00FFFF).colorType(2);
+            }
 
             for (let i = 0; i < tiles; i++) {
                 let len = width * height;
@@ -237,7 +261,7 @@ async function decodeImage(data) {
 export default function (f, opts, next) {
     f.get(`/:name`, async (req, reply) => {
         const { name } = req.params;
-        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        const { openrs2 = -1, match = 0, lang = 'en', magenta } = req.query;
         let { rev = -1, game = 'runescape' } = req.query;
 
         if (rev === -1 && openrs2 === -1) {
@@ -251,6 +275,11 @@ export default function (f, opts, next) {
 
         if (rev !== -1 && rev < 234) {
             game = 'oldschool';
+        }
+
+        let transparent = true;
+        if (magenta) {
+            transparent = false;
         }
 
         // ----
@@ -283,7 +312,7 @@ export default function (f, opts, next) {
             let sprites = [];
             for (let i = 0; i < count; i++) {
                 let data = await js5.indexes[8].getGroupByName(`${name},${i}`);
-                sprites.push(await decodeImage(data));
+                sprites.push(await decodeImage(data, transparent));
             }
 
             let width = Math.ceil(Math.sqrt(count));
@@ -341,7 +370,7 @@ export default function (f, opts, next) {
             let data = await js5.indexes[8].getGroupByName(name);
 
             // this is a self-contained spritesheet/single sprite
-            let img = await decodeImage(data);
+            let img = await decodeImage(data, transparent);
             reply.type('image/png');
             return img.getBufferAsync(Jimp.MIME_PNG);
         } else {
@@ -357,7 +386,7 @@ export default function (f, opts, next) {
             }
 
             // this is a self-contained spritesheet/single sprite
-            let img = await decodeImage(data);
+            let img = await decodeImage(data, transparent);
             reply.type('image/png');
             return img.getBufferAsync(Jimp.MIME_PNG);
         }

@@ -5,7 +5,7 @@ import fs from 'fs';
 import Js5MasterIndex from '#rsdata/util/Js5.js';
 import { findCache } from '#rsdata/util/OpenRS2.js';
 
-async function decodeImage(data) {
+async function decodeImage(data, transparent = true) {
     data.pos = data.length - 2;
     let info = data.g2();
     let version = info >> 15;
@@ -47,11 +47,17 @@ async function decodeImage(data) {
             throw new Error('Invalid image data');
         }
 
-        let palette = [0];
+        let palette = [];
+        if (transparent) {
+            palette[0] = 0;
+        } else {
+            palette[0] = 0xFF00FFFF;
+        }
+
         for (let i = 1; i < paletteCount; i++) {
             palette[i] = data.g3();
 
-            if (palette[i] == 0) {
+            if (palette[i] === 0) {
                 // preserve black colors so they aren't made transparent
                 palette[i] = 1;
             }
@@ -59,8 +65,12 @@ async function decodeImage(data) {
 
         let tileX = Math.ceil(Math.sqrt(tiles));
         let tileY = Math.ceil(tiles / tileX);
-        let img = new Jimp(tileX * width, tileY * height);
-        img.background(0x00000000);
+        let img;
+        if (transparent) {
+            img = new Jimp(tileX * width, tileY * height).colorType(2);
+        } else {
+            img = new Jimp(tileX * width, tileY * height, 0xFF00FFFF).colorType(2);
+        }
 
         data.pos = 0;
         for (let i = 0; i < tiles; i++) {
@@ -74,7 +84,12 @@ async function decodeImage(data) {
             let flags = data.g1();
             if ((flags & 0x1) === 0) {
                 for (let j = 0; j < len; j++) {
-                    let pixel = palette[data.g1()];
+                    let color = data.g1();
+                    if (color === 0) {
+                        continue;
+                    }
+
+                    let pixel = palette[color];
                     let x = startX + xOffsets[i] + (j % innerWidth);
                     let y = startY + yOffsets[i] + Math.floor(j / innerWidth);
                     let pos = (x + (y * tileX * width)) * 4;
@@ -102,7 +117,12 @@ async function decodeImage(data) {
             } else {
                 for (let x = 0; x < innerWidth; x++) {
                     for (let y = 0; y < innerHeight; y++) {
-                        let pixel = palette[data.g1()];
+                        let color = data.g1();
+                        if (color === 0) {
+                            continue;
+                        }
+
+                        let pixel = palette[color];
                         let pos = (startX + xOffsets[i] + x + ((startY + yOffsets[i] + y) * tileX * width)) * 4;
 
                         img.bitmap.data[pos + 3] = pixel === 0 ? 0 : 255;
@@ -184,57 +204,57 @@ async function decodeImage(data) {
     }
 }
 
-let js5 = new Js5MasterIndex(findCache(930));
+let js5 = new Js5MasterIndex(findCache(578));
 
-await js5.indexes[52].load();
-for (let i = 0; i < js5.indexes[52].size; i++) {
-    let group = js5.indexes[52].groupIds[i];
+// await js5.indexes[52].load();
+// for (let i = 0; i < js5.indexes[52].size; i++) {
+//     let group = js5.indexes[52].groupIds[i];
 
-    if (!fs.existsSync(`dump/textures_dxt/${group}.dds`)) {
-        let data = await js5.indexes[52].getGroup(group);
-        data.save(`dump/textures_dxt/${group}.dds`, data.length, 5);
-    }
-}
+//     if (!fs.existsSync(`dump/textures_dxt/${group}.dds`)) {
+//         let data = await js5.indexes[52].getGroup(group);
+//         data.save(`dump/textures_dxt/${group}.dds`, data.length, 5);
+//     }
+// }
 
-await js5.indexes[53].load();
-for (let i = 0; i < js5.indexes[53].size; i++) {
-    let group = js5.indexes[53].groupIds[i];
+// await js5.indexes[53].load();
+// for (let i = 0; i < js5.indexes[53].size; i++) {
+//     let group = js5.indexes[53].groupIds[i];
 
-    if (!fs.existsSync(`dump/textures_png/${group}.png`)) {
-        let data = await js5.indexes[53].getGroup(group);
-        data.save(`dump/textures_png/${group}.png`, data.length, 5);
-    }
-}
+//     if (!fs.existsSync(`dump/textures_png/${group}.png`)) {
+//         let data = await js5.indexes[53].getGroup(group);
+//         data.save(`dump/textures_png/${group}.png`, data.length, 5);
+//     }
+// }
 
-await js5.indexes[54].load();
-for (let i = 0; i < js5.indexes[54].size; i++) {
-    let group = js5.indexes[54].groupIds[i];
+// await js5.indexes[54].load();
+// for (let i = 0; i < js5.indexes[54].size; i++) {
+//     let group = js5.indexes[54].groupIds[i];
 
-    if (!fs.existsSync(`dump/textures_png_mipped/${group}.png`)) {
-        let data = await js5.indexes[54].getGroup(group);
-        data.save(`dump/textures_png_mipped/${group}.png`, data.length, 6);
-    }
-}
+//     if (!fs.existsSync(`dump/textures_png_mipped/${group}.png`)) {
+//         let data = await js5.indexes[54].getGroup(group);
+//         data.save(`dump/textures_png_mipped/${group}.png`, data.length, 6);
+//     }
+// }
 
-await js5.indexes[55].load();
-for (let i = 0; i < js5.indexes[55].size; i++) {
-    let group = js5.indexes[55].groupIds[i];
+// await js5.indexes[55].load();
+// for (let i = 0; i < js5.indexes[55].size; i++) {
+//     let group = js5.indexes[55].groupIds[i];
 
-    if (!fs.existsSync(`dump/textures_etc/${group}.ktx`)) {
-        let data = await js5.indexes[55].getGroup(group);
-        data.save(`dump/textures_etc/${group}.ktx`, data.length, 5);
-    }
-}
+//     if (!fs.existsSync(`dump/textures_etc/${group}.ktx`)) {
+//         let data = await js5.indexes[55].getGroup(group);
+//         data.save(`dump/textures_etc/${group}.ktx`, data.length, 5);
+//     }
+// }
 
-await js5.indexes[59].load();
-for (let i = 0; i < js5.indexes[59].size; i++) {
-    let group = js5.indexes[59].groupIds[i];
+// await js5.indexes[59].load();
+// for (let i = 0; i < js5.indexes[59].size; i++) {
+//     let group = js5.indexes[59].groupIds[i];
 
-    if (!fs.existsSync(`dump/typefonts/${group}.otf`)) {
-        let data = await js5.indexes[59].getGroup(group);
-        data.save(`dump/typefonts/${group}.otf`, data.length);
-    }
-}
+//     if (!fs.existsSync(`dump/typefonts/${group}.otf`)) {
+//         let data = await js5.indexes[59].getGroup(group);
+//         data.save(`dump/typefonts/${group}.otf`, data.length);
+//     }
+// }
 
 // takes longer to convert
 await js5.indexes[8].load();
@@ -243,7 +263,7 @@ for (let i = 0; i < js5.indexes[8].size; i++) {
 
     if (!fs.existsSync(`dump/sprites/${group}.png`)) {
         let data = await js5.indexes[8].getGroup(group);
-        let img = await decodeImage(data);
+        let img = await decodeImage(data, false);
         await img.writeAsync(`dump/sprites/${group}.png`);
     }
 }
