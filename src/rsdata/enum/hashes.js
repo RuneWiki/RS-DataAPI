@@ -27,7 +27,7 @@ function addHash(name) {
 
 export function initHashes() {
     // our own reversed hashes
-    let found = fs.readFileSync('found.tsv', 'ascii').replace(/\r/g, '').split('\n');
+    let found = fs.readFileSync('config/hashes/found.tsv', 'ascii').replace(/\r/g, '').split('\n');
     for (let i = 0; i < found.length; i++) {
         let [hash, ...names] = found[i].split('\t');
 
@@ -38,7 +38,7 @@ export function initHashes() {
     }
 
     // seed with known names from OSRS
-    fs.readFileSync('osrs.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+    fs.readFileSync('config/hashes/osrs.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
         let parts = x.split('\t');
 
         // some do not have a name
@@ -48,14 +48,14 @@ export function initHashes() {
     });
 
     // seed with interface names from RS2
-    fs.readFileSync('leanbow.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+    fs.readFileSync('config/hashes/leanbow.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
         let parts = x.split('\t');
 
         addHash(parts[1]);
     });
 
     // seed with known late-era RS2/RS3 names
-    fs.readFileSync('walied.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+    fs.readFileSync('config/hashes/walied.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
         let parts = x.split('\t');
 
         // some do not have a name
@@ -64,16 +64,16 @@ export function initHashes() {
         }
     });
 
-    fs.readFileSync('walied.individual.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(name => {
+    fs.readFileSync('config/hashes/walied.individual.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(name => {
         addHash(name);
     });
 
-    fs.readFileSync('walied.individual.components.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(name => {
+    fs.readFileSync('config/hashes/walied.individual.components.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(name => {
         addHash(name);
     });
 
     // seed with known names from openrs2
-    fs.readFileSync('openrs2.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+    fs.readFileSync('config/hashes/openrs2.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
         let parts = x.split('\t');
 
         addHash(parts[1]);

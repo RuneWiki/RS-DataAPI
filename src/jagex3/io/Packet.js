@@ -1,6 +1,8 @@
 import fs from 'fs';
 import { dirname } from 'path';
 
+BigInt.prototype.toJSON = function() { return this.toString() }
+
 export default class Packet {
     terminator = '\0';
 
@@ -90,6 +92,15 @@ export default class Packet {
         let low = this.g4();
         let high = this.g4();
         return (BigInt(high) << 32n) | BigInt(low);
+    }
+
+    fastgjstr() {
+        if (this.data[this.pos] === this.terminator.charCodeAt(0)) {
+            this.pos++;
+            return null;
+        } else {
+            return this.gjstr();
+        }
     }
 
     gjstr() {
