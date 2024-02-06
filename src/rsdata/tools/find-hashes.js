@@ -62,7 +62,7 @@ if (!process.env.DEV_MODE) {
     initHashes();
 }
 
-let cache = new Js5(findCache(562));
+let cache = new Js5(findCache(554));
 
 let missing = [];
 for (let i = 0; i < cache.indexes.length; i++) {
@@ -124,6 +124,6 @@ process.on('SIGINT', function() {
 console.log(missing.length, 'hashes to find');
 
 if (missing.length) {
-    await bruteForce(missing, hashes, 'lvl_');
+    await bruteForce(missing, hashes, 'com_side_bar_createbox_line3');
     save();
 }

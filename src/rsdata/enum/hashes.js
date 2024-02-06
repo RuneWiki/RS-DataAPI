@@ -99,6 +99,38 @@ export function initHashes() {
         }
     });
 
+    // seed with english words
+    fs.readFileSync('config/hashes/google-10000-english-no-swears.txt', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+        addHash(x);
+    });
+
+    // seed with runestar anims list
+    fs.readFileSync('config/hashes/anims.txt', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+        addHash(x);
+    });
+
+    // seed with anim debugnames
+    fs.readFileSync('config/hashes/animation-debugnames.txt', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+        let name = x.substring(1, x.length - 1);
+        addHash(name);
+    });
+
+    // seed with spotanim debugnames
+    fs.readFileSync('config/hashes/spotanim-debugnames.txt', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+        let name = x.substring(1, x.length - 1);
+        addHash(name);
+    });
+
+    // seed with item debugnames (compiled)
+    fs.readFileSync('config/hashes/item-debugnames.txt', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+        addHash(x);
+    });
+
+    // seed with quest prefixes
+    fs.readFileSync('config/hashes/questprefix.txt', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+        addHash(x);
+    });
+
     // expand sprite groups
     Object.keys(master).forEach(hash => {
         let names = master[hash];
