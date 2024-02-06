@@ -124,6 +124,6 @@ process.on('SIGINT', function() {
 console.log(missing.length, 'hashes to find');
 
 if (missing.length) {
-    await bruteForce(missing, hashes, 'com_side_bar_createbox_line3');
+    await bruteForce(missing, hashes, '', '');
     save();
 }
