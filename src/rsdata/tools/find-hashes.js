@@ -62,13 +62,12 @@ if (!process.env.DEV_MODE) {
     initHashes();
 }
 
-let cache = new Js5(findCache(410).id);
-cache.init();
+let cache = new Js5(findCache(562));
 
 let missing = [];
-for (let i = 0; i < cache.archives.length; i++) {
-    let index = cache.archives[i];
-    if (index.id !== 8) {
+for (let i = 0; i < cache.indexes.length; i++) {
+    let index = cache.indexes[i];
+    if (index.id !== 3) {
         continue;
     }
 
@@ -125,6 +124,6 @@ process.on('SIGINT', function() {
 console.log(missing.length, 'hashes to find');
 
 if (missing.length) {
-    await bruteForce(missing, hashes);
+    await bruteForce(missing, hashes, 'quest_');
     save();
 }
