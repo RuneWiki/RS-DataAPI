@@ -6,7 +6,7 @@ import { findCache, OPENRS2_API } from '#rsdata/util/OpenRS2.js';
 export default function (f, opts, next) {
     f.get('/:archive', async (req, reply) => {
         const { archive } = req.params;
-        const { openrs2 = -1, match = 0, lang = 'en', missing = false } = req.query;
+        const { openrs2 = -1, match = 0, lang = 'en', missing = false, groupsOnly = false } = req.query;
         let { rev = -1, game = 'runescape' } = req.query;
 
         if (rev === -1 && openrs2 === -1) {
@@ -55,6 +55,10 @@ export default function (f, opts, next) {
                 }
             }
 
+            if (groupsOnly) {
+                continue;
+            }
+
             if (index.fileNameHashes[g]) {
                 for (let f = 0; f < index.fileIds.length; f++) {
                     let fhash = index.fileNameHashes[g][f];
@@ -76,7 +80,7 @@ export default function (f, opts, next) {
     });
 
     f.get('/', async (req, reply) => {
-        const { openrs2 = -1, match = 0, lang = 'en', missing = false } = req.query;
+        const { openrs2 = -1, match = 0, lang = 'en', missing = false, groupsOnly = false } = req.query;
         let { rev = -1, game = 'runescape' } = req.query;
 
         if (rev === -1 && openrs2 === -1) {
@@ -124,6 +128,10 @@ export default function (f, opts, next) {
                     } else if (!missing) {
                         output += `${index.id}\t${g}\t-1\t${ghash}\t${hashes.join('\t')}\n`;
                     }
+                }
+
+                if (groupsOnly) {
+                    continue;
                 }
 
                 if (index.fileNameHashes[g]) {

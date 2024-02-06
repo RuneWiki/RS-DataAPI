@@ -124,6 +124,6 @@ process.on('SIGINT', function() {
 console.log(missing.length, 'hashes to find');
 
 if (missing.length) {
-    await bruteForce(missing, hashes, 'quest_');
+    await bruteForce(missing, hashes, 'lvl_');
     save();
 }
