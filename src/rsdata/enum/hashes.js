@@ -26,16 +26,17 @@ function addHash(name) {
 }
 
 export function initHashes() {
-    // our own reversed hashes
-    let found = fs.readFileSync('config/hashes/found.tsv', 'ascii').replace(/\r/g, '').split('\n');
-    for (let i = 0; i < found.length; i++) {
-        let [hash, ...names] = found[i].split('\t');
+    console.time('hash list');
 
-        master[hash] = [];
-        for (let j = 0; j < names.length; j++) {
-            master[hash].push(names[j]);
+    // our own reversed hashes
+    fs.readFileSync('config/hashes/found.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+        let parts = x.split('\t');
+        if (parts[1]) {
+            addHash(parts[1]);
+        } else {
+            addHash(parts[0]);
         }
-    }
+    });
 
     // seed with known names from OSRS
     fs.readFileSync('config/hashes/osrs.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
@@ -99,11 +100,6 @@ export function initHashes() {
         }
     });
 
-    // seed with english words
-    fs.readFileSync('config/hashes/google-10000-english-no-swears.txt', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
-        addHash(x);
-    });
-
     // seed with runestar anims list
     fs.readFileSync('config/hashes/anims.txt', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
         addHash(x);
@@ -131,12 +127,17 @@ export function initHashes() {
         addHash(x);
     });
 
-    // expand sprite groups
+    // seed with english words
+    fs.readFileSync('config/hashes/google-10000-english-no-swears.txt', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+        addHash(x);
+    });
+
     Object.keys(master).forEach(hash => {
         let names = master[hash];
 
         for (let i = 0; i < names.length; i++) {
             if (names[i].indexOf(',') !== -1) {
+                // expand sprite groups
                 if (names[i].indexOf('[') !== -1) {
                     continue;
                 }
@@ -148,8 +149,27 @@ export function initHashes() {
                     addHash(`${parts[0]},${j}`);
                 }
             }
+            // else {
+            //     // generate prefixed names for attack tab
+            //     addHash(`com_side_bar_createbox_line3${names[i]}`);
+            // }
         }
     });
+
+    let stats = [
+        'attack', 'defence', 'strength', 'hitpoints', 'ranged', 'prayer', 'magic', 'cooking', 'woodcutting', 'fletching',
+        'fishing', 'firemaking', 'crafting', 'smithing', 'mining', 'herblore', 'agility', 'thieving', 'slayer', 'farming',
+        'runecrafting', 'hunter', 'construction', 'summoning', 'dungeoneering', 'divination', 'invention', 'archaeology',
+        'necromancy',
+        // intentional typos:
+        'runecraft', 'firemarking', 'herblaw',
+        // extras
+        'combat', 'logs', 'log', 'ores', 'ore', 'herb', 'herbs',
+    ];
+    for (let i = 0; i < stats.length; i++) {
+        addHash(stats[i]);
+        addHash(stats[i] + '_txt');
+    }
 
     // 194-377
     let oldEngine = [
@@ -433,6 +453,7 @@ export function initHashes() {
     for (let i = 0; i < 320; i++) {
         addHash(`qj${i}`);
     }
+    console.timeEnd('hash list');
 }
 
 export function exportHashes(list) {
