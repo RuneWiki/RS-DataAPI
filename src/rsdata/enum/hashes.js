@@ -89,6 +89,16 @@ export function initHashes() {
         }
     });
 
+    // seed with names from chex
+    fs.readFileSync('config/hashes/chex.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
+        let parts = x.split('\t');
+
+        // some do not have a name
+        if (parts.length > 3 && parts[4] && parts[4].length) {
+            addHash(parts[4]);
+        }
+    });
+
     // expand sprite groups
     Object.keys(master).forEach(hash => {
         let names = master[hash];
