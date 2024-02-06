@@ -1,9 +1,15 @@
 import Js5MasterIndex from '#rsdata/util/Js5.js';
-import { getNamesByHash } from '#rsdata/enum/hashes.js';
+import { getNamesByHash, hashCode } from '#rsdata/enum/hashes.js';
 
 import { findCache, OPENRS2_API } from '#rsdata/util/OpenRS2.js';
 
 export default function (f, opts, next) {
+    f.get('/gen/:name', async (req, reply) => {
+        const { name } = req.params;
+
+        return hashCode(name);
+    });
+
     f.get('/:archive', async (req, reply) => {
         const { archive } = req.params;
         const { openrs2 = -1, match = 0, lang = 'en', missing = false, groupsOnly = false } = req.query;
