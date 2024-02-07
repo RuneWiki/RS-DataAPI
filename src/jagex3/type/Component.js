@@ -553,28 +553,28 @@ export class Component {
             if (this.model == 65535) {
                 this.model = -1;
             } else {
-                def.push(`model=${this.model}`);
+                def.push(`model=model_${this.model}`);
             }
 
             this.activeModel = buf.g2();
             if (this.activeModel == 65535) {
                 this.activeModel = -1;
             } else {
-                def.push(`activemodel=${this.activeModel}`);
+                def.push(`activemodel=model_${this.activeModel}`);
             }
 
             this.anim = buf.g2();
             if (this.anim == 65535) {
                 this.anim = -1;
             } else {
-                def.push(`anim=${this.anim}`);
+                def.push(`anim=seq_${this.anim}`);
             }
 
             this.activeAnim = buf.g2();
             if (this.activeAnim == 65535) {
                 this.activeAnim = -1;
             } else {
-                def.push(`activeanim=${this.activeAnim}`);
+                def.push(`activeanim=seq_${this.activeAnim}`);
             }
 
             this.zoom = buf.g2();
