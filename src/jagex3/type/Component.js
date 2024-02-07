@@ -6,7 +6,7 @@ class ServerActiveProperties {
     }
 
     constructor(events, targetParam) {
-        this.events = events;
+        this.events = events.toString(16);
         this.targetParam = targetParam;
     }
 }
@@ -118,7 +118,7 @@ export class Component {
         }
         let events = 0;
         if (this.type == 0) {
-            this.scroll = buf.g2();
+            this.scrollHeight = buf.g2(); // individual properties
             this.hide = buf.g1() == 1;
         }
         if (this.type == 1) {
@@ -128,15 +128,15 @@ export class Component {
         if (this.type == 2) {
             this.widthMode = 3;
             this.heightMode = 3;
-            const draggable = buf.g1();
-            if (draggable == 1) {
+            const isDragTarget = buf.g1();
+            if (isDragTarget == 1) {
                 events = 0x10000000;
             }
             const interactable = buf.g1();
             if (interactable == 1) {
                 events |= 0x40000000;
             }
-            const usable = buf.g1();
+            const usable = buf.g1(); // isUseTarget? or is that "interactable"?
             if (usable == 1) {
                 events |= 0x80000000;
             }
@@ -173,7 +173,7 @@ export class Component {
         if (this.type == 4 || this.type == 1) {
             this.center = buf.g1();
             this.valign = buf.g1();
-            this.linehei = buf.g1();
+            this.lineHeight = buf.g1();
             this.font = buf.g2();
             if (this.font == 65535) {
                 this.font = -1;
@@ -248,7 +248,7 @@ export class Component {
             this.text = buf.gjstr();
         }
         if (this.buttonType == 2 || this.type == 2) {
-            this.actionVerb = buf.gjstr();
+            this.targetVerb = buf.gjstr();
             this.action = buf.gjstr();
             const actionTarget = buf.g2() & 0x3F;
             events |= actionTarget << 11;
@@ -310,8 +310,8 @@ export class Component {
         }
         this.hide = buf.g1() == 1;
         if (this.type == 0) {
-            this.hscroll = buf.g2();
-            this.scroll = buf.g2();
+            this.scrollWidth = buf.g2(); // individual properties
+            this.scrollHeight = buf.g2(); // individual properties
             this.noClickThrough = buf.g1() == 1;
         }
         if (this.type == 5) {
@@ -333,8 +333,8 @@ export class Component {
             if (this.model == 65535) {
                 this.model = -1;
             }
-            this.xoff = buf.g2s();
-            this.yoff = buf.g2s();
+            this.xoff2d = buf.g2s();
+            this.yoff2d = buf.g2s();
             this.xan = buf.g2();
             this.yan = buf.g2();
             this.zan = buf.g2();
@@ -343,15 +343,15 @@ export class Component {
             if (this.anim == 65535) {
                 this.anim = -1;
             }
-            this.ortho = buf.g1() == 1;
+            this.orthogonal = buf.g1() == 1;
             this.aShort50 = buf.g2s();
             this.aShort49 = buf.g2s();
             this.ignoreDepthMask = buf.g1() == 1;
             if (this.widthMode != 0) {
-                this.anInt5957 = buf.g2();
+                this.viewportWidth = buf.g2();
             }
             if (this.heightMode != 0) {
-                this.anInt5920 = buf.g2();
+                this.viewportHeight = buf.g2();
             }
         }
         if (this.type == 4) {
@@ -360,7 +360,7 @@ export class Component {
                 this.font = -1;
             }
             this.text = buf.gjstr();
-            this.linehei = buf.g1();
+            this.lineHeight = buf.g1();
             this.center = buf.g1();
             this.valign = buf.g1();
             this.shadowed = buf.g1() == 1;
@@ -372,19 +372,19 @@ export class Component {
             this.alpha = buf.g1();
         }
         if (this.type == 9) {
-            this.linewid = buf.g1();
+            this.lineWidth = buf.g1();
             this.colour = buf.g4s();
             this.lineDirection = buf.g1() == 1;
         }
-        const local460 = buf.g3();
-        const local464 = buf.g1();
-        if (local464 != 0) {
+        const targetMask = buf.g3();
+        const keyCount = buf.g1();
+        if (keyCount != 0) {
             this.keyCodes = new byte[10];
             this.keyPressDelay = new int[10];
             this.keyHeldMask = new byte[10];
-            while (local464 != 0) {
-                const local493 = (local464 >> 4) - 1;
-                const local501 = buf.g1() | local464 << 8;
+            while (keyCount != 0) {
+                const local493 = (keyCount >> 4) - 1;
+                const local501 = buf.g1() | keyCount << 8;
                 local501 &= 4095;
                 if (local501 == 4095) {
                     this.keyPressDelay[local493] = -1;
@@ -393,10 +393,10 @@ export class Component {
                 }
                 this.keyCodes[local493] = buf.g1b();
                 this.keyHeldMask[local493] = buf.g1b();
-                local464 = buf.g1();
+                keyCount = buf.g1();
             }
         }
-        this.opBase = buf.gjstr();
+        this.opBase = buf.gjstr(); // active properties
         const local551 = buf.g1();
         const local555 = local551 >> 4;
         const ops = local551 & 0xF;
@@ -423,11 +423,11 @@ export class Component {
             this.pauseText = null;
         }
         let local661 = -1;
-        this.dragDeadZone = buf.g1();
-        this.dragDeadTime = buf.g1();
+        this.dragDeadZone = buf.g1(); // active properties
+        this.dragDeadTime = buf.g1(); // active properties
         this.dragRender = buf.g1() == 1;
-        this.actionVerb = buf.gjstr();
-        if (ServerActiveProperties.getTargetMask(local460) != 0) {
+        this.targetVerb = buf.gjstr(); // active properties
+        if (ServerActiveProperties.getTargetMask(targetMask) != 0) {
             local661 = buf.g2();
             if (local661 == 65535) {
                 local661 = -1;
@@ -441,7 +441,7 @@ export class Component {
                 this.cursorId = -1;
             }
         }
-        this.serverActiveProperties = new ServerActiveProperties(local460, local661);
+        this.serverActiveProperties = new ServerActiveProperties(targetMask, local661);
         this.onLoad = this.readArguments(buf);
         this.onMouseOver = this.readArguments(buf);
         this.onMouseLeave = this.readArguments(buf);
