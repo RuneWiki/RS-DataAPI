@@ -222,6 +222,17 @@ class Js5Index {
         return readGroup(this.openrs2, this.id, group);
     }
 
+    async getGroupId(name) {
+        if (this.size === -1) {
+            await this.load();
+        }
+
+        let hash = hashCode(name);
+        let group = this.groupNameHashes.indexOf(hash);
+
+        return group;
+    }
+
     async getFile(group, file) {
         if (this.size === -1) {
             await this.load();

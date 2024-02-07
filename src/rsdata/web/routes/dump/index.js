@@ -1871,7 +1871,18 @@ export default function (f, opts, next) {
 
         const comArchive = await js5.getArchive(3);
         const spriteArchive = await js5.getArchive(8);
-        return Component.decodeGroup(parseInt(id), comArchive, spriteArchive);
+        let group = -1;
+        if (!/^\d+$/.test(id)) {
+            group = await comArchive.getGroupId(id);
+        } else {
+            group = parseInt(id);
+        }
+        if (group < 0 || group >= comArchive.groups) {
+            reply.code(400);
+            return 'Invalid interface ID';
+        }
+
+        return Component.decodeGroup(group, comArchive, spriteArchive);
     });
 
     next();
