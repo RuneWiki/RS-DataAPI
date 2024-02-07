@@ -5,6 +5,8 @@ import { getXteas, readGroup } from '#rsdata/util/OpenRS2.js';
 class Js5Index {
     openrs2 = -1;
     id = -1;
+    build = -1;
+
     version = 0;
     size = -1;
     capacity = 0;
@@ -22,9 +24,10 @@ class Js5Index {
     fileIds = [];
     fileNameHashes = [];
 
-    constructor(id, openrs2) {
+    constructor(id, openrs2, build) {
         this.id = id;
         this.openrs2 = openrs2;
+        this.build = build;
     }
 
     async load() {
@@ -254,28 +257,60 @@ class Js5Index {
                 return Packet.wrap(this.unpacked[group][file]);
             }
 
-            let data = await readGroup(this.openrs2, this.id, group);
-            if (!data) {
+            let uncompressed = await readGroup(this.openrs2, this.id, group);
+            if (!uncompressed) {
                 return null;
             }
 
-            data.pos = data.length - 1;
-            let stripes = data.g1();
+            uncompressed = uncompressed.data;
 
-            data.pos -= (groupSize * stripes * 4) + 1;
+            let start = uncompressed.length;
+            let position = start - 1;
+            let stripes = uncompressed[position] & 0xFF;
+            let bufferPosition = position - (groupSize * stripes * 4);
+            let buffer = new Packet(uncompressed);
 
-            let off = 0;
+            buffer.pos = bufferPosition;
+            let lens = new Int32Array(groupSize);
             for (let i = 0; i < stripes; i++) {
-                let len = 0;
+                let off = 0;
 
                 for (let j = 0; j < groupSize; j++) {
-                    len += data.g4s();
-
-                    let fileId = fileIds[j];
-                    this.unpacked[group][fileId] = data.gdata(len, off, false);
-
-                    off += len;
+                    off += buffer.g4s();
+                    lens[j] += off;
                 }
+            }
+
+            let extracted = new Array(groupSize);
+            for (let i = 0; i < groupSize; i++) {
+                extracted[i] = new Uint8Array(lens[i]);
+                lens[i] = 0;
+            }
+
+            buffer.pos = bufferPosition;
+            let off = 0;
+            for (let i = 0; i < stripes; i++) {
+                let fileLen = 0;
+
+                for (let j = 0; j < groupSize; j++) {
+                    fileLen += buffer.g4s();
+
+                    extracted[j].set(uncompressed.subarray(off, off + fileLen), 0);
+
+                    off += fileLen;
+                    lens[j] += fileLen;
+                }
+            }
+
+            for (let i = 0; i < groupSize; i++) {
+                let file = 0;
+                if (fileIds == null) {
+                    file = i;
+                } else {
+                    file = fileIds[i];
+                }
+
+                this.unpacked[group][file] = extracted[i];
             }
 
             return Packet.wrap(this.unpacked[group][file]);
@@ -294,7 +329,7 @@ export default class Js5MasterIndex {
 
         // TODO: skipping invalid archives
         for (let archive = 0; archive < this.openrs2.indexes; archive++) {
-            this.indexes[archive] = new Js5Index(archive, this.openrs2.id);
+            this.indexes[archive] = new Js5Index(archive, this.openrs2.id, this.openrs2.builds.length ? this.openrs2.builds[0].major : -1);
         }
     }
 

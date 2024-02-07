@@ -34,8 +34,8 @@ export default function (f, opts, next) {
         return reply.redirect(302, `${OPENRS2_API.replace('$scope', cache.scope).replace('$id', cache.id)}/disk.zip`);
     });
 
-    f.get('/read/:archive/:group', async (req, reply) => {
-        const { archive, group } = req.params;
+    f.get('/read/:archive/:group/:file?', async (req, reply) => {
+        const { archive, group, file } = req.params;
         const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
         let { rev = -1, game = 'runescape' } = req.query;
 
@@ -66,9 +66,14 @@ export default function (f, opts, next) {
 
         // ----
 
-        let data = await js5.indexes[archive].getGroupByName(group);
-        if (!data) {
-            data = await js5.indexes[archive].getGroup(group, true);
+        let data = null;
+        if (typeof file !== 'undefined') {
+            data = await js5.indexes[archive].getFile(group, file);
+        } else {
+            data = await js5.indexes[archive].getGroupByName(group);
+            if (!data) {
+                data = await js5.indexes[archive].getGroup(group, true);
+            }
         }
 
         if (!data) {

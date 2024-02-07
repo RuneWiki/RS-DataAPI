@@ -86,20 +86,21 @@ export class Component {
                 }
                 com.root = group;
                 com.com = i;
+
                 if (bytes.data[0] === 255) {
+                    const decoded = com.decodeIf3(bytes, comArchive, spriteArchive);
                     if (i === 0) {
                         // defs.push('if3=yes', '');
                     }
-
-                    com.decodeIf3(bytes);
                 } else {
+                    const decoded = com.decodeIf1(bytes, comArchive, spriteArchive);
                     if (i === 0) {
                         defs.push('if3=no', '');
                     }
 
-                    const decoded = com.decodeIf1(bytes, comArchive, spriteArchive);
                     defs.push(...decoded, '');
                 }
+
                 children[i] = com;
             }
         }
@@ -167,9 +168,9 @@ export class Component {
         this.widthMode = 0;
         this.heightMode = 0;
 
-        this.alpha = buf.g1();
-        if (this.alpha != 0) {
-            def.push(`alpha=${this.alpha}`);
+        this.transparency = buf.g1();
+        if (this.transparency != 0) {
+            def.push(`transparency=${this.transparency}`);
         }
 
         this.layer = buf.g2();
@@ -206,7 +207,7 @@ export class Component {
                 this.scriptOperand[i] = buf.g2();
 
                 if (buf.pos > buf.length) {
-                    throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com})`);
+                    throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com} type: ${this.type} comparatorCount: ${comparatorCount})`);
                 }
             }
         }
@@ -219,7 +220,7 @@ export class Component {
                 this.scripts[i] = [];
 
                 if (buf.pos > buf.length) {
-                    throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com})`);
+                    throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com} type: ${this.type}) scriptCount: ${scriptCount} opcodeCount: ${opcodeCount}`);
                 }
 
                 for (let j = 0; j < opcodeCount; j++) {
@@ -229,7 +230,7 @@ export class Component {
                     }
 
                     if (buf.pos > buf.length) {
-                        throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com})`);
+                        throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com} type: ${this.type}) scriptCount: ${scriptCount} opcodeCount: ${opcodeCount}`);
                     }
                 }
             }
@@ -681,7 +682,7 @@ export class Component {
         }
 
         if (buf.pos > buf.length) {
-            throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com})`);
+            throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com} type: ${this.type})`);
         }
 
         if (this.buttonType == 1 || this.buttonType == 4 || this.buttonType == 5 || this.buttonType == 6) {
@@ -715,58 +716,68 @@ export class Component {
 
         this.activeProperties = new ServerActiveProperties(events, -1);
         if (buf.pos !== buf.length) {
-            throw new Error(`Buffer was not fully read: ${buf.pos} / ${buf.length} (com: ${this.com})`);
+            throw new Error(`Buffer was not fully read: ${buf.pos} / ${buf.length} (com: ${this.com} type: ${this.type})`);
         }
 
         return def;
     }
 
-    decodeIf3(buf) {
+    decodeIf3(buf, comArchive, spriteArchive) {
         this.if3 = true;
+
         buf.pos++;
+
         this.type = buf.g1();
         if ((this.type & 0x80) != 0) {
-            this.type &= 127;
-            buf.gjstr();
+            this.type &= 0x7F;
+            this.unkStr = buf.gjstr();
         }
+
         this.clientCode = buf.g2();
         this.x = buf.g2s();
         this.y = buf.g2s();
         this.width = buf.g2();
         this.height = buf.g2();
-        this.widthMode = buf.g1b();
-        this.heightMode = buf.g1b();
-        this.xMode = buf.g1b();
-        this.yMode = buf.g1b();
+        this.widthMode = buf.g1();
+        this.heightMode = buf.g1();
+        this.xMode = buf.g1();
+        this.yMode = buf.g1();
         this.layer = buf.g2();
         if (this.layer === 65535) {
             this.layer = -1;
         }
+
         this.hide = buf.g1() == 1;
         if (this.type == 0) {
             this.scrollWidth = buf.g2(); // individual properties
             this.scrollHeight = buf.g2(); // individual properties
             this.noClickThrough = buf.g1() == 1;
         }
+
         if (this.type == 5) {
             this.graphic = buf.g4s();
             this.angle = buf.g2();
             const spriteFlag = buf.g1();
             this.tiled = (spriteFlag & 0x1) != 0;
             this.alpha = (spriteFlag & 0x2) != 0;
-            this.alpha = buf.g1();
+            this.transparency = buf.g1();
             this.outline = buf.g1();
             this.graphicShadow = buf.g4s();
             this.vflip = buf.g1() == 1;
             this.hflip = buf.g1() == 1;
-            this.colour = buf.g4s();
+            if (comArchive.build > 530) {
+                this.colour = buf.g4s();
+            }
         }
+
         if (this.type == 6) {
             this.modelType = 1;
+
             this.model = buf.g2();
             if (this.model == 65535) {
                 this.model = -1;
             }
+
             this.xoff2d = buf.g2s();
             this.yoff2d = buf.g2s();
             this.xan = buf.g2();
@@ -777,6 +788,7 @@ export class Component {
             if (this.anim == 65535) {
                 this.anim = -1;
             }
+
             this.orthogonal = buf.g1() == 1;
             this.aShort50 = buf.g2s();
             this.aShort49 = buf.g2s();
@@ -788,11 +800,13 @@ export class Component {
                 this.viewportHeight = buf.g2();
             }
         }
+
         if (this.type == 4) {
             this.font = buf.g2();
             if (this.font == 65535) {
                 this.font = -1;
             }
+
             this.text = buf.gjstr();
             this.lineHeight = buf.g1();
             this.halign = buf.g1();
@@ -800,22 +814,26 @@ export class Component {
             this.shadowed = buf.g1() == 1;
             this.colour = buf.g4s();
         }
+
         if (this.type == 3) {
             this.colour = buf.g4s();
             this.fill = buf.g1() == 1;
-            this.alpha = buf.g1();
+            this.transparency = buf.g1();
         }
+
         if (this.type == 9) {
             this.lineWidth = buf.g1();
             this.colour = buf.g4s();
             this.lineDirection = buf.g1() == 1;
         }
+
         const targetMask = buf.g3();
         const keyCount = buf.g1();
         if (keyCount != 0) {
             this.keyCodes = new byte[10];
             this.keyPressDelay = new int[10];
             this.keyHeldMask = new byte[10];
+
             while (keyCount != 0) {
                 const local493 = (keyCount >> 4) - 1;
                 const local501 = buf.g1() | keyCount << 8;
@@ -830,6 +848,7 @@ export class Component {
                 keyCount = buf.g1();
             }
         }
+
         this.opBase = buf.gjstr(); // active properties
         const local551 = buf.g1();
         const local555 = local551 >> 4;
@@ -840,6 +859,7 @@ export class Component {
                 this.ops[i] = buf.gjstr();
             }
         }
+
         if (local555 > 0) {
             const local596 = buf.g1();
             this.opCursors = new int[local596 + 1];
@@ -848,19 +868,25 @@ export class Component {
             }
             this.opCursors[local596] = buf.g2();
         }
+
         if (local555 > 1) {
             const local638 = buf.g1();
             this.opCursors[local638] = buf.g2();
         }
-        this.pauseText = buf.gjstr();
-        if (this.pauseText === '') {
-            this.pauseText = null;
+
+        if (comArchive.build > 530) {
+            this.pauseText = buf.gjstr();
+            if (this.pauseText === '') {
+                this.pauseText = null;
+            }
         }
+
         let local661 = -1;
         this.dragDeadZone = buf.g1(); // active properties
         this.dragDeadTime = buf.g1(); // active properties
         this.dragRender = buf.g1() == 1;
         this.targetVerb = buf.gjstr(); // active properties
+
         if (ServerActiveProperties.getTargetMask(targetMask) != 0) {
             local661 = buf.g2();
             if (local661 == 65535) {
@@ -875,12 +901,15 @@ export class Component {
                 this.cursorId = -1;
             }
         }
+
         this.activeProperties = new ServerActiveProperties(targetMask, local661);
         this.onLoad = this.readArguments(buf);
         this.onMouseOver = this.readArguments(buf);
         this.onMouseLeave = this.readArguments(buf);
-        this.onTargetLeave = this.readArguments(buf);
-        this.onTargetEnter = this.readArguments(buf);
+        if (comArchive.build > 530) {
+            this.onTargetLeave = this.readArguments(buf);
+            this.onTargetEnter = this.readArguments(buf);
+        }
         this.onVarpTransmit = this.readArguments(buf);
         this.onInvTransmit = this.readArguments(buf);
         this.onStatTransmit = this.readArguments(buf);
@@ -901,8 +930,9 @@ export class Component {
         this.statTriggers = this.readTriggers(buf);
         this.varcTriggers = this.readTriggers(buf);
         this.varcstrTriggers = this.readTriggers(buf);
+
         if (buf.pos !== buf.length) {
-            throw new Error(`Buffer was not fully read: ${buf.pos} / ${buf.length} (com: ${this.com})`);
+            throw new Error(`Buffer was not fully read: ${buf.pos} / ${buf.length} (com: ${this.com} type: ${this.type})`);
         }
     }
 
@@ -921,6 +951,7 @@ export class Component {
                 args[i] = buf.gjstr();
             }
         }
+
         this.hasHook = true;
         return args;
     }
@@ -930,10 +961,12 @@ export class Component {
         if (len == 0) {
             return null;
         }
+
         let triggers = [];
         for (let i = 0; i < len; i++) {
             triggers[i] = buf.g4s();
         }
+
         return triggers;
     }
 }
