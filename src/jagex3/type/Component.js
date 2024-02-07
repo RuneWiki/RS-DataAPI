@@ -11,16 +11,51 @@ class ServerActiveProperties {
     }
 }
 
-const vAlign = {
-    0: 'top',
-    1: 'centre',
-    2: 'bottom'
+const ifType = {
+    0: 'layer',
+    2: 'inv',
+    3: 'rect',
+    4: 'text',
+    5: 'graphic',
+    6: 'model',
+    7: 'invtext',
+    9: 'line',
+    10: 'arc',
+    11: 'crmview'
 };
 
-const hAlign = {
-    0: 'left',
-    1: 'centre',
-    2: 'right'
+const buttonType = {
+    1: 'normal',
+    2: 'target',
+    3: 'close',
+    4: 'toggle',
+    5: 'select',
+    6: 'pause'
+}
+
+const sizeMode = {
+    0: 'abs',
+    1: 'minus',
+    2: 'proportion',
+    3: 'aspect'
+}
+
+const hPosMode = {
+    0: 'abs_left',
+    1: 'abs_centre',
+    2: 'abs_right',
+    3: 'proportion_left',
+    4: 'proportion_centre',
+    5: 'proportion_right'
+};
+
+const vPosMode = {
+    0: 'abs_top',
+    1: 'abs_centre',
+    2: 'abs_bottom',
+    3: 'proportion_top',
+    4: 'proportion_centre',
+    5: 'proportion_bottom'
 };
 
 export class Component {
@@ -95,58 +130,11 @@ export class Component {
         this.if3 = false;
 
         this.type = buf.g1();
-        switch (this.type) {
-            case 0:
-                def.push('type=layer');
-                break;
-            case 2:
-                def.push('type=inv');
-                break;
-            case 3:
-                def.push('type=rect');
-                break;
-            case 4:
-                def.push('type=text');
-                break;
-            case 5:
-                def.push('type=graphic');
-                break;
-            case 6:
-                def.push('type=model');
-                break;
-            case 7:
-                def.push('type=invtext');
-                break;
-            default:
-                def.push(`type=${this.type}`);
-                break;
-        }
+        def.push(`type=${ifType[this.type] ?? this.type}`);
 
         this.buttonType = buf.g1();
-        switch (this.buttonType) {
-            case 0:
-                break;
-            case 1:
-                def.push('buttontype=normal');
-                break;
-            case 2:
-                def.push('buttontype=target');
-                break;
-            case 3:
-                def.push('buttontype=close');
-                break;
-            case 4:
-                def.push('buttontype=toggle');
-                break;
-            case 5:
-                def.push('buttontype=select');
-                break;
-            case 6:
-                def.push('buttontype=pause');
-                break;
-            default:
-                def.push(`buttontype=${this.buttonType}`);
-                break;
+        if (this.buttonType != 0) {
+            def.push(`buttontype=${buttonType[this.buttonType] ?? this.buttonType}`);
         }
 
         this.clientCode = buf.g2();
@@ -480,12 +468,12 @@ export class Component {
         if (this.type == 4 || this.type == 1) {
             this.halign = buf.g1();
             if (this.halign != 0) {
-                def.push(`halign=${hAlign[this.halign]}`);
+                def.push(`halign=${hPosMode[this.halign]}`);
             }
 
             this.valign = buf.g1();
             if (this.valign != 0) {
-                def.push(`valign=${vAlign[this.valign]}`);
+                def.push(`valign=${vPosMode[this.valign]}`);
             }
 
             this.lineHeight = buf.g1();
