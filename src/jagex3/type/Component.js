@@ -11,6 +11,18 @@ class ServerActiveProperties {
     }
 }
 
+const vAlign = {
+    0: 'top',
+    1: 'centre',
+    2: 'bottom'
+};
+
+const hAlign = {
+    0: 'left',
+    1: 'centre',
+    2: 'right'
+};
+
 export class Component {
     static async decodeGroup(group, comArchive, spriteArchive) {
         const inter = {};
@@ -430,10 +442,17 @@ export class Component {
                     this.invSlotOffsetX[i] = buf.g2s();
                     this.invSlotOffsetY[i] = buf.g2s();
                     this.invSlotGraphic[i] = buf.g4s();
+
+                    const names = getNamesByHash(spriteArchive.groupNameHashes[this.font]);
+                    let name = 'sprite_' + this.font;
+                    if (name.length) {
+                        name = names.length > 1 ? names : names[0];
+                    }
+
                     if (this.invSlotOffsetX[i] != 0 || this.invSlotOffsetY[i] != 0) {
-                        def.push(`slot${i + 1}=${com.inventorySlotGraphic[i]}:${com.invSlotOffsetX[i]},${com.invSlotOffsetY[i]}\n`);
+                        def.push(`slot${i + 1}=${name}:${com.invSlotOffsetX[i]},${com.invSlotOffsetY[i]}\n`);
                     } else {
-                        def.push(`slot${i + 1}=${com.inventorySlotGraphic[i]}`);
+                        def.push(`slot${i + 1}=${name}`);
                     }
                 } else {
                     this.invSlotGraphic[i] = -1;
@@ -461,12 +480,12 @@ export class Component {
         if (this.type == 4 || this.type == 1) {
             this.halign = buf.g1();
             if (this.halign != 0) {
-                def.push(`halign=${this.halign}`);
+                def.push(`halign=${hAlign[this.halign]}`);
             }
 
             this.valign = buf.g1();
             if (this.valign != 0) {
-                def.push(`valign=${this.valign}`);
+                def.push(`valign=${vAlign[this.valign]}`);
             }
 
             this.lineHeight = buf.g1();
@@ -478,7 +497,12 @@ export class Component {
             if (this.font == 65535) {
                 this.font = -1;
             } else {
-                def.push(`font=${this.font}`);
+                const name = getNamesByHash(spriteArchive.groupNameHashes[this.font]);
+                if (name.length) {
+                    def.push(`font=${name.length > 1 ? name : name[0]}`);
+                } else {
+                    def.push(`font=sprite_${this.font}`);
+                }
             }
 
             this.shadowed = buf.g1() == 1;
