@@ -12,16 +12,16 @@ class ServerActiveProperties {
 }
 
 export class Component {
-    static async decodeGroup(archive, group) {
+    static async decodeGroup(group, comArchive, spriteArchive) {
         const inter = {};
 
-        const debugname = getNamesByHash(archive.groupNameHashes[group]);
+        const debugname = getNamesByHash(comArchive.groupNameHashes[group]);
         if (debugname.length) {
             inter.debugname = debugname.length > 1 ? debugname : debugname[0];
         }
 
         const children = [];
-        const capacity = await archive.getGroupCapacity(group);
+        const capacity = await comArchive.getGroupCapacity(group);
         if (capacity == 0) {
             return [];
         }
@@ -29,11 +29,11 @@ export class Component {
         const defs = [];
 
         for (let i = 0; i < capacity; i++) {
-            const bytes = await archive.getFile(group, i);
+            const bytes = await comArchive.getFile(group, i);
             if (bytes) {
                 const com = new Component();
                 // com.id = (group << 16) + i;
-                const debugname = getNamesByHash(archive.fileNameHashes[group][i]);
+                const debugname = getNamesByHash(comArchive.fileNameHashes[group][i]);
                 if (debugname.length) {
                     com.debugname = debugname.length > 1 ? debugname : debugname[0];
                 }
@@ -50,7 +50,7 @@ export class Component {
                         defs.push('if3=no', '');
                     }
 
-                    const decoded = com.decodeIf1(bytes);
+                    const decoded = com.decodeIf1(bytes, comArchive, spriteArchive);
                     defs.push(...decoded, '');
                 }
                 children[i] = com;
@@ -75,7 +75,7 @@ export class Component {
         return com;
     }
 
-    decodeIf1(buf) {
+    decodeIf1(buf, comArchive, spriteArchive) {
         const def = [
             `[${this.debugname ?? 'com_' + this.com}]`
         ];
@@ -176,14 +176,24 @@ export class Component {
         if (this.layer === 65535) {
             this.layer = -1;
         } else {
-            def.push(`layer=com_${this.layer}`);
+            const debugname = getNamesByHash(comArchive.fileNameHashes[this.root][this.layer]);
+            if (debugname.length) {
+                def.push(`layer=${debugname.length > 1 ? debugname : debugname[0]}`);
+            } else {
+                def.push(`layer=com_${this.layer}`);
+            }
         }
 
         this.overLayer = buf.g2();
         if (this.overLayer === 65535) {
             this.overLayer = -1;
         } else {
-            def.push(`overlayer=com_${this.overLayer}`);
+            const debugname = getNamesByHash(comArchive.fileNameHashes[this.root][this.overLayer]);
+            if (debugname.length) {
+                def.push(`overlayer=${debugname.length > 1 ? debugname : debugname[0]}`);
+            } else {
+                def.push(`overlayer=com_${this.overLayer}`);
+            }
         }
 
         const comparatorCount = buf.g1();
@@ -221,6 +231,140 @@ export class Component {
                     if (buf.pos > buf.length) {
                         throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com})`);
                     }
+                }
+            }
+        }
+
+        if (comparatorCount > 0 || scriptCount > 0) {
+            for (let i = 0; i < this.scripts.length; i++) {
+                let opcount = 1;
+
+                if (this.scripts[i].length === 1) {
+                    // empty script
+                    def.push(`script${i + 1}op1=\n`);
+                }
+
+                for (let j = 0; j < this.scripts[i].length - 1; j++) {
+                    let str = `script${i + 1}op${opcount++}=`;
+
+                    switch (this.scripts[i][j]) {
+                        case 1: {
+                            const stat = this.scripts[i][++j];
+                            str += `stat_level,${stat}`;
+                            break;
+                        }
+                        case 2: {
+                            const stat = this.scripts[i][++j];
+                            str += `stat_base_level,${stat}`;
+                            break;
+                        }
+                        case 3: {
+                            const stat = this.scripts[i][++j];
+                            str += `stat_xp,${stat}`;
+                            break;
+                        }
+                        case 4: {
+                            const obj = this.scripts[i][++j];
+                            const inv = this.scripts[i][++j];
+                            str += `inv_count,inv_${inv},obj_${obj}`;
+                            break;
+                        }
+                        case 5: {
+                            const varp = this.scripts[i][++j];
+                            str += `testvar,varp_${varp}`;
+                            break;
+                        }
+                        case 6: {
+                            const stat = this.scripts[i][++j];
+                            str += `stat_xp_remaining,${stat}`;
+                            break;
+                        }
+                        case 7: {
+                            const varp = this.scripts[i][++j];
+                            str += `op7,varp_${varp}`;
+                            break;
+                        }
+                        case 8: {
+                            str += 'combat_level';
+                            break;
+                        }
+                        case 9: {
+                            str += 'total_xp';
+                            break;
+                        }
+                        case 10: {
+                            const obj = this.scripts[i][++j];
+                            const inv = this.scripts[i][++j];
+                            str += `inv_contains,inv_${inv},obj_${obj}`;
+                            break;
+                        }
+                        case 11: {
+                            str += 'runenergy';
+                            break;
+                        }
+                        case 12: {
+                            str += 'runweight';
+                            break;
+                        }
+                        case 13: {
+                            const varp = this.scripts[i][++j];
+                            const bit = this.scripts[i][++j];
+                            str += `testbit,varp_${varp},${bit}`;
+                            break;
+                        }
+                        case 14: {
+                            const varbit = this.scripts[i][++j];
+                            str += `testvarbit,varbit_${varbit}`;
+                            break;
+                        }
+                        case 15: {
+                            str += 'sub';
+                            break;
+                        }
+                        case 16: {
+                            str += 'div';
+                            break;
+                        }
+                        case 17: {
+                            str += 'mul';
+                            break;
+                        }
+                        case 18: {
+                            str += 'coordx';
+                            break;
+                        }
+                        case 19: {
+                            str += 'coordz';
+                            break;
+                        }
+                        case 20: {
+                            const value = this.scripts[i][++j];
+                            str += `constant,${value.toString()}`;
+                            break;
+                        }
+                    }
+
+                    def.push(str);
+                }
+
+                if (this.scriptComparator && this.scriptComparator[i]) {
+                    let str = `script${i + 1}=`;
+                    switch (this.scriptComparator[i]) {
+                        case 1:
+                            str += 'eq';
+                            break;
+                        case 2:
+                            str += 'lt';
+                            break;
+                        case 3:
+                            str += 'gt';
+                            break;
+                        case 4:
+                            str += 'neq';
+                            break;
+                    }
+                    str += `,${this.scriptOperand[i]}`;
+                    def.push(str);
                 }
             }
         }
@@ -382,12 +526,22 @@ export class Component {
         if (this.type == 5) {
             this.graphic = buf.g4s();
             if (this.graphic != -1) {
-                def.push(`graphic=${this.graphic}`);
+                const name = getNamesByHash(spriteArchive.groupNameHashes[this.graphic]);
+                if (name.length) {
+                    def.push(`graphic=${name.length > 1 ? name : name[0]}`);
+                } else {
+                    def.push(`graphic=sprite_${this.graphic}`);
+                }
             }
 
             this.activeGraphic = buf.g4s();
             if (this.activeGraphic != -1) {
-                def.push(`activegraphic=${this.activeGraphic}`);
+                const name = getNamesByHash(spriteArchive.groupNameHashes[this.activeGraphic]);
+                if (name.length) {
+                    def.push(`activegraphic=${name.length > 1 ? name : name[0]}`);
+                } else {
+                    def.push(`activegraphic=sprite_${this.activeGraphic}`);
+                }
             }
         }
 

@@ -1869,8 +1869,9 @@ export default function (f, opts, next) {
             return 'Interface ID required';
         }
 
-        const archive = await js5.getArchive(3);
-        return Component.decodeGroup(archive, parseInt(id));
+        const comArchive = await js5.getArchive(3);
+        const spriteArchive = await js5.getArchive(8);
+        return Component.decodeGroup(parseInt(id), comArchive, spriteArchive);
     });
 
     next();
