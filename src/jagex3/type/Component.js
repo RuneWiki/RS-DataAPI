@@ -74,15 +74,15 @@ export class Component {
         this.yMode = 0;
         this.widthMode = 0;
         this.alpha = buf.g1();
+        this.layer = buf.g2();
+        if (this.layer === 65535) {
+            this.layer = -1;
+        } else {
+            this.layer += this.id & 0xFFFF0000;
+        }
         this.overLayer = buf.g2();
         if (this.overLayer === 65535) {
             this.overLayer = -1;
-        } else {
-            this.overLayer += this.id & 0xFFFF0000;
-        }
-        this.badName_delegateHover = buf.g2();
-        if (this.badName_delegateHover === 65535) {
-            this.badName_delegateHover = -1;
         }
         const comparatorCount = buf.g1();
         if (comparatorCount > 0) {
@@ -302,29 +302,29 @@ export class Component {
         this.heightMode = buf.g1b();
         this.xMode = buf.g1b();
         this.yMode = buf.g1b();
-        this.overLayer = buf.g2();
-        if (this.overLayer === 65535) {
-            this.overLayer = -1;
+        this.layer = buf.g2();
+        if (this.layer === 65535) {
+            this.layer = -1;
         } else {
-            this.overLayer += this.id & 0xFFFF0000;
+            this.layer += this.id & 0xFFFF0000;
         }
         this.hide = buf.g1() == 1;
         if (this.type == 0) {
-            this.scrollWidth = buf.g2();
+            this.hscroll = buf.g2();
             this.scroll = buf.g2();
             this.noClickThrough = buf.g1() == 1;
         }
         if (this.type == 5) {
             this.graphic = buf.g4s();
             this.angle = buf.g2();
-            const local160 = buf.g1();
-            this.alpha = (local160 & 0x2) != 0;
-            this.tiled = (local160 & 0x1) != 0;
+            const spriteFlag = buf.g1();
+            this.tiled = (spriteFlag & 0x1) != 0;
+            this.alpha = (spriteFlag & 0x2) != 0;
             this.alpha = buf.g1();
             this.outline = buf.g1();
             this.graphicShadow = buf.g4s();
-            this.horizontalFlip = buf.g1() == 1;
-            this.verticalFlip = buf.g1() == 1;
+            this.vflip = buf.g1() == 1;
+            this.hflip = buf.g1() == 1;
             this.colour = buf.g4s();
         }
         if (this.type == 6) {
@@ -346,7 +346,7 @@ export class Component {
             this.ortho = buf.g1() == 1;
             this.aShort50 = buf.g2s();
             this.aShort49 = buf.g2s();
-            this.aBoolean411 = buf.g1() == 1;
+            this.ignoreDepthMask = buf.g1() == 1;
             if (this.widthMode != 0) {
                 this.anInt5957 = buf.g2();
             }
@@ -379,20 +379,20 @@ export class Component {
         const local460 = buf.g3();
         const local464 = buf.g1();
         if (local464 != 0) {
-            this.aByteArray74 = new byte[10];
-            this.anIntArray662 = new int[10];
-            this.aByteArray73 = new byte[10];
+            this.keyCodes = new byte[10];
+            this.keyPressDelay = new int[10];
+            this.keyHeldMask = new byte[10];
             while (local464 != 0) {
                 const local493 = (local464 >> 4) - 1;
                 const local501 = buf.g1() | local464 << 8;
                 local501 &= 4095;
                 if (local501 == 4095) {
-                    this.anIntArray662[local493] = -1;
+                    this.keyPressDelay[local493] = -1;
                 } else {
-                    this.anIntArray662[local493] = local501;
+                    this.keyPressDelay[local493] = local501;
                 }
-                this.aByteArray74[local493] = buf.g1b();
-                this.aByteArray73[local493] = buf.g1b();
+                this.keyCodes[local493] = buf.g1b();
+                this.keyHeldMask[local493] = buf.g1b();
                 local464 = buf.g1();
             }
         }
@@ -409,8 +409,8 @@ export class Component {
         if (local555 > 0) {
             const local596 = buf.g1();
             this.opCursors = new int[local596 + 1];
-            for (let local604 = 0; local604 < this.opCursors.length; local604++) {
-                this.opCursors[local604] = -1;
+            for (let i = 0; i < this.opCursors.length; i++) {
+                this.opCursors[i] = -1;
             }
             this.opCursors[local596] = buf.g2();
         }
@@ -432,17 +432,17 @@ export class Component {
             if (local661 == 65535) {
                 local661 = -1;
             }
-            this.anInt5930 = buf.g2();
-            if (this.anInt5930 == 65535) {
-                this.anInt5930 = -1;
+            this.targetCursorId = buf.g2();
+            if (this.targetCursorId == 65535) {
+                this.targetCursorId = -1;
             }
-            this.anInt5890 = buf.g2();
-            if (this.anInt5890 == 65535) {
-                this.anInt5890 = -1;
+            this.cursorId = buf.g2();
+            if (this.cursorId == 65535) {
+                this.cursorId = -1;
             }
         }
         this.serverActiveProperties = new ServerActiveProperties(local460, local661);
-        this.anObjectArray22 = this.readArguments(buf);
+        this.onLoad = this.readArguments(buf);
         this.onMouseOver = this.readArguments(buf);
         this.onMouseLeave = this.readArguments(buf);
         this.onTargetLeave = this.readArguments(buf);
