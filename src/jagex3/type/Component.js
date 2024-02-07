@@ -26,28 +26,43 @@ export class Component {
             return [];
         }
 
+        const defs = [];
+
         for (let i = 0; i < capacity; i++) {
             const bytes = await archive.getFile(group, i);
             if (bytes) {
                 const com = new Component();
-                com.id = (group << 16) + i;
+                // com.id = (group << 16) + i;
                 const debugname = getNamesByHash(archive.fileNameHashes[group][i]);
                 if (debugname.length) {
                     com.debugname = debugname.length > 1 ? debugname : debugname[0];
                 }
                 com.root = group;
-                com.child = i;
+                com.com = i;
                 if (bytes.data[0] === 255) {
+                    if (i === 0) {
+                        // defs.push('if3=yes', '');
+                    }
+
                     com.decodeIf3(bytes);
                 } else {
-                    com.decodeIf1(bytes);
+                    if (i === 0) {
+                        defs.push('if3=no', '');
+                    }
+
+                    const decoded = com.decodeIf1(bytes);
+                    defs.push(...decoded, '');
                 }
                 children[i] = com;
             }
         }
 
-        inter.children = children;
-        return inter;
+        if (defs.length) {
+            return defs.join('\n');
+        } else {
+            inter.children = children;
+            return inter;
+        }
     }
 
     static decode(buf) {
@@ -61,91 +76,208 @@ export class Component {
     }
 
     decodeIf1(buf) {
+        const def = [
+            `[${this.debugname ?? 'com_' + this.com}]`
+        ];
+
         this.if3 = false;
+
         this.type = buf.g1();
+        switch (this.type) {
+            case 0:
+                def.push('type=layer');
+                break;
+            case 2:
+                def.push('type=inv');
+                break;
+            case 3:
+                def.push('type=rect');
+                break;
+            case 4:
+                def.push('type=text');
+                break;
+            case 5:
+                def.push('type=graphic');
+                break;
+            case 6:
+                def.push('type=model');
+                break;
+            case 7:
+                def.push('type=invtext');
+                break;
+            default:
+                def.push(`type=${this.type}`);
+                break;
+        }
+
         this.buttonType = buf.g1();
+        switch (this.buttonType) {
+            case 0:
+                break;
+            case 1:
+                def.push('buttontype=normal');
+                break;
+            case 2:
+                def.push('buttontype=target');
+                break;
+            case 3:
+                def.push('buttontype=close');
+                break;
+            case 4:
+                def.push('buttontype=toggle');
+                break;
+            case 5:
+                def.push('buttontype=select');
+                break;
+            case 6:
+                def.push('buttontype=pause');
+                break;
+            default:
+                def.push(`buttontype=${this.buttonType}`);
+                break;
+        }
+
         this.clientCode = buf.g2();
+        if (this.clientCode != 0) {
+            def.push(`clientcode=${this.clientCode}`);
+        }
+
         this.x = buf.g2s();
+        if (this.x != 0) {
+            def.push(`x=${this.x}`);
+        }
+
         this.y = buf.g2s();
+        if (this.y != 0) {
+            def.push(`y=${this.y}`);
+        }
+
         this.width = buf.g2();
+        if (this.width != 0) {
+            def.push(`width=${this.width}`);
+        }
+
         this.height = buf.g2();
-        this.heightMode = 0;
+        if (this.width != 0) {
+            def.push(`height=${this.height}`);
+        }
+
         this.xMode = 0;
         this.yMode = 0;
         this.widthMode = 0;
+        this.heightMode = 0;
+
         this.alpha = buf.g1();
+        if (this.alpha != 0) {
+            def.push(`alpha=${this.alpha}`);
+        }
+
         this.layer = buf.g2();
         if (this.layer === 65535) {
             this.layer = -1;
         } else {
-            this.layer += this.id & 0xFFFF0000;
+            def.push(`layer=com_${this.layer}`);
         }
+
         this.overLayer = buf.g2();
         if (this.overLayer === 65535) {
             this.overLayer = -1;
+        } else {
+            def.push(`overlayer=com_${this.overLayer}`);
         }
+
         const comparatorCount = buf.g1();
         if (comparatorCount > 0) {
             this.scriptComparator = [];
             this.scriptOperand = [];
+
             for (let i = 0; i < comparatorCount; i++) {
                 this.scriptComparator[i] = buf.g1();
                 this.scriptOperand[i] = buf.g2();
+
                 if (buf.pos > buf.length) {
-                    throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (child: ${this.child})`);
+                    throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com})`);
                 }
             }
         }
+
         const scriptCount = buf.g1();
         if (scriptCount > 0) {
             this.scripts = [];
             for (let i = 0; i < scriptCount; i++) {
                 const opcodeCount = buf.g2();
                 this.scripts[i] = [];
+
                 if (buf.pos > buf.length) {
-                    throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (child: ${this.child})`);
+                    throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com})`);
                 }
+
                 for (let j = 0; j < opcodeCount; j++) {
                     this.scripts[i][j] = buf.g2();
                     if (this.scripts[i][j] === 65535) {
                         this.scripts[i][j] = -1;
                     }
+
                     if (buf.pos > buf.length) {
-                        throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (child: ${this.child})`);
+                        throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com})`);
                     }
                 }
             }
         }
+
         let events = 0;
         if (this.type == 0) {
             this.scrollHeight = buf.g2(); // individual properties
+            if (this.scrollHeight != 0) {
+                def.push(`scrollheight=${this.scrollHeight}`);
+            }
+
             this.hide = buf.g1() == 1;
+            if (this.hide) {
+                def.push('hide=yes');
+            }
         }
+
         if (this.type == 1) {
             buf.g2();
             buf.g1();
         }
+
         if (this.type == 2) {
             this.widthMode = 3;
             this.heightMode = 3;
+
             const isDragTarget = buf.g1();
             if (isDragTarget == 1) {
                 events = 0x10000000;
+                def.push('isdragtarget=yes');
             }
+
             const interactable = buf.g1();
             if (interactable == 1) {
                 events |= 0x40000000;
+                def.push('interactable=yes');
             }
+
             const usable = buf.g1(); // isUseTarget? or is that "interactable"?
             if (usable == 1) {
                 events |= 0x80000000;
+                def.push('usable=yes');
             }
+
             const replaces = buf.g1();
             if (replaces == 1) {
                 events |= 0x20000000;
+                def.push('replaces=yes');
             }
+
             this.marginX = buf.g1();
             this.marginY = buf.g1();
+
+            if (this.marginX != 0 || this.marginY != 0) {
+                def.push(`margin=${this.marginX},${this.marginY}`);
+            }
+
             this.invSlotOffsetY = [];
             this.invSlotOffsetX = [];
             this.invSlotGraphic = [];
@@ -154,110 +286,241 @@ export class Component {
                     this.invSlotOffsetX[i] = buf.g2s();
                     this.invSlotOffsetY[i] = buf.g2s();
                     this.invSlotGraphic[i] = buf.g4s();
+                    if (this.invSlotOffsetX[i] != 0 || this.invSlotOffsetY[i] != 0) {
+                        def.push(`slot${i + 1}=${com.inventorySlotGraphic[i]}:${com.invSlotOffsetX[i]},${com.invSlotOffsetY[i]}\n`);
+                    } else {
+                        def.push(`slot${i + 1}=${com.inventorySlotGraphic[i]}`);
+                    }
                 } else {
                     this.invSlotGraphic[i] = -1;
                 }
             }
+
             this.iops = [];
             for (let i = 0; i < 5; i++) {
                 const op = buf.gjstr();
                 if (op.length > 0) {
                     this.iops[i] = op;
                     events |= 0x1 << (i + 23);
+                    def.push(`option${i}=${op}`);
                 }
             }
         }
+
         if (this.type == 3) {
             this.fill = buf.g1() == 1;
+            if (this.fill) {
+                def.push('fill=yes');
+            }
         }
+
         if (this.type == 4 || this.type == 1) {
-            this.center = buf.g1();
+            this.halign = buf.g1();
+            if (this.halign != 0) {
+                def.push(`halign=${this.halign}`);
+            }
+
             this.valign = buf.g1();
+            if (this.valign != 0) {
+                def.push(`valign=${this.valign}`);
+            }
+
             this.lineHeight = buf.g1();
+            if (this.lineHeight != 0) {
+                def.push(`linehei=${this.lineHeight}`);
+            }
+
             this.font = buf.g2();
             if (this.font == 65535) {
                 this.font = -1;
+            } else {
+                def.push(`font=${this.font}`);
             }
+
             this.shadowed = buf.g1() == 1;
+            if (this.shadowed) {
+                def.push('shadowed=yes');
+            }
         }
+
         if (this.type == 4) {
             this.text = buf.gjstr();
+            if (this.text.length > 0) {
+                def.push(`text=${this.text}`);
+            }
+
             this.activeText = buf.gjstr();
+            if (this.activeText.length > 0) {
+                def.push(`activetext=${this.activeText}`);
+            }
         }
+
         if (this.type == 1 || this.type == 3 || this.type == 4) {
             this.colour = buf.g4s();
+            if (this.colour != 0) {
+                def.push(`colour=0x${this.colour.toString(16).padStart(6, '0')}`);
+            }
         }
+
         if (this.type == 3 || this.type == 4) {
             this.activeColour = buf.g4s();
+            if (this.activeColour != 0) {
+                def.push(`activecolour=0x${this.activeColour.toString(16).padStart(6, '0')}`);
+            }
+
             this.overColour = buf.g4s();
+            if (this.overColour != 0) {
+                def.push(`overcolour=0x${this.overColour.toString(16).padStart(6, '0')}`);
+            }
+
             this.activeOverColour = buf.g4s();
+            if (this.activeOverColour != 0) {
+                def.push(`activeovercolour=0x${this.activeOverColour.toString(16).padStart(6, '0')}`);
+            }
         }
+
         if (this.type == 5) {
             this.graphic = buf.g4s();
+            if (this.graphic != -1) {
+                def.push(`graphic=${this.graphic}`);
+            }
+
             this.activeGraphic = buf.g4s();
+            if (this.activeGraphic != -1) {
+                def.push(`activegraphic=${this.activeGraphic}`);
+            }
         }
+
         if (this.type == 6) {
             this.modelType = 1;
-            this.model = buf.g2();
             this.anInt5909 = 1;
+
+            this.model = buf.g2();
             if (this.model == 65535) {
                 this.model = -1;
+            } else {
+                def.push(`model=${this.model}`);
             }
+
             this.activeModel = buf.g2();
             if (this.activeModel == 65535) {
                 this.activeModel = -1;
+            } else {
+                def.push(`activemodel=${this.activeModel}`);
             }
+
             this.anim = buf.g2();
             if (this.anim == 65535) {
                 this.anim = -1;
+            } else {
+                def.push(`anim=${this.anim}`);
             }
+
             this.activeAnim = buf.g2();
             if (this.activeAnim == 65535) {
                 this.activeAnim = -1;
+            } else {
+                def.push(`activeanim=${this.activeAnim}`);
             }
+
             this.zoom = buf.g2();
+            if (this.zoom != 0) {
+                def.push(`zoom=${this.zoom}`);
+            }
+
             this.xan = buf.g2();
+            if (this.xan != 0) {
+                def.push(`xan=${this.xan}`);
+            }
+
             this.yan = buf.g2();
+            if (this.yan != 0) {
+                def.push(`yan=${this.yan}`);
+            }
         }
+
         if (this.type == 7) {
             this.heightMode = 3;
             this.widthMode = 3;
-            this.center = buf.g1();
+
+            this.halign = buf.g1();
+            if (this.halign != 0) {
+                def.push(`halign=${this.halign}`);
+            }
+
             this.font = buf.g2();
             if (this.font == 65535) {
                 this.font = -1;
+            } else {
+                def.push(`font=${this.font}`);
             }
+
             this.shadowed = buf.g1() == 1;
+            if (this.shadowed) {
+                def.push('shadowed=yes');
+            }
+
             this.colour = buf.g4s();
+            if (this.colour != 0) {
+                def.push(`colour=0x${this.colour.toString(16).padStart(6, '0')}`);
+            }
+
             this.marginX = buf.g2();
             this.marginY = buf.g2();
+
+            if (this.marginX != 0 || this.marginY != 0) {
+                def.push(`margin=${this.marginX},${this.marginY}`);
+            }
+
             const interactable = buf.g1();
             if (interactable == 1) {
                 events |= 0x40000000;
+                def.push('interactable=yes');
             }
+
             this.iops = new String[5];
             for (let i = 0; i < 5; i++) {
                 const op = buf.gjstr();
                 if (op.length > 0) {
                     this.iops[i] = op;
                     events |= 0x1 << i + 23;
+                    def.push(`option${i}=${op}`);
                 }
             }
         }
+
         if (this.type == 8) {
             this.text = buf.gjstr();
+            if (this.text.length > 0) {
+                def.push(`text=${this.text}`);
+            }
         }
+
         if (this.buttonType == 2 || this.type == 2) {
             this.targetVerb = buf.gjstr();
-            this.action = buf.gjstr();
-            const actionTarget = buf.g2() & 0x3F;
-            events |= actionTarget << 11;
+            if (this.targetVerb.length > 0) {
+                def.push(`targetverb=${this.targetVerb}`);
+            }
+
+            this.target = buf.gjstr();
+            if (this.target.length > 0) {
+                def.push(`target=${this.target}`);
+            }
+
+            const targetMask = buf.g2() & 0x3F;
+            events |= targetMask << 11;
+            if (targetMask != 0) {
+                def.push(`targetmask=${targetMask.toString(16)}`);
+            }
         }
+
         if (buf.pos > buf.length) {
-            throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (child: ${this.child})`);
+            throw new Error(`Buffer read exceeded length: ${buf.pos} / ${buf.length} (com: ${this.com})`);
         }
+
         if (this.buttonType == 1 || this.buttonType == 4 || this.buttonType == 5 || this.buttonType == 6) {
             this.option = buf.gjstr();
+
             if (this.option.length == 0) {
                 if (this.buttonType == 1) {
                     this.option = 'Ok';
@@ -271,18 +534,25 @@ export class Component {
                 if (this.buttonType == 6) {
                     this.option = 'Continue';
                 }
+            } else {
+                def.push(`option=${this.option}`);
             }
         }
+
         if (this.buttonType == 1 || this.buttonType == 4 || this.buttonType == 5) {
             events |= 0x400000;
         }
+
         if (this.buttonType == 6) {
             events |= 0x1;
         }
-        this.serverActiveProperties = new ServerActiveProperties(events, -1);
+
+        this.activeProperties = new ServerActiveProperties(events, -1);
         if (buf.pos !== buf.length) {
-            throw new Error(`Buffer was not fully read: ${buf.pos} / ${buf.length} (child: ${this.child})`);
+            throw new Error(`Buffer was not fully read: ${buf.pos} / ${buf.length} (com: ${this.com})`);
         }
+
+        return def;
     }
 
     decodeIf3(buf) {
@@ -305,8 +575,6 @@ export class Component {
         this.layer = buf.g2();
         if (this.layer === 65535) {
             this.layer = -1;
-        } else {
-            this.layer += this.id & 0xFFFF0000;
         }
         this.hide = buf.g1() == 1;
         if (this.type == 0) {
@@ -361,7 +629,7 @@ export class Component {
             }
             this.text = buf.gjstr();
             this.lineHeight = buf.g1();
-            this.center = buf.g1();
+            this.halign = buf.g1();
             this.valign = buf.g1();
             this.shadowed = buf.g1() == 1;
             this.colour = buf.g4s();
@@ -441,7 +709,7 @@ export class Component {
                 this.cursorId = -1;
             }
         }
-        this.serverActiveProperties = new ServerActiveProperties(targetMask, local661);
+        this.activeProperties = new ServerActiveProperties(targetMask, local661);
         this.onLoad = this.readArguments(buf);
         this.onMouseOver = this.readArguments(buf);
         this.onMouseLeave = this.readArguments(buf);
@@ -468,7 +736,7 @@ export class Component {
         this.varcTriggers = this.readTriggers(buf);
         this.varcstrTriggers = this.readTriggers(buf);
         if (buf.pos !== buf.length) {
-            throw new Error(`Buffer was not fully read: ${buf.pos} / ${buf.length} (child: ${this.child})`);
+            throw new Error(`Buffer was not fully read: ${buf.pos} / ${buf.length} (com: ${this.com})`);
         }
     }
 
