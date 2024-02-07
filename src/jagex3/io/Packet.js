@@ -60,6 +60,10 @@ export default class Packet {
         return value;
     }
 
+    g1b() {
+        return this.g1s();
+    }
+
     g2() {
         return (this.data[this.pos++] << 8) | this.data[this.pos++] >>> 0;
     }

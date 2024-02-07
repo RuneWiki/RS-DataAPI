@@ -5,6 +5,7 @@ import Js5MasterIndex from '#rsdata/util/Js5.js';
 import { findCache, findCacheNew } from '#rsdata/util/OpenRS2.js';
 import NpcTypeList from '#rsdata/cache/NpcTypeList.js';
 import ParamType from '#rsdata/cache/ParamType.js';
+import { Component } from '#jagex3/type/Component.js';
 
 async function executeConfigGroups(js5, archive, cb) {
     await js5.indexes[archive].load();
@@ -1827,6 +1828,49 @@ export default function (f, opts, next) {
         }
 
         return out;
+    });
+
+    f.get('/component/:id', async (req, reply) => {
+        const { id } = req.params;
+        const { openrs2 = -1, match = 0, lang = 'en' } = req.query;
+        let { rev = -1, game = 'runescape' } = req.query;
+
+        if (rev === -1 && openrs2 === -1) {
+            reply.code(400);
+            return 'Either rev or openrs2 must be specified';
+        }
+
+        if (openrs2 !== -1) {
+            game = null;
+        }
+
+        if (rev !== -1 && rev < 234) {
+            game = 'oldschool';
+        }
+
+        // ----
+
+        let cache = findCache(rev, openrs2, match, lang, game);
+        if (!cache) {
+            reply.code(400);
+            return `Could not find cache for ${rev} ${openrs2} ${match} ${lang} ${game}`;
+        }
+
+        if (cache.builds.length) {
+            rev = cache.builds[0].major;
+        }
+        game = cache.game;
+        let js5 = new Js5MasterIndex(cache);
+
+        // ----
+
+        if (typeof id === 'undefined') {
+            reply.code(400);
+            return 'Interface ID required';
+        }
+
+        const archive = await js5.getArchive(3);
+        return Component.decodeGroup(archive, parseInt(id));
     });
 
     next();

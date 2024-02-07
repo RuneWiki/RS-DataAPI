@@ -194,6 +194,14 @@ class Js5Index {
         return readGroup(this.openrs2, this.id, group);
     }
 
+    async getGroupCapacity(group, skipLoading = false) {
+        if (this.size === -1 && !skipLoading) {
+            await this.load();
+        }
+
+        return this.groupCapacities[group];
+    }
+
     async getGroupByName(name) {
         if (this.size === -1) {
             await this.load();
