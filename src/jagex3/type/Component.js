@@ -74,15 +74,15 @@ export class Component {
         this.yMode = 0;
         this.widthMode = 0;
         this.alpha = buf.g1();
-        this.layer = buf.g2();
-        if (this.layer === 65535) {
-            this.layer = -1;
-        } else {
-            this.layer += this.id & 0xFFFF0000;
-        }
         this.overLayer = buf.g2();
         if (this.overLayer === 65535) {
             this.overLayer = -1;
+        } else {
+            this.overLayer += this.id & 0xFFFF0000;
+        }
+        this.badName_delegateHover = buf.g2();
+        if (this.badName_delegateHover === 65535) {
+            this.badName_delegateHover = -1;
         }
         const comparatorCount = buf.g1();
         if (comparatorCount > 0) {
@@ -140,8 +140,8 @@ export class Component {
             if (usable == 1) {
                 events |= 0x80000000;
             }
-            const local309 = buf.g1();
-            if (local309 == 1) {
+            const replaces = buf.g1();
+            if (replaces == 1) {
                 events |= 0x20000000;
             }
             this.marginX = buf.g1();
@@ -302,11 +302,11 @@ export class Component {
         this.heightMode = buf.g1b();
         this.xMode = buf.g1b();
         this.yMode = buf.g1b();
-        this.layer = buf.g2();
-        if (this.layer === 65535) {
-            this.layer = -1;
+        this.overLayer = buf.g2();
+        if (this.overLayer === 65535) {
+            this.overLayer = -1;
         } else {
-            this.layer += this.id & 0xFFFF0000;
+            this.overLayer += this.id & 0xFFFF0000;
         }
         this.hide = buf.g1() == 1;
         if (this.type == 0) {
