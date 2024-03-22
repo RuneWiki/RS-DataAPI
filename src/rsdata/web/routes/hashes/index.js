@@ -1,3 +1,5 @@
+import { Readable } from 'stream';
+
 import Js5MasterIndex from '#rsdata/util/Js5.js';
 import { getNamesByHash, hashCode } from '#rsdata/enum/hashes.js';
 
@@ -44,7 +46,10 @@ export default function (f, opts, next) {
 
         // ----
 
-        let output = '';
+        const stream = new Readable();
+        stream._read = () => {};
+        reply.send(stream);
+
         let a = archive;
         let index = js5.indexes[a];
         await index.load();
@@ -55,34 +60,32 @@ export default function (f, opts, next) {
                 let hashes = getNamesByHash(ghash);
 
                 if (missing && !hashes.length) {
-                    output += `${index.id}\t${g}\t-1\t${ghash}\n`;
+                    stream.push(`${index.id}\t${g}\t-1\t${ghash}\n`);
                 } else if (!missing) {
-                    output += `${index.id}\t${g}\t-1\t${ghash}\t${hashes.join('\t')}\n`;
+                    stream.push(`${index.id}\t${g}\t-1\t${ghash}\t${hashes.join('\t')}\n`);
                 }
             }
 
-            if (groupsOnly) {
-                continue;
-            }
+            if (!groupsOnly) {
+                if (index.fileNameHashes[g]) {
+                    for (let f = 0; f < index.fileIds.length; f++) {
+                        let fhash = index.fileNameHashes[g][f];
 
-            if (index.fileNameHashes[g]) {
-                for (let f = 0; f < index.fileIds.length; f++) {
-                    let fhash = index.fileNameHashes[g][f];
+                        if (typeof fhash !== 'undefined' && fhash !== -1 && fhash !== 0) {
+                            let hashes = getNamesByHash(fhash);
 
-                    if (typeof fhash !== 'undefined' && fhash !== -1 && fhash !== 0) {
-                        let hashes = getNamesByHash(fhash);
-
-                        if (missing && !hashes.length) {
-                            output += `${index.id}\t${g}\t${f}\t${fhash}\n`;
-                        } else if (!missing) {
-                            output += `${index.id}\t${g}\t${f}\t${fhash}\t${hashes.join('\t')}\n`;
+                            if (missing && !hashes.length) {
+                                stream.push(`${index.id}\t${g}\t${f}\t${fhash}\n`);
+                            } else if (!missing) {
+                                stream.push(`${index.id}\t${g}\t${f}\t${fhash}\t${hashes.join('\t')}\n`);
+                            }
                         }
                     }
                 }
             }
         }
 
-        return output;
+        stream.push(null);
     });
 
     f.get('/', async (req, reply) => {
@@ -118,7 +121,10 @@ export default function (f, opts, next) {
 
         // ----
 
-        let output = '';
+        const stream = new Readable();
+        stream._read = () => {};
+        reply.send(stream);
+
         for (let a = 0; a < js5.indexes.length; a++) {
             let index = js5.indexes[a];
 
@@ -130,27 +136,25 @@ export default function (f, opts, next) {
                     let hashes = getNamesByHash(ghash);
 
                     if (missing && !hashes.length) {
-                        output += `${index.id}\t${g}\t-1\t${ghash}\n`;
+                        stream.push(`${index.id}\t${g}\t-1\t${ghash}\n`);
                     } else if (!missing) {
-                        output += `${index.id}\t${g}\t-1\t${ghash}\t${hashes.join('\t')}\n`;
+                        stream.push(`${index.id}\t${g}\t-1\t${ghash}\t${hashes.join('\t')}\n`);
                     }
                 }
 
-                if (groupsOnly) {
-                    continue;
-                }
+                if (!groupsOnly) {
+                    if (index.fileNameHashes[g]) {
+                        for (let f = 0; f < index.fileIds.length; f++) {
+                            let fhash = index.fileNameHashes[g][f];
 
-                if (index.fileNameHashes[g]) {
-                    for (let f = 0; f < index.fileIds.length; f++) {
-                        let fhash = index.fileNameHashes[g][f];
+                            if (typeof fhash !== 'undefined' && fhash !== -1 && fhash !== 0) {
+                                let hashes = getNamesByHash(fhash);
 
-                        if (typeof fhash !== 'undefined' && fhash !== -1 && fhash !== 0) {
-                            let hashes = getNamesByHash(fhash);
-
-                            if (missing && !hashes.length) {
-                                output += `${index.id}\t${g}\t${f}\t${fhash}\n`;
-                            } else if (!missing) {
-                                output += `${index.id}\t${g}\t${f}\t${fhash}\t${hashes.join('\t')}\n`;
+                                if (missing && !hashes.length) {
+                                    stream.push(`${index.id}\t${g}\t${f}\t${fhash}\n`);
+                                } else if (!missing) {
+                                    stream.push(`${index.id}\t${g}\t${f}\t${fhash}\t${hashes.join('\t')}\n`);
+                                }
                             }
                         }
                     }
@@ -158,7 +162,7 @@ export default function (f, opts, next) {
             }
         }
 
-        return output;
+        stream.push(null);
     });
 
     next();

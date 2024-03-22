@@ -130,41 +130,22 @@ export default class Packet {
         return Packet.wrap(this.gdata(length, offset, advance));
     }
 
-    gsmart() {
-        let value = this.data[this.pos] & 0xFF;
-        if ((value & 0x80) == 0) {
-            return this.g1();
-        } else {
-            return this.g2() - 0x8000;
-        }
+    gSmart1or2() {
+        const value = this.data[this.pos] & 0xFF;
+        return value < 128 ? this.g1() : this.g2() - 32768;
     }
 
-    gsmarts() {
-        let value = this.data[this.pos] & 0xFF;
-        if ((value & 0x80) == 0) {
-            return this.g1() - 0x40;
-        } else {
-            return this.g2() - 0xC000;
-        }
+    gSmart1or2s() {
+        const value = this.data[this.pos] & 0xFF;
+        return value < 128 ? this.g1() - 64 : this.g2s() - 49152;
     }
 
-    gsmart4_() {
-        let value = this.data[this.pos] & 0xFF;
-        if ((value & 0x80) == 0) {
-            return this.g2();
-        } else {
-            return this.g4s();
-        }
+    gSmart2or4() {
+        return this.data[this.pos] >= 128 ? this.g4() & 0x7FFFFFFF : this.g2();
     }
 
-    // TODO: Java vs JS differences, because this should be identical to ^
-    gsmart4() {
-        let value = this.data[this.pos] & 0xFF;
-        if ((value & 0x80) == 0) {
-            return this.g2();
-        } else {
-            return this.g4s() & 0x7FFFFFFF;
-        }
+    gSmart2or4null() {
+        return this.data[this.pos] >= 128 ? this.g4() & 0x7FFFFFFF : this.g2() === 32767 ? -1 : this.g2();
     }
 
     tinydec(keys = [0, 0, 0, 0]) {

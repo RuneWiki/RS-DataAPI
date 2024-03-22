@@ -56,7 +56,7 @@ class Js5Index {
 
         this.size = 0;
         if (protocol >= 7) {
-            this.size = data.gsmart4_();
+            this.size = data.gSmart2or4();
         } else {
             this.size = data.g2();
         }
@@ -65,7 +65,7 @@ class Js5Index {
         let maxGroupId = -1;
         for (let i = 0; i < this.size; i++) {
             if (protocol >= 7) {
-                this.groupIds[i] = prevGroupId += data.gsmart4_();
+                this.groupIds[i] = prevGroupId += data.gSmart2or4();
             } else {
                 this.groupIds[i] = prevGroupId += data.g2();
             }
@@ -99,7 +99,8 @@ class Js5Index {
 
         if (hasDigests) {
             for (let i = 0; i < this.size; i++) {
-                this.groupDigests[this.groupIds[i]] = data.g8();
+                data.pos += 64;
+                // this.groupDigests[this.groupIds[i]] = data.gdata(64);
             }
         }
 
@@ -115,7 +116,11 @@ class Js5Index {
         }
 
         for (let i = 0; i < this.size; i++) {
-            this.groupSizes[this.groupIds[i]] = data.g2();
+            if (protocol >= 7) {
+                this.groupSizes[this.groupIds[i]] = data.gSmart2or4();
+            } else {
+                this.groupSizes[this.groupIds[i]] = data.g2();
+            }
         }
 
         for (let i = 0; i < this.size; i++) {
@@ -127,7 +132,7 @@ class Js5Index {
             this.fileIds[groupId] = [];
             for (let j = 0; j < groupSize; j++) {
                 if (protocol >= 7) {
-                    this.fileIds[groupId][j] = prevFileId += data.gsmart4_();
+                    this.fileIds[groupId][j] = prevFileId += data.gSmart2or4();
                 } else {
                     this.fileIds[groupId][j] = prevFileId += data.g2();
                 }

@@ -894,7 +894,7 @@ export default function (f, opts, next) {
                     let model = -1;
 
                     if (game == 'runescape' && rev >= 700) {
-                        model = data.gsmart4();
+                        model = data.gSmart2or4();
                     } else {
                         model = data.g2();
                     }
@@ -930,7 +930,7 @@ export default function (f, opts, next) {
                     data.g2();
                 } else if (code === 23) {
                     if (game == 'runescape' && rev >= 700) {
-                        data.gsmart4();
+                        data.gSmart2or4();
                     } else {
                         data.g2();
                     }
@@ -941,13 +941,13 @@ export default function (f, opts, next) {
                     }
                 } else if (code === 24) {
                     if (game == 'runescape' && rev >= 700) {
-                        data.gsmart4();
+                        data.gSmart2or4();
                     } else {
                         data.g2();
                     }
                 } else if (code === 25) {
                     if (game == 'runescape' && rev >= 700) {
-                        data.gsmart4();
+                        data.gSmart2or4();
                     } else {
                         data.g2();
                     }
@@ -958,7 +958,7 @@ export default function (f, opts, next) {
                     }
                 } else if (code === 26) {
                     if (game == 'runescape' && rev >= 700) {
-                        data.gsmart4();
+                        data.gSmart2or4();
                     } else {
                         data.g2();
                     }
@@ -1001,37 +1001,37 @@ export default function (f, opts, next) {
                     data.g2s();
                 } else if (code === 78) {
                     if (game == 'runescape' && rev >= 700) {
-                        data.gsmart4();
+                        data.gSmart2or4();
                     } else {
                         data.g2();
                     }
                 } else if (code === 79) {
                     if (game == 'runescape' && rev >= 700) {
-                        data.gsmart4();
+                        data.gSmart2or4();
                     } else {
                         data.g2();
                     }
                 } else if (code === 90) {
                     if (game == 'runescape' && rev >= 700) {
-                        data.gsmart4();
+                        data.gSmart2or4();
                     } else {
                         data.g2();
                     }
                 } else if (code === 91) {
                     if (game == 'runescape' && rev >= 700) {
-                        data.gsmart4();
+                        data.gSmart2or4();
                     } else {
                         data.g2();
                     }
                 } else if (code === 92) {
                     if (game == 'runescape' && rev >= 700) {
-                        data.gsmart4();
+                        data.gSmart2or4();
                     } else {
                         data.g2();
                     }
                 } else if (code === 93) {
                     if (game == 'runescape' && rev >= 700) {
-                        data.gsmart4();
+                        data.gSmart2or4();
                     } else {
                         data.g2();
                     }
@@ -1569,7 +1569,7 @@ export default function (f, opts, next) {
                 } else if (code === 5) {
                     out += `default=${data.gjstr()}\n`;
                 } else if (code === 101) {
-                    let type = data.gsmart();
+                    let type = data.gSmart1or2();
                     out += `type=${type}\n`;
                 } else {
                     // console.log(`Unknown param config code ${code}`);

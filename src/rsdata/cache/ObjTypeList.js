@@ -96,7 +96,7 @@ class ObjType {
 
         if (code === 1) {
             if (game == 'runescape' && rev >= 700) {
-                this.model = data.gsmart4();
+                this.model = data.gSmart2or4();
             } else {
                 this.model = data.g2();
             }
@@ -200,7 +200,7 @@ class ObjType {
             }
         } else if (code === 23) {
             if (game == 'runescape' && rev >= 700) {
-                this.manwear = data.gsmart4();
+                this.manwear = data.gSmart2or4();
             } else {
                 this.manwear = data.g2();
             }
@@ -218,7 +218,7 @@ class ObjType {
             }
         } else if (code === 24) {
             if (game == 'runescape' && rev >= 700) {
-                this.manwear2 = data.gsmart4();
+                this.manwear2 = data.gSmart2or4();
             } else {
                 this.manwear2 = data.g2();
             }
@@ -228,7 +228,7 @@ class ObjType {
             }
         } else if (code === 25) {
             if (game == 'runescape' && rev >= 700) {
-                this.womanwear = data.gsmart4();
+                this.womanwear = data.gSmart2or4();
             } else {
                 this.womanwear = data.g2();
             }
@@ -246,7 +246,7 @@ class ObjType {
             }
         } else if (code === 26) {
             if (game == 'runescape' && rev >= 700) {
-                this.womanwear2 = data.gsmart4();
+                this.womanwear2 = data.gSmart2or4();
             } else {
                 this.womanwear2 = data.g2();
             }
@@ -347,7 +347,7 @@ class ObjType {
             }
         } else if (code === 78) {
             if (game == 'runescape' && rev >= 700) {
-                this.manwear3 = data.gsmart4();
+                this.manwear3 = data.gSmart2or4();
             } else {
                 this.manwear3 = data.g2();
             }
@@ -357,7 +357,7 @@ class ObjType {
             }
         } else if (code === 79) {
             if (game == 'runescape' && rev >= 700) {
-                this.womanwear3 = data.gsmart4();
+                this.womanwear3 = data.gSmart2or4();
             } else {
                 this.womanwear3 = data.g2();
             }
@@ -367,7 +367,7 @@ class ObjType {
             }
         } else if (code === 90) {
             if (game == 'runescape' && rev >= 700) {
-                this.manhead = data.gsmart4();
+                this.manhead = data.gSmart2or4();
             } else {
                 this.manhead = data.g2();
             }
@@ -377,7 +377,7 @@ class ObjType {
             }
         } else if (code === 91) {
             if (game == 'runescape' && rev >= 700) {
-                this.womanhead = data.gsmart4();
+                this.womanhead = data.gSmart2or4();
             } else {
                 this.womanhead = data.g2();
             }
@@ -387,7 +387,7 @@ class ObjType {
             }
         } else if (code === 92) {
             if (game == 'runescape' && rev >= 700) {
-                this.manhead2 = data.gsmart4();
+                this.manhead2 = data.gSmart2or4();
             } else {
                 this.manhead2 = data.g2();
             }
@@ -397,7 +397,7 @@ class ObjType {
             }
         } else if (code === 93) {
             if (game == 'runescape' && rev >= 700) {
-                this.womanhead2 = data.gsmart4();
+                this.womanhead2 = data.gSmart2or4();
             } else {
                 this.womanhead2 = data.g2();
             }

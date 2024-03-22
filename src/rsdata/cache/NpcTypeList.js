@@ -227,8 +227,8 @@ class NpcType {
                 this.icons = [];
                 for (let i = 0; i < count; i++) {
                     if (((start & 1) << i) !== 0) {
-                        let sprite = data.gsmart4();
-                        let tile = data.gsmart();
+                        let sprite = data.gSmart2or4();
+                        let tile = data.gSmart1or2();
 
                         this.icons.push([sprite, tile]);
                     }

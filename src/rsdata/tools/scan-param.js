@@ -128,7 +128,7 @@ for (let i = 0; i < caches.length; i++) {
                 } else if (code === 5) {
                     out += `default=${data.gjstr()}\n`;
                 } else if (code === 101) {
-                    let type = data.gsmart();
+                    let type = data.gSmart1or2();
                     out += `type=${type}\n`;
                 } else {
                     console.log(`Unknown param config code ${code}`);
