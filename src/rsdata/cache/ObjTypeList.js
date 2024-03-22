@@ -328,7 +328,7 @@ class ObjType {
                 }
             }
         } else if (code === 43) {
-            this.tooltip = data.g4();
+            this.tooltip = data.g4s();
 
             if (readCb) {
                 readCb(this.id, code, this.tooltip);

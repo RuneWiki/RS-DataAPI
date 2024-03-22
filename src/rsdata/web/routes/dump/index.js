@@ -995,7 +995,7 @@ export default function (f, opts, next) {
                         }
                     }
                 } else if (code === 43) {
-                    data.g4();
+                    data.g4s();
                 } else if (code === 65) {
                 } else if (code === 75) {
                     data.g2s();
@@ -1768,7 +1768,7 @@ export default function (f, opts, next) {
 
             for (let i = 0; i < count; i++) {
                 if (arr1[i]) {
-                    arr20[i] = data.g4();
+                    arr20[i] = data.g4s();
                 }
             }
 

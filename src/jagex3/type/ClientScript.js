@@ -60,7 +60,7 @@ export default class ClientScript {
         }
 
         buf.pos = trailerPos;
-        const instructions = buf.g4();
+        const instructions = buf.g4s();
         this.intLocals = buf.g2();
         this.stringLocals = buf.g2();
         if (longSupport) {
@@ -83,8 +83,8 @@ export default class ClientScript {
                     const table = new Map();
 
                     while (cases-- > 0) {
-                        const value = buf.g4();
-                        const offset = buf.g4();
+                        const value = buf.g4s();
+                        const offset = buf.g4s();
                         table.set(value, offset);
                     }
 
@@ -109,7 +109,7 @@ export default class ClientScript {
                 const baseType = buf.g1();
 
                 if (baseType === 0) {
-                    this.intOperands[pc] = buf.g4();
+                    this.intOperands[pc] = buf.g4s();
                 } else if (baseType === 1) {
                     this.longOperands[pc] = buf.g8();
                 } else if (baseType === 2) {
@@ -132,7 +132,7 @@ export default class ClientScript {
             }
 
             if (ClientScript.largeOpcodes.has(opcode)) {
-                this.intOperands[pc] = buf.g4();
+                this.intOperands[pc] = buf.g4s();
             } else {
                 this.intOperands[pc] = buf.g1();
             }

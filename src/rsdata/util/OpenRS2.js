@@ -78,12 +78,12 @@ export async function readGroup(id, archive, group, keys) {
     }
 
     let compression = data.g1();
-    let length = data.g4();
+    let length = data.g4s();
 
     if (compression === 0) {
         return data.gPacket(length);
     } else {
-        let uncompressedLength = data.g4();
+        let uncompressedLength = data.g4s();
 
         if (compression === 1) {
             return Packet.wrap(BZip2.decompress(data.gdata(length)));

@@ -55,7 +55,7 @@ class ClientScript {
         }
 
         buf.pos = trailerPos;
-        const instructions = buf.g4();
+        const instructions = buf.g4s();
         this.intLocals = buf.g2();
         this.stringLocals = buf.g2();
         if (longSupport) {
@@ -78,8 +78,8 @@ class ClientScript {
                     const table = new Map();
 
                     while (cases-- > 0) {
-                        const value = buf.g4();
-                        const offset = buf.g4();
+                        const value = buf.g4s();
+                        const offset = buf.g4s();
                         table.set(value, offset);
                     }
 
@@ -128,7 +128,7 @@ class ClientScript {
 
                 if (largeOps) {
                     if (largeOps.has(opcode)) {
-                        this.intOperands[pc] = buf.g4();
+                        this.intOperands[pc] = buf.g4s();
                     } else {
                         this.intOperands[pc] = buf.g1();
                     }
@@ -136,7 +136,7 @@ class ClientScript {
                     if (refOpcode >= 150 || refOpcode === returnOp || refOpcode === popIntDiscardOp || refOpcode === popStringDiscardOp) {
                         this.intOperands[pc] = buf.g1();
                     } else {
-                        this.intOperands[pc] = buf.g4();
+                        this.intOperands[pc] = buf.g4s();
                     }
                 }
             }
@@ -163,7 +163,7 @@ class ClientScript {
                 if (opcode >= 150 || opcode === returnOp || opcode === popIntDiscardOp || opcode === popStringDiscardOp) {
                     this.intOperands[pc] = buf.g1();
                 } else {
-                    this.intOperands[pc] = buf.g4();
+                    this.intOperands[pc] = buf.g4s();
                 }
             }
 
