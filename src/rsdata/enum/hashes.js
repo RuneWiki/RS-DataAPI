@@ -411,18 +411,16 @@ export function initHashes() {
     }
 
     // all possible static maps
+    const letters = "zyxwvutsrqponmlkjihgfedcba";
     for (let x = 0; x < 200; x++) {
         for (let z = 0; z < 200; z++) {
-            addHash(`m${x}_${z}`);
-            addHash(`l${x}_${z}`);
-            addHash(`n${x}_${z}`);
-            addHash(`e${x}_${z}`);
-            addHash(`um${x}_${z}`);
-            addHash(`ul${x}_${z}`);
-            addHash(`t${x}_${z}`);
-            addHash(`w${x}_${z}`);
-            addHash(`o${x}_${z}`);
-            addHash(`wa${x}_${z}`);
+            for (var i = 26; i--;) {
+                addHash(`${letters[i]}${x}_${z}`);
+
+                for (var j = 26; j--;) {
+                    addHash(`${letters[i]}${letters[j]}${x}_${z}`);
+                }
+            }
         }
     }
 
