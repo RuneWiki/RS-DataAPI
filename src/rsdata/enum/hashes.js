@@ -422,6 +422,7 @@ export function initHashes() {
             addHash(`t${x}_${z}`);
             addHash(`w${x}_${z}`);
             addHash(`o${x}_${z}`);
+            addHash(`wa${x}_${z}`);
         }
     }
 
