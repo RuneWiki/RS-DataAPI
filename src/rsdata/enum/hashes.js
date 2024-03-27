@@ -419,6 +419,9 @@ export function initHashes() {
             addHash(`e${x}_${z}`);
             addHash(`um${x}_${z}`);
             addHash(`ul${x}_${z}`);
+            addHash(`t${x}_${z}`);
+            addHash(`w${x}_${z}`);
+            addHash(`o${x}_${z}`);
         }
     }
 
