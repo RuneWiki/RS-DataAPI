@@ -412,14 +412,19 @@ export function initHashes() {
 
     // all possible static maps
     const letters = "zyxwvutsrqponmlkjihgfedcba";
+    const prefixes = [];
+    for (var i = 26; i--;) {
+        prefixes.push(letters[i]);
+
+        for (var j = 26; j--;) {
+            prefixes.push(letters[i] + letters[j]);
+        }
+    }
+
     for (let x = 0; x < 200; x++) {
         for (let z = 0; z < 200; z++) {
-            for (var i = 26; i--;) {
-                addHash(`${letters[i]}${x}_${z}`);
-
-                for (var j = 26; j--;) {
-                    addHash(`${letters[i]}${letters[j]}${x}_${z}`);
-                }
+            for (let i = 0; i < prefixes.length; i++) {
+                addHash(`${prefixes[i]}${x}_${z}`);
             }
         }
     }
