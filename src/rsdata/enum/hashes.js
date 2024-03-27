@@ -411,21 +411,32 @@ export function initHashes() {
     }
 
     // all possible static maps
-    const letters = "zyxwvutsrqponmlkjihgfedcba";
-    const prefixes = [];
-    for (var i = 26; i--;) {
-        prefixes.push(letters[i]);
+    // const letters = 'zyxwvutsrqponmlkjihgfedcba';
+    // const prefixes = new Set();
+    // for (var i = 26; i--;) {
+    //     prefixes.add(letters[i]);
 
-        for (var j = 26; j--;) {
-            prefixes.push(letters[i] + letters[j]);
-        }
-    }
+    //     for (var j = 26; j--;) {
+    //         prefixes.add(letters[i] + letters[j]);
+    //     }
+    // }
 
     for (let x = 0; x < 200; x++) {
         for (let z = 0; z < 200; z++) {
-            for (let i = 0; i < prefixes.length; i++) {
-                addHash(`${prefixes[i]}${x}_${z}`);
-            }
+            addHash(`m${x}_${z}`);
+            addHash(`l${x}_${z}`);
+            addHash(`um${x}_${z}`);
+            addHash(`ul${x}_${z}`);
+            addHash(`n${x}_${z}`);
+            addHash(`e${x}_${z}`);
+            addHash(`wa${x}_${z}`);
+            addHash(`wm${x}_${z}`);
+            addHash(`w${x}_${z}`);
+            addHash(`t${x}_${z}`);
+
+            // for (const prefix of prefixes) {
+            //     addHash(`${prefix}${x}_${z}`);
+            // }
         }
     }
 

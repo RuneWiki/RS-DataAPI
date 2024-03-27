@@ -67,7 +67,7 @@ async function decodeImage(data, transparent = true) {
         let tileY = Math.ceil(tiles / tileX);
         let img;
         if (transparent) {
-            img = new Jimp(tileX * width, tileY * height).colorType(2);
+            img = new Jimp(tileX * width, tileY * height, 0x00000000).colorType(6);
         } else {
             img = new Jimp(tileX * width, tileY * height, 0xFF00FFFF).colorType(2);
         }
@@ -204,7 +204,7 @@ async function decodeImage(data, transparent = true) {
     }
 }
 
-let js5 = new Js5MasterIndex(findCache(578));
+let js5 = new Js5MasterIndex(findCache(220));
 
 // await js5.indexes[52].load();
 // for (let i = 0; i < js5.indexes[52].size; i++) {
