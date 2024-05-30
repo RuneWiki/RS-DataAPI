@@ -32,9 +32,9 @@ export function initHashes() {
     fs.readFileSync('config/hashes/found.tsv', 'ascii').replace(/\r/g, '').split('\n').forEach(x => {
         let parts = x.split('\t');
         if (parts[1]) {
-            addHash(parts[1]);
+            addHash(parts[1].toLowerCase());
         } else {
-            addHash(parts[0]);
+            addHash(parts[0].toLowerCase());
         }
     });
 

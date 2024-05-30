@@ -1,9 +1,9 @@
 import axios from 'axios';
 import fs from 'fs';
-import fsp from 'fs/promises';
 import zlib from 'zlib';
 import { dirname } from 'path';
 import tar from 'tar';
+import { decompress } from '@napi-rs/lzma/lzma';
 
 import Packet from '#jagex3/io/Packet.js';
 import BZip2 from '#jagex3/io/BZip2.js';
@@ -67,6 +67,27 @@ export async function getGroup(id, archive, group) {
     return await downloadFile(api, `data/${id}/${archive}/${group}.dat`);
 }
 
+async function lzmaDecompress(src, dst) {
+    // jagex format doesn't include the uncompressed length so we need to build a new header
+    const temp = new Uint8Array(8 + src.length);
+    temp.set(src.subarray(0, 5)); // copy over zlib properties
+
+    // add uncompressed size
+    temp[5] = dst.length;
+    temp[6] = dst.length >> 8;
+    temp[7] = dst.length >> 16;
+    temp[8] = dst.length >> 24;
+    temp[9] = 0;
+    temp[10] = 0;
+    temp[11] = 0;
+    temp[12] = 0;
+    temp.set(src.subarray(5), 13);
+
+    const compressed = Buffer.from(temp);
+    const uncompressed = await decompress(compressed);
+    dst.set(uncompressed);
+}
+
 export async function readGroup(id, archive, group, keys) {
     if (archive < 0 || group < 0) {
         return null;
@@ -75,6 +96,8 @@ export async function readGroup(id, archive, group, keys) {
     let data = Packet.wrap(await getGroup(id, archive, group));
     if (keys) {
         data.tinydec(keys);
+    } else if (data.length === 32) {
+        return new Packet(new Uint8Array(0));
     }
 
     let compression = data.g1();
@@ -94,7 +117,9 @@ export async function readGroup(id, archive, group, keys) {
 
             return Packet.wrap(zlib.gunzipSync(data.gdata(length)));
         } else if (compression === 3) {
-            // TODO: LZMA
+            const dst = new Uint8Array(uncompressedLength);
+            await lzmaDecompress(data.gdata(length), dst);
+            return Packet.wrap(dst);
         }
     }
 }
