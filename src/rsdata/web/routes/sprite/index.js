@@ -62,7 +62,7 @@ async function decodeImage(data, transparent = true) {
 
         let palette = [];
         if (transparent) {
-            palette[0] = 0;
+            palette[0] = 0x00000000;
         } else {
             palette[0] = 0xFF00FFFF;
         }
@@ -117,9 +117,9 @@ async function decodeImage(data, transparent = true) {
 
         let img;
         if (transparent) {
-            img = new Jimp(tileX * width, tileY * height).colorType(2);
+            img = new Jimp(tileX * width, tileY * height, palette[0]).colorType(4);
         } else {
-            img = new Jimp(tileX * width, tileY * height, 0xFF00FFFF).colorType(2);
+            img = new Jimp(tileX * width, tileY * height, palette[0]).colorType(2);
         }
 
         data.pos = 0;

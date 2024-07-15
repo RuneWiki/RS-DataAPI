@@ -155,6 +155,18 @@ class NpcType {
             if (readCb) {
                 readCb(this.id, code, this.heads);
             }
+        } else if (code === 74) {
+            this.attack = data.g2();
+        } else if (code === 75) {
+            this.defence = data.g2();
+        } else if (code === 76) {
+            this.strength = data.g2();
+        } else if (code === 77) {
+            this.hitpoints = data.g2();
+        } else if (code === 78) {
+            this.ranged = data.g2();
+        } else if (code === 79) {
+            this.magic = data.g2();
         } else if (code === 90) {
             this.code90 = data.g2();
 

@@ -439,7 +439,7 @@ export class Component {
                     }
 
                     if (this.invSlotOffsetX[i] != 0 || this.invSlotOffsetY[i] != 0) {
-                        def.push(`slot${i + 1}=${name}:${com.invSlotOffsetX[i]},${com.invSlotOffsetY[i]}\n`);
+                        def.push(`slot${i + 1}=${name}:${this.invSlotOffsetX[i]},${this.invSlotOffsetY[i]}\n`);
                     } else {
                         def.push(`slot${i + 1}=${name}`);
                     }
@@ -828,15 +828,15 @@ export class Component {
         }
 
         const targetMask = buf.g3();
-        const keyCount = buf.g1();
+        let keyCount = buf.g1();
         if (keyCount != 0) {
-            this.keyCodes = new byte[10];
-            this.keyPressDelay = new int[10];
-            this.keyHeldMask = new byte[10];
+            this.keyCodes = new Int8Array(10);
+            this.keyPressDelay = new Int32Array(10);
+            this.keyHeldMask = new Int8Array(10);
 
             while (keyCount != 0) {
-                const local493 = (keyCount >> 4) - 1;
-                const local501 = buf.g1() | keyCount << 8;
+                let local493 = (keyCount >> 4) - 1;
+                let local501 = buf.g1() | keyCount << 8;
                 local501 &= 4095;
                 if (local501 == 4095) {
                     this.keyPressDelay[local493] = -1;
